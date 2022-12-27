@@ -58,11 +58,11 @@ public class EnvioPQRD {
       EnvioPQRD.fechaHoraRadicadoFormat = fechaHoraRadicadoFormat;
       EnvioPQRD.mostrarMensaje = mostrar;
       EnvioPQRD.numeroVerificacionStatic = numeroVerificacion;
-      EnvioPQRD.verificacionMsgStatic = "IMPORTANTE: Guarde muy bien este número de radicado " 
+      EnvioPQRD.verificacionMsgStatic = "IMPORTANTE: Guarde muy bien este n\u00famero de radicado " 
       + nroRadicacion 
-      + " y su número de verificación " 
+      + " y su n\u00famero de verificaci\u00f3n " 
       + numeroVerificacion 
-      + " pues será la única manera en que usted podrá consultar su respuesta.";
+      + " pues ser\u00e1 la \u00fanica manera en que usted podr\u00e1 consultar su respuesta.";
    }
 
    public boolean isMostrar() {
