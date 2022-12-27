@@ -1,0 +1,60 @@
+.bground{
+      background-size: auto;
+      background-repeat: no-repeat;
+  }
+
+.btn{
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
+}
+
+
+@media screen and (max-width: 800px) {
+  .left, .main, .right {
+    width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+  
+  .headerResponsive{
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      background-position: 50% 0;
+  }
+  .footer{
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    height: 100px; 
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: 50% 0;
+    }
+  
+     
+}
+
+
+@media screen and (min-width: 800px) {
+  .left, .main, .right {
+    width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+  
+  .headerResponsive{
+        height: 190px; 
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: 50% 0;
+    }
+    
+    .footer{
+    left: 0;
+    bottom: 0;    
+    width: 100%;
+    text-align: center;
+    height: 190px; 
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: 50% 0;
+    } 
+  
+}

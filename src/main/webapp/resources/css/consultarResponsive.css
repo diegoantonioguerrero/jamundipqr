@@ -1,0 +1,159 @@
+dialog{
+    width: 600px;
+}
+
+.ui-widget-overlay {
+    opacity: .65;
+}
+
+.ui-dialog-title{
+    float: none !important;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    padding: 0 0 0 0 !important;
+    position: relative;
+    border: 0;
+    float: none;
+    text-align: center !important;
+}
+
+.bground{
+      background-size: auto;
+      background-repeat: no-repeat;
+  }
+
+.btn{
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
+}
+
+.ui-g div{
+    align: center;
+    margin: auto;
+}
+
+.ui-growl{
+    /*right: 100px !important;*/
+    right: 40% !important;
+}
+
+.linkAcceso{
+    font-size: 90% !important;
+    text-decoration: underline;
+    font-weight: bold;
+    color: #036fab;
+    text-align: center;
+}
+
+@media screen and (max-width: 800px) {
+  .left, .main, .right {
+    width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+  
+  .labelAdjust{
+      text-align: left;
+      font-size: 85%;
+      height: fit-content;
+  }
+  
+  .buttonAdjust1{
+      padding: 0;
+  }
+  
+  .buttonAdjust2{
+      padding: 0;
+  }
+  
+  .caja{
+      margin-bottom: 5px; 
+      margin-top: 10px;
+  }
+  
+  .inputConsultar{
+   width: 100%   
+  }
+  
+  .updateAdjust{
+      width: 70%;
+      margin: 5px;
+  }
+  
+  .headerResponsive{
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      background-position: 50% 0;
+  }
+  
+  .footer{
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    height: 100px; 
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: 50% 0;
+    }
+    
+}
+
+
+@media screen and (min-width: 800px) {
+  .left, .main, .right {
+    width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+  
+  .headerResponsive{
+        height: 190px; 
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: 50% 0;
+    }
+  
+  .panelConfig{
+      width: 640px; 
+  }
+  .labelAdjust{
+      text-align: right;
+      margin: 0;
+  }
+  
+  .buttonAdjust1{
+      text-align: right;
+      padding-left: 20px;
+  }
+  
+  .buttonAdjust2{
+      text-align: left;
+      padding-right: 20px;
+  }
+  
+  .caja{
+      margin-bottom: 10px; 
+      margin-top: 10px
+  }
+  
+  .updateAdjust{
+      width: 150px; 
+      margin: 10px;
+  }
+  
+  .inputConsultar{
+      padding-left: 10%;
+      width: 100% !important;
+      font-size: 95% !important;
+  }
+  
+  .footer{
+    position: absolute;
+    left: 0;
+    bottom: 0;    
+    width: 100%;
+    text-align: center;
+    height: 190px; 
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: 50% 0;
+    }  
+}

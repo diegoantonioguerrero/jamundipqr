@@ -1,0 +1,305 @@
+.verdanaFont{
+    
+    font-size: 90% !important; 
+}
+
+.verdanaFontSolicitud{
+    
+}
+
+.ui-fileupload-filename {
+    display: none !important;
+}
+
+dialog{
+    width: 400px;
+}
+
+.bground{
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+
+.btn{
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
+}
+
+.ui-g div{
+    align: center;
+    margin: auto;
+}
+
+.ui-widget-content {
+    border: 0px solid #a8a8a8;
+    background: #ffffff;
+    color: #4f4f4f;
+}
+
+.ui-panel-content {
+    border: 0;
+    background: 0;
+    padding: .5em 0em !important;
+}
+
+@media screen and (max-width: 700px) {
+    .left, .main, .right {
+        width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+    }
+
+    .adjustDate{
+        font-size: 90%;
+        margin-top: 5px; 
+        margin-bottom: 10px; 
+        font-weight: bold;
+    }
+
+    .panelConfig{
+        margin-top: 10px;
+    }
+
+    .menuResp{
+        box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
+        width: 60%;
+        margin-top: 10px;
+    }
+
+    .caja{
+        margin-bottom: 7px; 
+        margin-top: 10px
+    }
+
+    .labelAdjust{
+        text-align: left;
+        font-size: 85%;
+        height: 20px;
+    }
+
+    .buttonAdjust{
+        text-align: left;
+        font-size: 85%;
+        margin: auto;
+    }
+
+    .txtColumn{
+        text-align: left;
+        font-size: 85%;
+        height: 20px;
+    }
+
+    .btnColumn{
+        text-align: left;
+        font-size: 85%;
+        height: 20px;
+        padding-left: 0;
+    }
+
+    .titleResp{
+        margin-top: 30px;
+        font-weight: bold;
+        text-align: left;
+        font-size: 90%;
+    }
+
+    .cajaSolicitud{
+        margin-bottom: 7px; 
+        margin-top: 10px
+    }
+
+    .txtSolicitud{  
+        font-weight: bold; 
+        text-align: left;
+        font-size: 80%;
+        height: 25px;
+    }
+
+    .txtMargin{
+        margin-left: 0;
+    }
+
+    .boxSolicitud{      
+        margin-bottom: 20px; 
+        font-size:70%
+    }
+
+    .inSolicitud{
+        width: 100%;
+    }
+
+    .upload{
+        width: 100%;
+        font-size:65%;
+        text-align: left;
+    }
+
+    .idAdjust{
+        margin-bottom: 0;
+    }
+
+    .padPQRD{
+        padding-left: 0px;
+        margin-bottom: 10px;
+    }
+
+    .confirmacion{
+        width: 100%;
+    }
+    
+    .headerResponsive{
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      background-position: 50% 0;
+    } 
+    
+    .footer{
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    height: 100px; 
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: 50% 0;
+    }
+
+}
+
+
+@media screen and (min-width: 800px) {
+    .left, .main, .right {
+        width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+    }
+    
+    .headerResponsive{
+        height: 190px; 
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: 50% 0;
+    }
+
+    .adjustDate{
+        margin-top: 5px; 
+        margin-bottom: 10px; 
+        font-weight: bold;
+    }
+
+    .panelConfig{
+        width: 900px; 
+        margin-top: 30px;
+    }
+
+    .menuResp{
+        box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
+        margin-left: 10px;
+        margin-right: 10px
+    }
+
+    .caja{
+        margin-bottom: 10px; 
+        margin-top: 10px
+    }
+
+    .labelAdjust{
+        text-align: right;
+        margin: 0;
+    }
+
+    .buttonAdjust{
+        text-align: left;
+        margin-left: 0;
+    }
+
+    .txtColumn{
+        text-align: left;
+        font-size: 95%;
+        height: 20px;
+        margin: auto;
+    }
+
+    .btnColumn{
+        text-align: left;
+        font-size: 90%;
+        margin: auto;     
+        height: 20px;
+    }
+
+    .editWidth{
+        width: 170px;
+    }
+
+    .titleResp{
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .cajaSolicitud{
+        margin-bottom: 20px; 
+        margin-top: 30px;
+    }
+
+    .txtSolicitud{  
+        font-weight: bold; 
+        text-align: left;
+        font-size: 90%;
+        height: 25px;
+    }
+
+    .txtMargin{
+        margin-left: 20px
+    }
+
+    .txtPad{
+        padding-left: 18px;
+    }
+
+    .boxSolicitud{      
+        margin-bottom: 20px; 
+        font-size:80%;
+    }
+
+    .inSolicitud{
+        width: 94%;
+    }
+
+    .upload{
+        font-size:80%;
+        text-align: left;
+        padding-right: 40%;
+        padding-left: 20px;
+    }
+
+    .idInput{
+        width: 200px;
+    }
+
+    .idAdjust{
+        margin-bottom: 0;
+    }
+
+    .usuarioAdjust{
+        margin-bottom: 30px;
+    }
+
+    .padPQRD{
+        padding-right: 20px;
+        padding-left: 0px;
+        margin-bottom: 20px;
+    }
+
+    .confirmacion{
+        width: 400px;
+    }
+    
+    .footer{
+    left: 0;
+    bottom: 0;    
+    width: 100%;
+    text-align: center;
+    height: 190px; 
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: 50% 0;
+    }
+
+}

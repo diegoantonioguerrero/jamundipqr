@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile">
+    <h:head>
+        <title>Formular PQRD</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content='text/html; charset=UTF-8' http-equiv="content-type"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <h:outputStylesheet library="css" name="formularResponsive.css"/>
+        <h:outputStylesheet library="css" name="buttonStyle.css"/>
+        <h:outputScript library="js" name="textRestrict.js" target="body"/>
+        <h:outputScript library="js" name="jsglobal.js" target="body"/>
+        <h:outputScript library="js" name="browserjs.js" target="body"/>
+        
+        <style>
+            
+            .ui-button{
+                background-color: #{formularPQRD.colorFondoBotones} !important;
+                color: #{formularPQRD.colorLetraBotones} !important;
+            }
+            
+            @font-face {
+                font-family: "fuenteContenido";
+                src: url(../resources/font/#{formularPQRD.fuenteContenido});
+            }
+            
+            @font-face {
+                font-family: "fuenteEtiquetas";
+                src: url(../resources/font/#{formularPQRD.fuenteEtiquetas});
+            }
+            
+            @font-face {
+                font-family: "fuenteTitulos";
+                src: url(../resources/font/#{formularPQRD.fuenteTiulos});
+            }
+            
+            .ui-outputlabel{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            .labelFont{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            textarea, input{
+                font-family: fuenteContenido !important;
+            }
+            
+            #formPrincipal input::placeholder {
+			    font-family:cursive !important;
+			}
+            .titleFont{
+                font-family: fuenteTitulos !important;
+            }
+            
+            .contentFont{
+                font-family: fuenteContenido !important;
+            }
+            
+        </style>
+        
+    </h:head>
+    <h:body class="bground"
+            onload="deshabilitaRetroceso(); mostrarIngresado()"
+            onunload="deshabilitaRetroceso()"
+            style="background-image: url(../resources/img/#{formularPQRD.path_background_image}); margin: 0">  
+        
+        <header class="headerResponsive" 
+                style="background-image: url(../resources/img/#{formularPQRD.fondoHeader});">
+        </header>
+        
+        <h:form id="formPrincipal" enctype="multipart/form-data" style="min-height: 550px; margin-top: 10px; margin-bottom: 10px; display: none">
+            <p:growl 
+                id="growl" 
+                showDetail="true" 
+                sticky="false" 
+                life="3000"/>
+            <div align="center">
+
+                <p:panel class="panelConfig">    
+                    <f:facet name="header">
+                        <p:outputLabel class="titleFont" value="Formulario de registro de PQRD"/>
+                    </f:facet>
+
+                    <div class="ui-g">
+                        <div class="ui-g-12 adjustDate" style="padding-left: 0; padding-top: 0">
+                            <p:outputLabel  
+                                value="#{formularPQRD.fechaActual}"/>                        
+                        </div>
+                    </div>
+
+                    <div class="ui-g" style="size: auto">                        
+                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
+                            <p:outputLabel 
+                                value="Seleccione el tipo de identificación:" 
+                                style="margin-right: 5px"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 buttonAdjust" style="padding-left: 0">
+                            <p:selectOneMenu 
+                                class="contentFont"
+                                id="tipoIdentificacion"
+                                required="true"
+                                autoWidth="false"
+                                onchange="validator()"
+                                widgetVar="tipoIdentificacion"
+                                value="#{formularPQRD.tipoIdenficacion}"
+                                style="width: 90%; font-family: fuenteContenido !important;">
+                                <f:selectItem 
+                                    itemLabel="Seleccione una opción" 
+                                    itemValue="" 
+                                    noSelectionOption="true"/>                
+                                <f:selectItem 
+                                    itemLabel="Por identificación" 
+                                    itemValue="POR IDENTIFICACION"/> 
+                                <f:selectItem 
+                                    itemLabel="Anónimo" 
+                                    itemValue="ANONIMO" /> 
+
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 ui-lg-2 buttonAdjust" style="padding: 0"></div>
+                    </div>
+
+                    <h:panelGroup>
+                        <h:panelGroup id="infouser" style="display: none">
+                            <div class="ui-g usuarioAdjust">
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labelpersona"
+                                            class="txtPad"
+          
+                                            value="Tipo de persona:*"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:selectOneMenu 
+                                            id="tipoPersona"
+                                            value="#{formularPQRD.tipoPersona}"
+                                            onchange="validator2()"
+                                            class="verdanaFontSolicitud contentFont"
+                                            autoWidth="false"
+                                            widgetVar="personaNatural"
+                                            style="width: 90%">
+                                            <f:selectItem 
+                                                itemLabel="Seleccione una opción" 
+                                                itemValue="" 
+                                                noSelectionOption="true"/>
+                                            <f:selectItem 
+                                                itemLabel="Persona natural" 
+                                                itemValue="NATURAL" />
+                                            <f:selectItem 
+                                                itemLabel="Persona jurídica" 
+                                                itemValue="JURIDICA" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>                        
+
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <h:panelGroup id="infopersona" style="display: none">
+                                        <h:panelGroup >
+                                            <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0 ">
+                                                <p:outputLabel
+                                                    id="labelrazonsocial"
+                                                    class="txtPad"
+                                                    value="Razón Social:*"/>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                                <p:inputText 
+                                                    id="razonSocial" 
+                                                    maxlength="100"
+                                                    class="verdanaFont"
+                                                    onkeyup="mayus(this);getRazonSocial()"
+                                                    onchange="mayus(this)"
+                                                    value="#{formularPQRD.comunicacionPQRD.razon_social}"
+                                                    style="width: 90%;">
+                                                    <p:keyFilter regEx="/[áéíóúàèìòùÑña-z0-9._\s]/i" />
+                                                </p:inputText> 
+
+                                            </div>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                </div>
+
+                                <!---->
+
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labeltipoid"
+                                            class="txtPad"
+                                            value="Tipo de Identificación:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:selectOneMenu 
+                                            id="tipoDocumento"
+                                            value="#{formularPQRD.comunicacionPQRD.id_tipo_documento}"
+                                            autoWidth="false"
+                                            class="verdanaFontSolicitud contentFont"
+                                            onchange="validatorTipoIdentificacion()"
+                                            widgetVar="tipoDocumento"
+                                            style="width: 90%">
+                                            <f:selectItem 
+                                                itemLabel="Seleccione una opción" 
+                                                itemValue="" 
+                                                noSelectionOption="true"/>                
+                                            <f:selectItems 
+                                                value="#{formularPQRD.tipoDocumentoList}" 
+                                                var="tipoDocumento" 
+                                                itemLabel="#{tipoDocumento.nombre_tipo_documento}" 
+                                                itemValue="#{tipoDocumento.id_tipo_documento}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>                        
+
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labelnumid"
+                                            class="txtPad"
+                                            value="Número Identificación:*"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="numDocumento"                                         
+                                            maxlength="15"
+											placeholder="Escriba sólo números"
+                                            class="verdanaFont"
+                                            onkeyup="getIDInput()"
+                                            value="#{formularPQRD.comunicacionPQRD.nro_identificacion}"
+                                            style="width: 90%;">
+                                            <p:keyFilter mask="pint" />
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+
+                                <!---->
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel
+                                            id="labelnombreuno"
+                                            class="txtPad"
+                                            value="Primer Nombre:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="primerNombre"
+                                            onkeyup="mayusName(this);getPrimerNombre();"
+                                            onchange="mayusName(this)"
+                                            maxlength="30"
+											placeholder="Escriba sólo letras"
+                                            class="verdanaFont"
+                                            value="#{formularPQRD.comunicacionPQRD.primer_nombre}"
+                                            style="width: 90%;">
+                                            <p:keyFilter regEx="/[áéíóúàèìòùÑña-z_\s]/i" />
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            class="txtPad"
+                                            value="Segundo Nombre:"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="segundoNombre"
+                                            maxlength="30"
+											placeholder="Escriba sólo letras"
+                                            class="verdanaFont"
+                                            onkeyup="mayusName(this)"
+                                            onchange="mayusName(this);"
+                                            value="#{formularPQRD.comunicacionPQRD.segundo_nombre}"
+                                            style="width: 90%;">
+                                            <p:keyFilter regEx="/[áéíóúàèìòùñÑa-z_\s]/i" />
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+
+                                <!---->
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labelapellidouno"
+                                            class="txtPad"
+                                            value="Primer Apellido:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="primerApellido"
+                                            onkeyup="mayusName(this); getPrimerApellido();"
+                                            onchange="mayusName(this);"
+                                            maxlength="30"
+											placeholder="Escriba sólo letras"
+                                            class="verdanaFont"
+                                            value="#{formularPQRD.comunicacionPQRD.primer_apellido}"
+                                            style="width: 90%;">
+                                            <p:keyFilter regEx="/[áéíóúàèìòùñÑa-z_\s]/i" />
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            class="txtPad"
+                                            value="Segundo Apellido:"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="segundoApellido"
+                                            onkeyup="mayusName(this);"
+                                            onchange="mayusName(this);"
+                                            maxlength="30"
+											placeholder="Escriba sólo letras"
+                                            class="verdanaFont"
+                                            value="#{formularPQRD.comunicacionPQRD.segundo_apellido}"
+                                            style="width: 90%;">
+                                            <p:keyFilter regEx="/[áéíóúàèìòùñÑa-z_\s]/i" />
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+
+                                
+                                <!---->
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labelemail"
+                                            class="txtPad"
+                                            value="Email:*"/>
+                                    </div>
+                                    
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="correoElectronico"                                             
+                                            onkeyup="minus(this); getEmail()"
+                                            onchange="minus(this);"
+                                            maxlength="100"
+                                            class="verdanaFont"
+                                            value="#{formularPQRD.comunicacionPQRD.email}"
+                                            style="width: 90%;">
+                                            <p:keyFilter mask="email"/>
+                                        </p:inputText> 
+                                    </div>
+
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="confirmEmailLabel"
+                                            class="txtPad"
+                                            value="Confirme Email:*"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="confirmEmail"                                             
+                                            onkeyup="minus(this); getConfirmEmail();"
+                                            onchange="minus(this)"
+                                            maxlength="100"
+                                            class="verdanaFont"
+                                            style="width: 90%;">
+                                            <p:keyFilter mask="email"/>
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+                                
+                                <!---->
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel
+                                            id="labelcelular"
+                                            class="txtPad"
+                                            value="Teléfono Celular:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="numeroCelular" 
+                                            maxlength="30"
+											placeholder="Escriba sólo números"
+                                            class="verdanaFont"
+                                            onkeyup="getCelular()"
+                                            value="#{formularPQRD.comunicacionPQRD.celular}"
+                                            style="width: 90%;">
+                                            <p:keyFilter mask="pnum"/>
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labelciudad"
+                                            for="ciudad"
+                                            class="txtPad"
+                                            value="Ciudad:*" />
+                                    </div>
+                                    
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:selectOneMenu 
+                                            id="ciudad"
+                                            autoWidth="false"
+                                            onchange="validatorCiudad()"
+                                            class="verdanaFont contentFont"
+                                            widgetVar="ciudadWidget"
+                                            value="#{formularPQRD.comunicacionPQRD.id_ciudad}"
+                                            style="width: 90%">
+                                            <f:selectItem 
+                                                itemLabel="Seleccione una opción" 
+                                                itemValue="" 
+                                                noSelectionOption="true"/>
+                                            <f:selectItems 
+                                                value="#{formularPQRD.municipioList}" 
+                                                var="municipio" 
+                                                itemLabel="#{municipio.nombre}" 
+                                                itemValue="#{municipio.fldidmunicipios}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                
+                                <!---->
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel    
+                                            id="labeldireccion"
+                                            class="txtPad"
+                                            value="Dirección:*"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:inputText 
+                                            id="direccion"
+                                            onkeyup="mayus(this); getDireccion()"  
+                                            onchange="mayus(this);"
+                                            maxlength="100"
+                                            class="verdanaFont"
+                                            value="#{formularPQRD.comunicacionPQRD.direccion}"
+                                            style="width: 90%;">
+                                            <p:keyFilter regEx="/[áéíóúàèìòùñÑa-z0-9#._\-\s]/i" />
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+                                
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                </div>
+                            </div> 
+                        </h:panelGroup>
+
+                        <h:panelGroup id="infoPqrd" style="display: none">
+
+                            <div class="titleResp">
+                                <p:outputLabel class="titleFont" value="Información de la solicitud"/>
+                            </div>
+
+
+                            <!-- Información PQRD -->
+                            <div class="ui-g padPQRD">
+
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0;">
+                                        <p:outputLabel 
+                                            id="labeldependencia"
+                                            class="txtPad"
+                                            value="Dependencia:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:selectOneMenu 
+                                            id="dependencia"
+                                            value="#{formularPQRD.comunicacionPQRD.id_dependencia}"
+                                            autoWidth="false"
+                                            class="verdanaFontSolicitud contentFont"
+                                            onchange="validatorDependencia()"
+                                            widgetVar="tipoDependencia"
+                                            style="width: 90%;">
+                                            <f:selectItem 
+                                                itemLabel="Seleccione una opción" 
+                                                itemValue="" 
+                                                noSelectionOption="true"/>
+                                            <f:selectItems 
+                                                value="#{formularPQRD.dependenciaList}" 
+                                                var="dependencia" 
+                                                itemLabel="#{dependencia.nombre_dependencia}" 
+                                                itemValue="#{dependencia.id_dependencia}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>   
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">                            
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labeltipopqr"
+                                            class="txtPad" value="Tipo de Solicitud:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:selectOneMenu 
+                                            id="tipoPQR"
+                                            value="#{formularPQRD.comunicacionPQRD.id_tipo_pqrd}"
+                                            autoWidth="false"
+                                            class="verdanaFontSolicitud contentFont"
+                                            onchange="validatorTipoPQR()"
+                                            widgetVar="tipoSolicitud"
+                                            style="width: 90%;">
+                                            <f:selectItem 
+                                                itemLabel="Seleccione una opción" 
+                                                itemValue="" 
+                                                noSelectionOption="true"/>                
+                                            <f:selectItems 
+                                                value="#{formularPQRD.tipoPqrdList}" 
+                                                var="tipoPqrd" 
+                                                itemLabel="#{tipoPqrd.nombre_tipo_pqrd}" 
+                                                itemValue="#{tipoPqrd.id_tipo_pqrd}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+
+                                <!---->
+                                <div id="tipoclasificaciondiv" class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel 
+                                            id="labelclasificacion"
+                                            class="txtPad" value="Tipo de Clasificación:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:selectOneMenu 
+                                            id="tipoClasificacion" 
+                                            value="#{formularPQRD.comunicacionPQRD.id_clasificacion_pqrd}"
+                                            autoWidth="false"
+                                            class="verdanaFontSolicitud contentFont"
+                                            onchange="validatorClasificacion()"
+                                            widgetVar="tipoClasificacion"
+                                            style="width: 90%;">
+                                            <f:selectItem 
+                                                itemLabel="Seleccione una opción" 
+                                                itemValue="" 
+                                                noSelectionOption="true"/>                
+                                            <f:selectItems 
+                                                value="#{formularPQRD.clasificacionList}" 
+                                                var="clasificacion" 
+                                                itemLabel="#{clasificacion.nombre_clasificacion_pqrd}" 
+                                                itemValue="#{clasificacion.id_clasificacion_pqrd}" />
+                                        </p:selectOneMenu>
+                                    </div> 
+                                </div>
+                                
+                                <div id="tiporespuestadiv" class="ui-g-12 ui-md-6" style="padding-left: 0">
+                                    <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
+                                        <p:outputLabel
+                                            id="labelrespuesta"
+                                            class="txtPad" value="Tipo de Respuesta:*" />
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
+                                        <p:selectOneMenu 
+                                            id="tipoRespuesta" 
+                                            value="#{formularPQRD.comunicacionPQRD.id_tipo_respuesta}"
+                                            autoWidth="false"
+                                            class="verdanaFontSolicitud contentFont"
+                                            onchange="validatorRespuesta()"
+                                            widgetVar="tipoRespuesta"
+                                            style="width: 90%;">
+                                            <f:selectItem 
+                                                itemLabel="Seleccione una opción" 
+                                                itemValue="" 
+                                                noSelectionOption="true"/>                
+                                            <f:selectItems 
+                                                value="#{formularPQRD.tipoRespuestaList}" 
+                                                var="tipoRespuesta" 
+                                                itemLabel="#{tipoRespuesta.nombre_tipo_respuesta}" 
+                                                itemValue="#{tipoRespuesta.id_tipo_respuesta}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-6" style="padding-left: 0"></div>
+                            </div>
+
+                            <div class="ui-g cajaSolicitud" style="margin: auto" align="center">
+                                <div class="ui-g-12 txtSolicitud" style="padding-left: 0">
+                                    <p:outputLabel 
+                                        id="labelasunto"
+                                        value="Ingrese el asunto:*" 
+                                        class="txtMargin"/>
+                                </div>
+
+                                <div class="ui-g-12 boxSolicitud" style="padding-left: 0">
+                                    <p:inputText  
+                                        id="asuntoPqrd" 
+                                        maxlength="1500"
+                                        onkeyup="mayusName(this); getAsuntoInput();"
+                                        onchange="mayusName(this);"
+                                        value="#{formularPQRD.comunicacionPQRD.asunto}"
+                                        class="inSolicitud verdanaFontSolicitud">
+                                        <p:keyFilter preventPaste="false" regEx="/[áéíóúàèìòùÑña-z0-9!*%#@$/=.,:;¡¿?()_\-\s\&amp;]/i" />
+                                    </p:inputText>    
+                                </div>
+                                
+
+                                <div class="ui-g-12 txtSolicitud" style="padding-left: 0">
+                                    <p:outputLabel 
+                                        id="labeldetalle"
+                                        value="Digite el detalle de su solicitud:*"
+                                        class="txtMargin"/>
+                                </div>
+                                <div class="ui-g-12 boxSolicitud" style="padding-left: 0">
+                                    <p:inputTextarea 
+                                        id="textoPqrd" 
+                                        maxlength="15000"
+                                        onkeyup="getDetalleInput();"
+                                        value="#{formularPQRD.comunicacionPQRD.detalle}"
+                                        rows="6" 
+                                        class="inSolicitud verdanaFontSolicitud">
+                                        <p:keyFilter preventPaste="false" regEx="/[áéíóúàèìòùñ.%+-¿?!¡$@()#=:,*;\w\s\&quot;\&amp;]/i" />
+                                    </p:inputTextarea>
+                                </div>
+
+                            </div>
+                            <p:outputLabel id="labelfilename" value="" style="
+                                           text-align: left;
+                                           display: block;
+                                           padding-left: 20px;
+                                           font-size: 90%;
+                                           font-weight: bold;"/> 
+                            <p:commandButton 
+                                id="buttondelete"
+                                style="
+                                display: none; 
+                                box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
+                                float: left;
+                                margin-left: 18px;
+                                margin-top: 10px;"
+                                onclick="deleteFile();"
+                                value="Eliminar adjunto"
+                                title="Eliminar adjunto"/> 
+                            <br />
+                            <div id="divupload" class="upload">
+                                <p:fileUpload 
+                                    id="inputdelfile"
+                                    label="Adjuntar Soportes"
+                                    value="#{formularPQRD.filePrime}"
+                                    allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|docx|txt)$/"
+                                    fileLimit="1"
+                                    mode="simple"
+                                    skinSimple="true"
+                                    />  
+                                <br/>
+                                <br/>
+                                <p:outputLabel id="labellimitearchivosize" value="" style="font-size: 90%"/> <br />
+                                <p:outputLabel value="Formatos admitidos: .txt, .docx, .doc, .xls, .xlsx, .jpeg, .pdf, .gif, .png, .jpg, .zip, .rar" style="font-size: 90%"/><br/>
+
+                            </div>
+                            
+                            <label id="limitearhivosize" style="display: none;">#{formularPQRD.limiteBytesArchivo}</label>
+                            
+                            <p style="margin-bottom: 30px"></p>                            
+                            
+                            <div id="CheckboxDiv" align="left" class="txtMargin" 
+                                 style="text-align: left; font-size: 80%">
+                                <style>
+                                    .moveTop td{vertical-align: top; padding: 0};
+                                </style>
+                                <h:panelGrid columns="2" styleClass="moveTop">
+                                    <p:selectBooleanCheckbox 
+                                        id="CheckboxNotificaciones"
+                                        widgetVar="CheckBoxWidget"
+                                        onchange="checkbox();"
+                                        />
+                                    <label id="labelCheckboxNotificaciones" class="labelFont" style="color: #4f4f4f">
+                                        <script>
+                                            document.getElementById("labelCheckboxNotificaciones").innerHTML ="#{formularPQRD.textTermsConditions}"
+                                        </script>
+                                    </label>
+        
+                                </h:panelGrid>
+                            </div>
+                            <p style="margin-bottom: 10px"></p>
+                            <p:commandButton 
+                                id="envioPQRD" 
+                                class="btn"
+                                value="Enviar"
+                                onclick="validatorCampos()"
+                                style="width: 120px; margin-right: 5px"/>
+                            <p:commandButton 
+                                id="cancelarEnvio" 
+                                class="btn" 
+                                onclick="PF('confirmacionSalida').show()"
+                                value="Cancelar" 
+                                style="width: 120px; margin-left: 5px"/>
+
+                        </h:panelGroup>
+                    </h:panelGroup>
+                </p:panel>
+            </div>
+
+
+            <!--Diálogo Aceptación de Envío-->
+            <p:dialog header="Confirmación de envío" closable="false" widgetVar="confirmacionEnvio" modal="true" resizable="false" 
+                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" style="align-content: center">
+
+                <div id="captcha" align="center">
+                    <div class="ui-g confirmacion">
+                        <div class="ui-g-12">
+                            <p:outputLabel 
+                                value="¿Está seguro que desea enviar su solicitud?"
+                                style="font-weight: bold"/>
+                        </div> 
+
+                        <div class="ui-g-6">
+                            <h:commandButton 
+                                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only btnh"
+                                action="#{formularPQRD.registarFormulario}"
+                                onclick="PF('confirmacionEnvio').hide;PF('loadingDialog').show();accesoEnvioPqrd()"
+                                value="Enviar" 
+                                style="width: 130px">
+                            </h:commandButton>    
+                        </div>
+                        <div class="ui-g-6">
+                            <p:commandButton 
+                                class="btn" 
+                                onclick="PF('confirmacionEnvio').hide()" 
+                                value="Modificar" 
+                                style="width: 130px"/> 
+                        </div>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:dialog widgetVar="loadingDialog" modal="true" style="background: none; box-shadow: none; border: none"
+                      draggable="false" closable="true" resizable="false" showHeader="false" >
+                <div align="center">
+                    <p:graphicImage library="animated" name="loading.gif" style="height: 10%; width: 10%"/>
+                </div>
+            </p:dialog>
+            <!--Diálogo Aceptación de Envío-->
+
+
+
+            <!--Diálogo Salida de Pantalla-->
+            <p:dialog header="Confirmación de envío" closable="false" widgetVar="confirmacionSalida" modal="true" resizable="false" 
+                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" style="align-content: center">
+
+                <div id="captcha" align="center">
+                    <div class="ui-g confirmacion">
+                        <div class="ui-g-12">
+                            <p:outputLabel 
+                                value="¿Está seguro que desea cancelar su envío?"
+                                style="font-weight: bold"/>
+                        </div> 
+
+                        <div class="ui-g-6">
+                            <p:button 
+                                class="btn"
+                                href="#{formularPQRD.urlOrigen}"
+                                value="Salir" 
+                                style="width: 130px"/>    
+                        </div>
+                        <div class="ui-g-6">
+                            <p:commandButton 
+                                class="btn" 
+                                onclick="PF('confirmacionSalida').hide()" 
+                                value="Regresar" 
+                                style="width: 130px"/> 
+                        </div>
+                    </div>
+                </div>
+            </p:dialog>
+            <!--Diálogo Salida de Pantalla-->
+        </h:form>
+
+        <footer class="footer" style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+        
+    </h:body>
+    
+    
+</html>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Formular PQRD</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content='text/html; charset=UTF-8' http-equiv="content-type"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <h:outputStylesheet library="css" name="envioResponsive.css"/>
+        <h:outputStylesheet library="css" name="buttonStyle.css"/>
+        <h:outputScript library="js" name="jsglobal.js" target="body"/>
+        <h:outputScript library="js" name="browserjs.js" target="body"/>
+        
+        <style>
+            
+            .ui-button{
+                background-color: #{indexPQRD.colorFondoBotones} !important;
+                color: #{indexPQRD.colorLetraBotones} !important;
+            }
+            
+            @font-face {
+                font-family: "fuenteContenido";
+                src: url(../resources/font/#{indexPQRD.fuenteContenido});
+            }
+            
+            @font-face {
+                font-family: "fuenteEtiquetas";
+                src: url(../resources/font/#{indexPQRD.fuenteEtiquetas});
+            }
+            
+            @font-face {
+                font-family: "fuenteTitulos";
+                src: url(../resources/font/#{indexPQRD.fuenteTiulos});
+            }
+            
+            .ui-outputlabel{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            .labelFont{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            input{
+                font-family: fuenteContenido !important;
+            }
+            
+            .titleFont{
+                font-family: fuenteTitulos !important
+            }
+			.labelImportanteMsg{
+			    max-width: 500px;
+				display: block;
+			}
+
+        </style>
+        
+    </h:head>
+    <h:body class="bground"
+            onload="deshabilitaRetroceso()"
+            style="background-image: url(../resources/img/#{envioPQRD.path_background_image}); margin: 0">
+
+        <header class="headerResponsive" 
+                style="background-image: url(../resources/img/#{envioPQRD.fondoHeader});">
+        </header>
+        
+        <div align="center" style="margin-top: 10px; margin-bottom: 10px; ">
+            <p:panel style="border: none; margin-bottom: 20px">
+                <p:outputLabel value="El envío de su solicitud ha sido exitoso." style="color: #009900; font-weight: bold;font-size: 120%"/> <br />
+                <br/>
+                <p:outputLabel value="Su número de radicado es:" style="color: #000000; font-size: 120%; margin-bottom: 20px"/> <br />
+                <p:outputLabel 
+                    id="numeroRadicado" 
+                    value="#{envioPQRD.nroRadicado}" 
+                    style="
+                    font-weight: bold; 
+                    color: #000000; 
+                    font-size: 120%; 
+                    margin-bottom: 20px"/>
+                  <br/>
+                <p:outputLabel value="Fecha y Hora Radicación:" style="color: #000000; font-size: 120%; margin-bottom: 20px"/> <br />
+                <p:outputLabel 
+                    id="fechaHoraRadicado" 
+                    value="#{envioPQRD.fechaHoraRadicado}" 
+                    style="
+                    font-weight: bold; 
+                    color: #000000; 
+                    font-size: 120%; 
+                    margin-bottom: 20px"/> 
+                <br/>
+                <br/>
+                <p:outputLabel value="Su número de Verificación es:" style="color: #000000; font-size: 120%; margin-bottom: 20px"
+                  rendered="#{!envioPQRD.mostrar}"
+                /> 
+                <br />
+                <p:outputLabel 
+                    id="numeroVerificacion" 
+                    value="#{envioPQRD.numeroVerificacion}" 
+                    style="
+                    font-weight: bold; 
+                    color: #000000; 
+                    font-size: 120%; 
+                    margin-bottom: 20px"
+                    rendered="#{!envioPQRD.mostrar}"
+                    />
+                    <br />
+                    <br />
+                <p:outputLabel 
+                    id="numeroVerificacion" 
+                    value="#{envioPQRD.verificacionMsg}" 
+					class="labelImportanteMsg"
+                    style="
+                    font-weight: bold; 
+                    color: #000000; 
+                    font-size: 100%; 
+                    margin-bottom: 20px"
+                    rendered="#{!envioPQRD.mostrar}"
+                    />
+               	<br/>
+                <br/>
+                <p:outputLabel value="Hemos enviado un e-mail para que haga seguimiento a su solicitud" 
+                               style="color: #000000; font-size: 90%; margin-bottom: 20px"
+                               rendered="#{envioPQRD.mostrar}"/>
+               
+            </p:panel>
+            <p:button 
+                id="salirExitoEnvio" 
+                class="btn" 
+                href="#{envioPQRD.urlOrigen}"
+                value="Salir" 
+                style="width: 100px"/> 
+        </div>
+    </h:body>
+    
+    <footer class="footer" style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+    
+</html>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Recuperar número verificación</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content='text/html; charset=UTF-8' http-equiv="content-type"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <h:outputStylesheet library="css" name="numverificacionResponsive.css"/>
+        <h:outputStylesheet library="css" name="buttonStyle.css"/>
+        <h:outputScript library="js" name="captcha.js" target="body"/>
+        <h:outputScript library="js" name="numVerificacion.js" target="body"/>
+        <h:outputScript library="js" name="browserjs.js" target="body"/>
+        
+        <style>
+            
+            .ui-button{
+                background-color: #{indexPQRD.colorFondoBotones} !important;
+                color: #{indexPQRD.colorLetraBotones} !important;
+            }
+            
+            @font-face {
+                font-family: "fuenteContenido";
+                src: url(../resources/font/#{indexPQRD.fuenteContenido});
+            }
+            
+            @font-face {
+                font-family: "fuenteEtiquetas";
+                src: url(../resources/font/#{indexPQRD.fuenteEtiquetas});
+            }
+            
+            @font-face {
+                font-family: "fuenteTitulos";
+                src: url(../resources/font/#{indexPQRD.fuenteTiulos});
+            }
+            
+            .ui-outputlabel{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            .labelFont{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            input{
+                font-family: fuenteContenido !important;
+            }
+            
+            .titleFont{
+                font-family: fuenteTitulos !important
+            }
+
+        </style>
+    </h:head>
+    <h:body class="bground"
+            onload="deshabilitaRetroceso(); mostrarIngresado()"
+            onunload="deshabilitaRetroceso()"
+            style="background-image: url(../resources/img/#{numVerificacion.path_background_image}); margin: 0">
+
+        <header class="headerResponsive" 
+                style="background-image: url(../resources/img/#{numVerificacion.fondoHeader});">
+        </header>
+        <h:form id="formPrincipal" style="margin-bottom: 10px; margin-top: 10px">
+            <p:growl 
+                id="growl" 
+                showDetail="true" 
+                sticky="false" 
+                life="3000"/>
+            <div align="center"><p:panel class="panelConfig">    
+                    <f:facet name="header">
+                        <p:outputLabel class="titleFont" value="Enviar Número de Verificación"/>
+                    </f:facet>
+                    
+                    <div class="ui-g idAdjust" style="size: auto">                        
+                        <div class="ui-g-12 ui-md-5 labelAdjust" style="padding-left: 0">
+                            <p:outputLabel 
+                                id="emailInputLabel"
+                                value="Escriba su email:"/>   
+                        </div>
+                        <div class="ui-g-12 ui-md-5" style="padding-left: 0">
+                            <p:inputText 
+                                id="emailInput" 
+                                class="input"
+                                value="#{numVerificacion.emailIngresado}"
+                                onkeyup="getEmailInput()"
+                                style="font-size: 90%">
+                                <p:keyFilter preventPaste="true" mask="email"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
+                    </div>
+                    
+                    
+                    <div id="CheckboxDiv" align="left" class="txtMargin" 
+                         style="text-align: left; font-size: 80%">
+                        <style>
+                            .moveTop td{vertical-align: top; padding: 0};
+                        </style>
+                        <h:panelGrid columns="2" styleClass="moveTop">
+                            <p:selectBooleanCheckbox 
+                                id="CheckboxNotificaciones"
+                                widgetVar="CheckBoxWidget"
+                                onchange="checkbox();"
+                                />
+                            <label id="labelCheckboxNotificaciones" class="labelFont" style="color: #4f4f4f">
+                                <script>
+                                    document.getElementById("labelCheckboxNotificaciones").innerHTML ="#{formularPQRD.textTermsConditions}"
+                                </script>
+                            </label>
+                        </h:panelGrid>
+                    </div>
+
+                    <div class="ui-g" style="size: auto; padding: 0">
+                        <div class="ui-g-12 ui-md-6 buttonAdjust1" style="size: auto">
+                          <p:commandButton 
+                            id="enviarNumVerificacion" 
+                            class="btn updateAdjust" 
+                            value="Enviar Email"
+                            onclick="validatorCampos2()"/>  
+                        </div>
+                        <div class="ui-g-12 ui-md-6 buttonAdjust2" style="size: auto">
+                            <p:commandButton 
+                            class="btn updateAdjust" 
+                            value="Regresar" 
+                            ajax="true"
+                            onclick="accesoConsultarPqrd()"/>
+                        </div>
+                    </div>    
+                </p:panel>
+            </div>       
+            
+             <!--Diálogo Aceptación de Envío-->
+            <p:dialog header="Confirmación de envío" closable="false" widgetVar="confirmarEnvio" modal="true" resizable="false" 
+                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" width="430px" style="align-content: center">
+
+                <div id="captcha" align="center">
+                    <div class="ui-g confirmacion">
+                        <div class="ui-g-12">
+                            <p:outputLabel
+                                id="outputPrueba"
+                                value="¿Está seguro que desea enviar su solicitud?"
+                                style="font-weight: bold"/>
+                        </div> 
+
+                        <div class="ui-g-6">
+                            <p:commandButton 
+                                id="enviarNroVerificacion"
+                                class="btn" 
+                                ajax="true"
+                                update="@form"
+                                action="#{numVerificacion.validarVerificacion}"
+                                onclick="finalizacion()"
+                                value="Sí"
+                                style="width: 100px">
+                            </p:commandButton>    
+                        </div>
+                        <div class="ui-g-6">
+                            <p:commandButton 
+                                class="btn" 
+                                onclick="PF('confirmarEnvio').hide()" 
+                                value="No" 
+                                style="width: 100px"/> 
+                        </div>
+                    </div>
+                </div>
+            </p:dialog>
+            <!--Diálogo Aceptación de Envío-->
+            
+            <!--Diálogo de Bloqueo-->
+             <p:dialog header="" visible="false" closable="false" widgetVar="confirmacionEmail" modal="true" resizable="false" 
+                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" width="550px"
+                      style="align-content: center;">
+
+                <div id="captcha" align="center">
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p:outputLabel 
+                                value="EMAIL ENVIADO"
+                                style="font-weight: bold; color: #009900; font-size: 120%; text-align-last: center !important"
+                                />
+                            <br/><br/>
+                            <div style="margin: 0; padding: 0; text-align: justify">  
+                                <p:outputLabel 
+                                    id="labelEmailEnviado"
+                                    value="texto"
+                                    style="font-size: 95%"
+                                    /><br/><br/>
+                                <p:outputLabel 
+                                    value="Este email puede tardar algunos minutos en llegar."
+                                    style="font-size: 95%"
+                                    /><br/><br/>
+                                <p:outputLabel 
+                                    value="Si no encuentra este email, es probable que se encuentre en correos no deseados, o en spam, o que su email no esté registrado en nuestra base de datos."
+                                    style="font-size: 95%"
+                                    /> 
+                            </div>
+                        </div> 
+
+                        <div class="ui-g-12">
+                            <p:commandButton 
+                                class="btn"
+                                onclick="RegresarConsultarPqrd();"
+                                value="Regresar" 
+                                style="width: 130px"/>   
+                        </div>
+                    </div>
+                </div>
+            </p:dialog>
+            <!--Diálogo de Bloqueo-->
+            
+        </h:form>
+        
+        <footer class="footer" style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+        
+    </h:body>
+</html>
