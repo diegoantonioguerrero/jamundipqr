@@ -53,11 +53,11 @@ public class CreatePDF {
          PdfFont normal = PdfFontFactory.createFont(pathVerdana, "Identity-H", true);
          PdfFont bold = PdfFontFactory.createFont(pathBold, "Identity-H", true);
          Table table1 = new Table(pointColumnWidths);
-         String txt1 = "Número Radicado: ";
+         String txt1 = "N\u00famero Radicado: ";
          String radicado = comunicacionPQRD.getNro_radicacion();
          table1.addCell((Cell)((Cell)((Cell)(new Cell()).add(txt1).setBorder(Border.NO_BORDER)).setFont(bold)).setFontSize((float)normalSize));
          table1.addCell((Cell)((Cell)((Cell)(new Cell()).add(radicado).setBorder(Border.NO_BORDER)).setFont(normal)).setFontSize((float)normalSize));
-         String txt2 = "Fecha de Creación: ";
+         String txt2 = "Fecha de Creaci\u00f3n: ";
          String fecha = (new SimpleDateFormat("yyyy/MM/dd")).format(new Date());
          fecha = fecha + " " + comunicacionPQRD.getHoraRealizacion();
          table1.addCell((Cell)((Cell)((Cell)(new Cell()).add(txt2).setBorder(Border.NO_BORDER)).setFont(bold)).setFontSize((float)normalSize));
@@ -103,7 +103,7 @@ public class CreatePDF {
 
          table3.addCell((Cell)((Cell)((Cell)(new Cell()).add(txt4).setBorder(Border.NO_BORDER)).setFont(bold)).setFontSize((float)normalSize));
          table3.addCell((Cell)((Cell)((Cell)(new Cell()).add(txtNombre1 + " " + txtNombre2 + " " + txtApellido1 + " " + txtApellido2).setBorder(Border.NO_BORDER)).setFont(normal)).setFontSize((float)normalSize));
-         String txt5 = "Razón Social: ";
+         String txt5 = "Raz\u00f3n Social: ";
          String txtRazonSocial;
          if (comunicacionPQRD.getRazon_social() == null) {
             txtRazonSocial = "";
@@ -113,7 +113,7 @@ public class CreatePDF {
 
          table3.addCell((Cell)((Cell)((Cell)(new Cell()).add(txt5).setBorder(Border.NO_BORDER)).setFont(bold)).setFontSize((float)normalSize));
          table3.addCell((Cell)((Cell)((Cell)(new Cell()).add(txtRazonSocial).setBorder(Border.NO_BORDER)).setFont(normal)).setFontSize((float)normalSize));
-         String txt6 = "Identficación: ";
+         String txt6 = "Identficaci\u00f3n: ";
          String txtTipoDocumento;
          if (comunicacionPQRD.getNombreTipoDocumento() == null) {
             txtTipoDocumento = "";
@@ -143,7 +143,7 @@ public class CreatePDF {
 
          table4.addCell((Cell)((Cell)((Cell)(new Cell()).add(txt7).setBorder(Border.NO_BORDER)).setFont(bold)).setFontSize((float)normalSize));
          table4.addCell((Cell)((Cell)((Cell)(new Cell()).add(txtCelular).setBorder(Border.NO_BORDER)).setFont(normal)).setFontSize((float)normalSize));
-         String txt8 = "Dirección: ";
+         String txt8 = "Direcci\u00f3n: ";
          String txtDir;
          if (comunicacionPQRD.getDireccion() == null) {
             txtDir = "";
@@ -169,7 +169,7 @@ public class CreatePDF {
          String txt10 = "Email: ";
          String txtCorreo;
          if (comunicacionPQRD.getEmail() != null && !comunicacionPQRD.getEmail().isEmpty()) {
-            txtCorreo = comunicacionPQRD.getEmail() + "\nEl usuario aceptó notificaciones por medios electrónicos.";
+            txtCorreo = comunicacionPQRD.getEmail() + "\nEl usuario acept\u00f3 notificaciones por medios electr\u00f3nicos.";
          } else {
             txtCorreo = "";
          }
