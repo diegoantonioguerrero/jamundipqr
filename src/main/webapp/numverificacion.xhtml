@@ -65,7 +65,7 @@ and open the template in the editor.
             onunload="deshabilitaRetroceso()"
             style="background-image: url(../resources/img/#{numVerificacion.path_background_image}); margin: 0">
 
-        <header class="headerResponsive" 
+        <header class="headerResponsive" title="#{numVerificacion.textoAlternativoEncabezado}"
                 style="background-image: url(../resources/img/#{numVerificacion.fondoHeader});">
         </header>
         <h:form id="formPrincipal" style="margin-bottom: 10px; margin-top: 10px">
@@ -218,7 +218,8 @@ and open the template in the editor.
             
         </h:form>
         
-        <footer class="footer" style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+        <footer class="footer" title="#{numVerificacion.textoAlternativoPiedepagina}"
+        	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
         
     </h:body>
 </html>

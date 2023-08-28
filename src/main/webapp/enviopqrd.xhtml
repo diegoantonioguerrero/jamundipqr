@@ -68,7 +68,7 @@ and open the template in the editor.
             onload="deshabilitaRetroceso()"
             style="background-image: url(../resources/img/#{envioPQRD.path_background_image}); margin: 0">
 
-        <header class="headerResponsive" 
+        <header class="headerResponsive" title="#{envioPQRD.textoAlternativoEncabezado}"
                 style="background-image: url(../resources/img/#{envioPQRD.fondoHeader});">
         </header>
         
@@ -140,6 +140,7 @@ and open the template in the editor.
         </div>
     </h:body>
     
-    <footer class="footer" style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+    <footer class="footer" title="#{envioPQRD.textoAlternativoPiedepagina}" 
+    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
     
 </html>

@@ -58,6 +58,8 @@ public class ConsultarPQRD {
 	private boolean nroRadicadoExist;
 	private boolean mostrarFechaPosibleRespuesta;
 	private List<Trazabilidad> trazList;
+	private String textoAlternativoEncabezado;
+	private String textoAlternativoPiedepagina;
 
 	public String getNroVerificacion() {
 		return this.nroVerificacion;
@@ -80,6 +82,8 @@ public class ConsultarPQRD {
 			ConsultarPQRD.fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");
 			ConsultarPQRD.fuenteContenido = Util.getProperties("fuenteContenido");
 			ConsultarPQRD.urlOrigen = Util.getProperties("linkOrigen");
+			this.textoAlternativoEncabezado = Util.getProperties("textoAlternativoEncabezado");
+			this.textoAlternativoPiedepagina = Util.getProperties("textoAlternativoPiedepagina");
 		} catch (Exception ex) {
 			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -89,10 +93,11 @@ public class ConsultarPQRD {
 		System.err.println("TERCERO");
 		final DataBaseConection dataBaseConection = new DataBaseConection();
 		String queryRespuesta = "SELECT trazabilidad FROM comunicacionprqd as cpqrd INNER JOIN tablapqrestado as estados ON (estados.fldidtablapqrestado = cpqrd.estado) WHERE cpqrd.nroradicacion LIKE '?'";
-		//Se deja en comentarios esta otra condicional para obtener la trazabilidad aun cuando sea con el id del ultimo radicado
-		//queryRespuesta += " AND cpqrd.numeroverificacion LIKE '?';";
+		// Se deja en comentarios esta otra condicional para obtener la trazabilidad aun
+		// cuando sea con el id del ultimo radicado
+		// queryRespuesta += " AND cpqrd.numeroverificacion LIKE '?';";
 		queryRespuesta = queryRespuesta.replaceFirst("\\?", this.nroRadicado);
-		//queryRespuesta = queryRespuesta.replaceFirst("\\?", this.nroVerificacion);
+		// queryRespuesta = queryRespuesta.replaceFirst("\\?", this.nroVerificacion);
 		System.err.println("QUERY " + queryRespuesta);
 		dataBaseConection.consultarDB(queryRespuesta);
 		final ResultSet resultConsultaFecha = dataBaseConection.getResult();
@@ -291,7 +296,8 @@ public class ConsultarPQRD {
 	public StreamedContent getFile() {
 		try {
 			String mimeType = null;
-			//final InputStream in = ConsultarPQRD.consultaPQRD.getDatos_archivo_respuesta();
+			// final InputStream in =
+			// ConsultarPQRD.consultaPQRD.getDatos_archivo_respuesta();
 			final Path path = Files.createTempFile("sample", ".txt", (FileAttribute<?>[]) new FileAttribute[0]);
 			final File fileTemp = path.toFile();
 			final String dirSalida = fileTemp.getAbsolutePath();
@@ -415,6 +421,14 @@ public class ConsultarPQRD {
 
 	public boolean isMostrarFechaPosibleRespuesta() {
 		return this.mostrarFechaPosibleRespuesta;
+	}
+
+	public String getTextoAlternativoEncabezado() {
+		return textoAlternativoEncabezado;
+	}
+
+	public String getTextoAlternativoPiedepagina() {
+		return textoAlternativoPiedepagina;
 	}
 
 	static {

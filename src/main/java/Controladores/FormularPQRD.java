@@ -68,6 +68,10 @@ public class FormularPQRD {
    private File file1;
    private File fileTemp;
    private UploadedFile filePrime;
+   private String textoAlternativoEncabezado;
+   private String textoAlternativoPiedepagina;
+   private String textoCamposObligatorios;
+   
 
    public FormularPQRD() {
       try {
@@ -82,6 +86,9 @@ public class FormularPQRD {
          this.fuenteContenido = Util.getProperties("fuenteContenido");
          this.urlOrigen = Util.getProperties("linkOrigen");
          this.limiteBytesArchivo = Integer.parseInt(Util.getProperties("limiteBytes"));
+         this.textoAlternativoEncabezado = Util.getProperties("textoAlternativoEncabezado");
+         this.textoAlternativoPiedepagina = Util.getProperties("textoAlternativoPiedepagina");
+         this.textoCamposObligatorios = Util.getProperties("textoCamposObligatorios");
          this.inicializar();
          DataBaseConection dataBaseConection = new DataBaseConection();
          dataBaseConection.consultarDB("SELECT * FROM tablapqrtipoidentificacio WHERE activaenpqr = 1 ORDER BY tipo ASC;");
@@ -576,6 +583,19 @@ public class FormularPQRD {
       }
 
    }
+   
+	public String getTextoAlternativoEncabezado() {
+		return textoAlternativoEncabezado;
+	}
+
+	public String getTextoAlternativoPiedepagina() {
+		return textoAlternativoPiedepagina;
+	}
+	
+	public String getTextoCamposObligatorios() {
+		return textoCamposObligatorios;
+	}
+	
 
    public String getNombre_archivo() {
       return this.nombre_archivo;

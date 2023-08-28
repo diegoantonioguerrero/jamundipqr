@@ -70,7 +70,7 @@ and open the template in the editor.
             onunload="deshabilitaRetroceso()"
             style="background-image: url(../resources/img/#{consultarPQRD.path_background_image}); margin: 0">
 
-        <header class="headerResponsive" 
+        <header class="headerResponsive" title="#{consultarPQRD.textoAlternativoEncabezado}"
                 style="background-image: url(../resources/img/#{consultarPQRD.fondoHeader});">
         </header>
         <h:form id="formPrincipal" style="min-height: 550px; margin-bottom: 10px; margin-top: 10px">
@@ -325,7 +325,8 @@ and open the template in the editor.
         </h:form>
     </h:body>
     
-    <footer class="footer" style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+    <footer class="footer" title="#{consultarPQRD.textoAlternativoPiedepagina}"
+    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
 <script type="text/javascript">
 console.info("hi");
 console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));

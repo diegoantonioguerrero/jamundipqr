@@ -110,6 +110,7 @@ function validator() {
     var infoUser = document.getElementById("formPrincipal:infouser");
     activities = PF('tipoIdentificacion').getSelectedValue();
     if (activities === "POR IDENTIFICACION") {
+    	document.getElementsByClassName("camposObligatorios")[0].style.display = 'inline-block';
         infoUser.style.display = 'block';
         infoPqrd.style.display = 'block';
         document.getElementById("tiporespuestadiv").style.display = 'block';
@@ -120,6 +121,7 @@ function validator() {
         infoUserOk = false;
         tipoClasificacionOk = true;
     } else if (activities === "ANONIMO") {
+    	document.getElementsByClassName("camposObligatorios")[0].style.display = 'inline-block';
         NotificacionesAceptadas = true;
         document.getElementById("CheckboxDiv").style.display = 'none';       
         infoUser.style.display = 'none';
@@ -150,6 +152,7 @@ function validator() {
     } else {
         infoUser.style.display = 'none';
         infoPqrd.style.display = 'none';
+        document.getElementsByClassName("camposObligatorios")[0].style.display = 'none';
         pantallaBandera = false;
     }
 }
