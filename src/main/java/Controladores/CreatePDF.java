@@ -22,18 +22,23 @@ import java.util.Date;
 public class CreatePDF {
    public void crearPDF(ComunicacionPQRD comunicacionPQRD) throws IOException, Exception {
       String extension = ".pdf";
-      File archivo = new File("temporalFile");
-      String path = archivo.getAbsolutePath();
-      path = path.replace("temporalFile", "webapps\\");
+      //File archivo = new File("temporalFile");
+      //String path = archivo.getAbsolutePath();
+      //path = path.replace("temporalFile", "webapps\\");
+      String path = Util.getPath();
       path = path.replace("bin\\temporalFile", "webapps\\");
-      path = path + Util.getProperties("nombreAplicacion");
+      String nombreAplicacion = Util.getProperties("nombreAplicacion");
+      if(!path.toLowerCase().endsWith(nombreAplicacion)) {
+    	  path = path + "\\" + nombreAplicacion;  
+      }
+      
       String pathFont = path;
       path = path + "\\resources\\radicados\\";
       String nombre_carpeta = comunicacionPQRD.getNro_radicacion();
       File dir = new File(path + nombre_carpeta);
       dir.mkdirs();
       path = path + nombre_carpeta + "\\";
-      archivo.delete();
+      // archivo.delete();
       String dest = path + comunicacionPQRD.getNro_radicacion() + " - Remitente" + extension;
       PdfWriter writer = new PdfWriter(dest);
       PdfDocument pdf = new PdfDocument(writer);

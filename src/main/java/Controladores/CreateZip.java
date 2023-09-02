@@ -18,16 +18,23 @@ public class CreateZip {
 
    public String crearZip(ComunicacionPQRD comunicacionPQRD) throws IOException, Exception {
       String ext = ".zip";
-      File archivo = new File("temporalFile");
-      String mainPath = archivo.getAbsolutePath();
-      mainPath = mainPath.replace("temporalFile", "webapps\\");
+      //File archivo = new File("temporalFile");
+      //String mainPath = archivo.getAbsolutePath();
+      //mainPath = mainPath.replace("temporalFile", "webapps\\");
+      String mainPath = Util.getPath();
       mainPath = mainPath.replace("bin\\temporalFile", "webapps\\");
-      mainPath = mainPath + Util.getProperties("nombreAplicacion") + "\\resources\\radicados\\";
-      String OutputPath = mainPath + comunicacionPQRD.getNro_radicacion() + ext;
+      String nombreAplicacion = Util.getProperties("nombreAplicacion");
+      if(!mainPath.toLowerCase().endsWith(nombreAplicacion)) {
+    	  mainPath = mainPath + "\\" + nombreAplicacion;  
+      }
+      mainPath = mainPath + "\\resources\\radicados\\";
+      //mainPath = mainPath + Util.getProperties("nombreAplicacion") + "\\resources\\radicados\\";
+      String zipFileOutputPath = mainPath + comunicacionPQRD.getNro_radicacion() + ext;
       String FolderPath = mainPath + comunicacionPQRD.getNro_radicacion();
       CreateZip appZip = new CreateZip();
-      appZip.generateFileList(new File(FolderPath), FolderPath);
-      appZip.zipIt(OutputPath, FolderPath);
+      File file = new File(FolderPath);
+      appZip.generateFileList(file, FolderPath);
+      appZip.zipIt(zipFileOutputPath, FolderPath);
       File fileDelete = new File(FolderPath);
       String[] entries = fileDelete.list();
       String[] var10 = entries;
@@ -46,7 +53,7 @@ public class CreateZip {
       DataBaseConection dataBaseConection = new DataBaseConection();
       dataBaseConection.insertarZip(comunicacionPQRD);
       dataBaseConection.logoutDB();
-      return OutputPath;
+      return zipFileOutputPath;
    }
 
    public void zipIt(String zipFile, String FolderPath) {
@@ -59,22 +66,26 @@ public class CreateZip {
          fos = new FileOutputStream(zipFile);
          zos = new ZipOutputStream(fos);
          FileInputStream in = null;
-         Iterator<String> var8 = this.fileList.iterator();
+         Iterator<String> fileIterator = this.fileList.iterator();
 
-         while(var8.hasNext()) {
-            String file = (String)var8.next();
+         while(fileIterator.hasNext()) {
+            String file = (String)fileIterator.next();
             ZipEntry ze = new ZipEntry(source + File.separator + file);
             zos.putNextEntry(ze);
 
             try {
-               in = new FileInputStream(FolderPath + File.separator + file);
+               file = FolderPath + File.separator + file + "";
+               in = new FileInputStream(file);
 
                int len;
                while((len = in.read(buffer)) > 0) {
                   zos.write(buffer, 0, len);
                }
             } finally {
-               in.close();
+            	if(in != null) {
+            		in.close();	
+            	}
+               
             }
          }
 
@@ -111,6 +122,7 @@ public class CreateZip {
    }
 
    private String generateZipEntry(String file, String FolderPath) {
-      return file.substring(FolderPath.length() + 1, file.length());
+	  File ff = new File(file); 
+      return ff.getName();
    }
 }

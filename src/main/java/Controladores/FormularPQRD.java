@@ -75,6 +75,8 @@ public class FormularPQRD {
 
    public FormularPQRD() {
       try {
+		 System.out.println("Save FormularPQRD");
+
          this.path_background_image = Util.getProperties("imagenFondo");
          this.fondoHeader = Util.getProperties("imagenFondoHeader");
          this.fondoFooter = Util.getProperties("imagenFondoFooter");
@@ -141,8 +143,11 @@ public class FormularPQRD {
 
          dataBaseConection.logoutDB();
       } catch (SQLException var9) {
+		   System.err.println(var9.getMessage() );
+
          Logger.getLogger(FormularPQRD.class.getName()).log(Level.SEVERE, (String)null, var9);
       } catch (Exception var10) {
+		   System.err.println(var10.getMessage() );
          Logger.getLogger(FormularPQRD.class.getName()).log(Level.SEVERE, (String)null, var10);
       }
 
@@ -170,8 +175,8 @@ public class FormularPQRD {
 
    public String registarFormulario() {
       try {
-    	  System.out.println("registarFormulario");
-    	  System.out.println(this.toString());
+    	  // System.out.println("registarFormulario");
+    	  // System.out.println(this.toString());
          return this.insertarComunicacionPQRD() ? "enviopqrd.xhtml" : "";
       } catch (SQLException var2) {
     	  System.out.println("SQL Error registerig");
@@ -189,6 +194,8 @@ public class FormularPQRD {
    }
 
    private boolean insertarComunicacionPQRD() throws SQLException {
+	   try {
+		   
       if (this.filePrime.getFileName() != null && !this.filePrime.getFileName().isEmpty()) {
          this.handleFileUpload();
       }
@@ -253,50 +260,50 @@ public class FormularPQRD {
          this.comunicacionPQRD.setNro_radicacion(this.nro_radicado_generado);
          String numVerificacion = String.valueOf((int)Math.floor(Math.random() * 900000.0D + 100000.0D));
          this.comunicacionPQRD.setNumero_verificacion(numVerificacion);
-         Iterator var8 = this.tipoDocumentoList.iterator();
+         Iterator<TipoDocumento> itTipoDocumento = this.tipoDocumentoList.iterator();
 
-         while(var8.hasNext()) {
-            TipoDocumento tipoDocumentoList1 = (TipoDocumento)var8.next();
+         while(itTipoDocumento.hasNext()) {
+            TipoDocumento tipoDocumentoList1 = (TipoDocumento)itTipoDocumento.next();
             if (this.comunicacionPQRD.getId_tipo_documento() == tipoDocumentoList1.getId_tipo_documento()) {
                this.comunicacionPQRD.setNombreTipoDocumento(tipoDocumentoList1.getNombre_tipo_documento());
                break;
             }
          }
 
-         var8 = this.dependenciaList.iterator();
+         Iterator<Dependencia> itDependencia = this.dependenciaList.iterator();
 
-         while(var8.hasNext()) {
-            Dependencia dependenciaList1 = (Dependencia)var8.next();
+         while(itDependencia.hasNext()) {
+            Dependencia dependenciaList1 = (Dependencia)itDependencia.next();
             if (this.comunicacionPQRD.getId_dependencia() == dependenciaList1.getId_dependencia()) {
                this.comunicacionPQRD.setNombreDependencia(dependenciaList1.getNombre_dependencia());
                break;
             }
          }
 
-         var8 = this.tipoPqrdList.iterator();
+         Iterator<TipoPqrd> itTipoPqrd = this.tipoPqrdList.iterator();
 
-         while(var8.hasNext()) {
-            TipoPqrd tipoPqrdList1 = (TipoPqrd)var8.next();
+         while(itTipoPqrd.hasNext()) {
+            TipoPqrd tipoPqrdList1 = (TipoPqrd)itTipoPqrd.next();
             if (this.comunicacionPQRD.getId_tipo_pqrd() == tipoPqrdList1.getId_tipo_pqrd()) {
                this.comunicacionPQRD.setNombreTipoPQRD(tipoPqrdList1.getNombre_tipo_pqrd());
                break;
             }
          }
 
-         var8 = this.tipoRespuestaList.iterator();
+         Iterator<TipoRespuesta> itTipoRespuesta = this.tipoRespuestaList.iterator();
 
-         while(var8.hasNext()) {
-            TipoRespuesta tipoRespuestaList1 = (TipoRespuesta)var8.next();
+         while(itTipoRespuesta.hasNext()) {
+            TipoRespuesta tipoRespuestaList1 = (TipoRespuesta)itTipoRespuesta.next();
             if (this.comunicacionPQRD.getId_tipo_respuesta() == tipoRespuestaList1.getId_tipo_respuesta()) {
                this.comunicacionPQRD.setNombreTipoRespuesta(tipoRespuestaList1.getNombre_tipo_respuesta());
                break;
             }
          }
 
-         var8 = this.clasificacionList.iterator();
+         Iterator<Clasificacion> itClasificacion = this.clasificacionList.iterator();
 
-         while(var8.hasNext()) {
-            Clasificacion clasificacionList1 = (Clasificacion)var8.next();
+         while(itClasificacion.hasNext()) {
+            Clasificacion clasificacionList1 = (Clasificacion)itClasificacion.next();
             if (this.comunicacionPQRD.getId_clasificacion_pqrd() == clasificacionList1.getId_clasificacion_pqrd()) {
                this.comunicacionPQRD.setNombreClasificacion(clasificacionList1.getNombre_clasificacion_pqrd());
                break;
@@ -328,9 +335,10 @@ public class FormularPQRD {
             dataBaseConection.logoutDB();
             if (this.comunicacionPQRD.getEmail() != null && !this.comunicacionPQRD.getEmail().isEmpty()) {
                try {
+            	   // System.out.println("sendMail");
                   Util.sendMail(this.comunicacionPQRD);
                } catch (Exception var19) {
-                  System.out.println(var19);
+                  System.err.println(var19);
                   Logger.getLogger(FormularPQRD.class.getName()).log(Level.SEVERE, (String)null, var19);
                }
             }
@@ -394,6 +402,13 @@ public class FormularPQRD {
             return true;
          }
       }
+      
+	   }catch (Exception ex) {
+		   System.err.println("insertarComunicacionPQRD error");
+		   System.err.println(ex.getMessage());
+		   ex.printStackTrace();
+		   return false;
+		   }
    }
 
    public List<TipoDocumento> getTipoDocumentoList() {
