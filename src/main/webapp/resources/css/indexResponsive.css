@@ -229,6 +229,18 @@
     }
 }
 
+@media screen and (min-width: 1280px) {
+    .center {
+		margin-top: calc(30% - 190px); /* para dejar espacio para el encabezado */
+      }
+}
+
+@media screen and (min-width: 1440px) {
+    .center {
+		margin-top: 200px; /* para dejar espacio para el encabezado */
+      }
+}
+
 
 @media only screen 
 and (max-height : 320px){

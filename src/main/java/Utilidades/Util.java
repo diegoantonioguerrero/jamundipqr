@@ -200,7 +200,8 @@ public class Util {
 				Transport.send(message);
 				return true;
 			} catch (MessagingException var19) {
-				logErrorInEmail(var19.getMessage());
+				if(i==2)
+					logErrorInEmail(var19.getMessage());
 			}
 		}
 		
@@ -358,7 +359,8 @@ public class Util {
 				Transport.send(message);
 				return true;
 			} catch (MessagingException var19) {
-				logErrorInEmail(var19.getMessage());
+				if(i==2)
+					logErrorInEmail(var19.getMessage());
 			}
 		}
 		
