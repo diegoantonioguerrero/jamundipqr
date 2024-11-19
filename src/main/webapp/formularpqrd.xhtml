@@ -28,6 +28,7 @@ and open the template in the editor.
             .ui-button{
                 background-color: #{formularPQRD.colorFondoBotones} !important;
                 color: #{formularPQRD.colorLetraBotones} !important;
+				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7) !important;
             }
             
             @font-face {
@@ -59,6 +60,9 @@ and open the template in the editor.
             
             #formPrincipal input::placeholder {
 			    font-family:cursive !important;
+			}
+			#formPrincipal .ui-fileupload-simple input[type=file]{
+				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7);
 			}
             .titleFont{
                 font-family: fuenteTitulos !important;
