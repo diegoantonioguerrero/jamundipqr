@@ -329,7 +329,7 @@ public class FormularPQRD {
          
          if (!dataBaseConection.insertarComunicacion(this.comunicacionPQRD, this.numeracionPQRD)) {
             dataBaseConection.logoutDB();
-            Util.errorMessage("Error", "InserciÃ³n de PQRD en base de datos");
+            Util.errorMessage("Error", "Insercion de PQRD en base de datos");
             return false;
          } else {
             dataBaseConection.logoutDB();
