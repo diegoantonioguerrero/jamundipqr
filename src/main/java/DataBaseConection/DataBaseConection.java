@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
+//import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -22,7 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
+//import java.sql.Types;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -59,6 +59,16 @@ public class DataBaseConection {
 			Logger.getLogger(DataBaseConection.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
+	
+	public boolean isClosed() {
+		try {
+			return conex.isClosed();
+		} catch (SQLException ex) {
+			Logger.getLogger(DataBaseConection.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return true;
+	}
+
 
 	public void consultarDB(String query) throws SQLException {
 		st = conex.createStatement();

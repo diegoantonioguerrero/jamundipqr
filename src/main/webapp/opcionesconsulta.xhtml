@@ -10,21 +10,21 @@ and open the template in the editor.
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Consultar PQRD</title>
+        <title>Consultar PQRD opciones</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta content='text/html; charset=UTF-8' http-equiv="content-type"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="lang" content="es"/>
         <h:outputStylesheet library="css" name="consultarResponsive.css"/>
         <h:outputScript library="js" name="captcha.js" target="body"/>
-        <h:outputScript library="js" name="consultar.js" target="body"/>
+        <!--  <h:outputScript library="js" name="consultar.js" target="body"/>-->
         <h:outputScript library="js" name="jsglobal.js" target="body"/>
         <h:outputScript library="js" name="browserjs.js" target="body"/>
         
         <style>
             
             .ui-button{
-                background-color: #{consultarPQRD.colorFondoBotones} !important;
+                background-color: #{indexPQRD.colorFondoBotones} !important;
                 color: #{indexPQRD.colorLetraBotones} !important;
 				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7) !important;
             }
@@ -68,12 +68,11 @@ and open the template in the editor.
         </style>
     </h:head>
     <h:body class="bground"
-            onload="deshabilitaRetroceso(); mostrarIngresado();inicializarConsultar();dialogWidth();"
-            onunload="deshabilitaRetroceso()"
+            
             style="background-image: url(../resources/img/#{consultarPQRD.path_background_image}); margin: 0">
 
-        <header class="headerResponsive" title="#{consultarPQRD.textoAlternativoEncabezado}"
-                style="background-image: url(../resources/img/#{consultarPQRD.fondoHeader});">
+        <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
+                style="background-image: url(../resources/img/#{indexPQRD.fondoHeader});">
         </header>
         <h:form id="formPrincipal" style="min-height: 550px; margin-bottom: 10px; margin-top: 10px">
             <p:growl 
@@ -83,77 +82,39 @@ and open the template in the editor.
                 life="3000"/>
             <div align="center"><p:panel class="panelConfig">    
                     <f:facet name="header">
-                        <p:outputLabel class="titleFont" value="Consulta el estado de tu PQRD"/>
+                        <p:outputLabel class="titleFont" value="Consulte el estado de su PQRD"/>
                     </f:facet>
                     
                     <div class="ui-g idAdjust" style="size: auto">                        
-                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
-                            <p:outputLabel
-                                id="radicadoConsultaLabel"
-                                value="Ingrese el número de radicado:"/>   
+                        <div class="ui-g-12 ui-md-12" style="size: auto; padding: 0">
+                            <p:button 
+                            class="btn" 
+                            value="Consultar todas mis PQRDS" 
+                                href="/faces/consultaemail.xhtml"/>
+                                
                         </div>
-                        <div class="ui-g-12 ui-md-4 js-radicadoConsulta" style="padding-left: 0">
-                            <p:inputText 
-                                id="radicadoConsulta" 
-                                class="inputConsultar"
-                                onkeyup="getNumRadicado()"
-                                onpaste="removerEspacios(this)"
-                                value="#{consultarPQRD.nroRadicado}">
-                                <p:keyFilter preventPaste="false" regEx="/[a-z0-9_\-]/i" />
-                            </p:inputText>
-                        </div>
-                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
                     </div>
                     
                     
                     <div class="ui-g idAdjust" style="size: auto">                        
-                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
-                            <p:outputLabel 
-                                id="numVerificacionLabel"
-                                value="Ingrese el número de verificación que usted recibió por email:"/>   
+                         <div class="ui-g-12 ui-md-12" style="size: auto; padding: 0">
+                            <p:button 
+                            class="btn" 
+                            value="Consultar una PQRD Anónima" 
+                                href="/faces/consultar.xhtml"/>
                         </div>
-                        <div class="ui-g-12 ui-md-4" style="padding-left: 0">
-                            <p:inputText 
-                                id="numVerificacion"
-                                class="inputConsultar"
-                                onkeyup="getNumVerificacion()"
-                                value="#{consultarPQRD.nroVerificacion}">
-                                <p:keyFilter preventPaste="false" regEx="/[a-z0-9_\-]/i" />
-                            </p:inputText>
-                        </div>
-                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
                     </div>
                     
                                      
                     <div class="ui-g" style="size: auto; padding: 0">
-                        <div class="ui-g-12 ui-md-3 buttonAdjust1" style="size: auto; padding: 0">
-                          <p:commandButton 
-                            id="consultarPQRD" 
-                            class="btn updateAdjust"  
-                            onclick="validadorConsulta()"
-                            value="Consultar"/> 
-                          <script> /*OJO - UPDATE ESTABA EN @FORM*/ </script>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
-                            <p:button 
-                                class="btn updateAdjust" 
-                                value="Regresar" 
-                                href="/faces/opcionesconsulta.xhtml"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
+                        <div class="ui-g-12 ui-md-12" style="size: auto; padding: 0">
                             <p:button 
                             class="btn updateAdjust" 
                             value="Salir" 
-                            href="#{consultarPQRD.urlOrigen}"/>
+                            href="#{opcionesPQRD.urlOrigen}"/>
                         </div>
                         <div class="ui-g" style="size: auto; padding: 0;" align="center">
-                        <a>
-                            <p:outputLabel 
-                                style="cursor: pointer;"
-                                onclick="accesoNumVerificacion();"
-                                class ="linkAcceso"
-                                value="Haga click aquí si olvidó el número de verificación"/>
-                        </a>
+                        
                         </div>
                     </div>
                     
@@ -178,8 +139,8 @@ and open the template in the editor.
                                 class="btn" 
                                 ajax="true"
                                 update="@form"
-                                action="#{consultarPQRD.consultarPQRD}"
-                                onclick="PF('confirmarEnvio').hide;"
+                                action="#{opcionesPQRD.consultarPQRD}"
+                                onclick="PF('confirmarEnvio').hide();"
                                 value="Sí"
                                 style="width: 100px">
                             </p:commandButton>    
@@ -203,7 +164,7 @@ and open the template in the editor.
                     <p:outputLabel value="Estado de su respuesta:" style="font-size: 90%; margin-bottom: 5px"/>      
                     <p:outputLabel 
                         id="estado_respuesta" 
-                        value="#{consultarPQRD.consultaPQRD.estado}" 
+                        value="#{opcionesPQRD.consultaPQRD.estado}" 
                         style="
                         font-size: 125%; 
                         font-weight: bold; 
@@ -226,35 +187,35 @@ and open the template in the editor.
                         
                 <h:panelGrid columns="2" style=" margin: auto; margin-bottom: 10px" styleClass="moveTop">
                     <p:outputLabel 
-                        rendered="#{consultarPQRD.nroRadicadoExist}"
+                        rendered="#{opcionesPQRD.nroRadicadoExist}"
                         value="Nro radicado respuesta:" 
                         style="
                         margin-right: 5px; 
                         font-size: 95%"/>  
                     <p:outputLabel 
-                        rendered="#{consultarPQRD.nroRadicadoExist}"
+                        rendered="#{opcionesPQRD.nroRadicadoExist}"
                         id="radicado_respuesta" 
-                        value="#{consultarPQRD.consultaPQRD.nro_radicacion_respuesta}" 
+                        value="#{opcionesPQRD.consultaPQRD.nro_radicacion_respuesta}" 
                         style="
                         font-weight: bold; 
                         font-size: 95%"/>
 
                     <p:outputLabel 
-                        rendered="#{consultarPQRD.consultaPQRD.mostrarFecha}"
+                        rendered="#{opcionesPQRD.consultaPQRD.mostrarFecha}"
                         value="Fecha de respuesta:" 
                         style="
                         margin-right: 5px; 
                         font-size: 95%"/>  
                     <p:outputLabel 
                         id="fecha_respuesta" 
-                        rendered="#{consultarPQRD.consultaPQRD.mostrarFecha}"
-                        value="#{consultarPQRD.consultaPQRD.fechaRespuestaString}" 
+                        rendered="#{opcionesPQRD.consultaPQRD.mostrarFecha}"
+                        value="#{opcionesPQRD.consultaPQRD.fechaRespuestaString}" 
                         style="
                         font-weight: bold; 
                         font-size: 95%"/>
                         
                     <p:outputLabel 
-                        rendered="#{consultarPQRD.mostrarFechaPosibleRespuesta}"
+                        rendered="#{opcionesPQRD.mostrarFechaPosibleRespuesta}"
                         style="
                         margin-right: 5px; 
                         font-size: 95%;
@@ -262,7 +223,7 @@ and open the template in the editor.
                         padding-top: 18px">Trazabilidad:</p:outputLabel>  
                     
                         
-                    <p:dataList value="#{consultarPQRD.trazabilidad}" var="traz" rendered="#{consultarPQRD.mostrarFechaPosibleRespuesta}" 
+                    <p:dataList value="#{opcionesPQRD.trazabilidad}" var="traz" rendered="#{opcionesPQRD.mostrarFechaPosibleRespuesta}" 
                                 styleClass="dataListClass contentFont" class="dataListClass contentFont"
                                 type="definition" style="font-weight: bold;">
                         #{traz.trazabilidad}
@@ -273,11 +234,11 @@ and open the template in the editor.
                 <div align="center">
                     <h:form style="margin-bottom: 10px">   
                             <p:commandButton 
-                                rendered="#{consultarPQRD.fileExist}"
+                                rendered="#{opcionesPQRD.fileExist}"
                                 value="Descargue su respuesta" 
                                 ajax="false" 
                                 style="font-size: 90%">
-                                <p:fileDownload value="#{consultarPQRD.file}" />
+                                <p:fileDownload value="#{opcionesPQRD.file}" />
                             </p:commandButton>      
                     </h:form>
                 </div>
@@ -285,12 +246,12 @@ and open the template in the editor.
                 <div align="center" >                    
                     <p:button 
                         value="Nueva Consulta" 
-                        onclick="recargarConsultarPqrd()" 
+                        onclick="recargaropcionesPQRD()" 
                         class="btn" 
                         style="margin: 10px"/>
                     <p:button 
                         value="Salir" 
-                        href="#{consultarPQRD.urlOrigen}" 
+                        href="#{opcionesPQRD.urlOrigen}" 
                         class="btn" 
                         style="margin: 10px"/>
                 </div>
@@ -321,7 +282,7 @@ and open the template in the editor.
                         <div class="ui-g-12">
                             <p:button 
                                 class="btn"
-                                href="#{consultarPQRD.urlOrigen}"
+                                href="#{opcionesPQRD.urlOrigen}"
                                 value="Salir" 
                                 style="width: 130px"/>   
                         </div>
@@ -333,13 +294,13 @@ and open the template in the editor.
         </h:form>
     </h:body>
     
-    <footer class="footer" title="#{consultarPQRD.textoAlternativoPiedepagina}"
+    <footer class="footer" title="#{opcionesPQRD.textoAlternativoPiedepagina}"
     	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
 <script type="text/javascript">
 //console.info("hi");
-//console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));
+console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));
 var radicadoConsulta = document.getElementById("formPrincipal:radicadoConsulta");
-if( radicadoConsulta !== undefined &amp;&amp; radicadoConsulta !== null){
+if(radicadoConsulta !== undefined &amp;&amp; radicadoConsulta !== null){
 	
 	radicadoConsulta.addEventListener("paste", function(evt){
 		evt.preventDefault();
@@ -353,6 +314,9 @@ if( radicadoConsulta !== undefined &amp;&amp; radicadoConsulta !== null){
 	    radicadoConsulta.value = data;
 	
 		});
-}	
+}
+else{
+	console.info("NO radicadoConsulta");
+}
 </script>
 </html>

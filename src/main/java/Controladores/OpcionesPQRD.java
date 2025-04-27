@@ -7,6 +7,8 @@ import java.util.TimerTask;
 import java.nio.file.Path;
 import java.util.Timer;
 import java.io.InputStream;
+import java.io.Serializable;
+
 import org.primefaces.model.DefaultStreamedContent;
 import java.io.FileInputStream;
 import java.net.URLConnection;
@@ -14,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
+import java.rmi.UnexpectedException;
 import java.text.DateFormat;
 import java.io.IOException;
 import org.primefaces.context.RequestContext;
@@ -32,14 +35,23 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import Utilidades.Util;
 import Objetos.Trazabilidad;
 import java.util.List;
+import java.util.Random;
+
 import org.primefaces.model.StreamedContent;
 import Objetos.ConsultaPQRD;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.bean.ManagedBean;
 
-@ManagedBean
-@RequestScoped
-public class ConsultarPQRD {
+//@ManagedBean
+//@RequestScoped
+@ManagedBean(name = "opcionesPQRD")
+@ViewScoped
+public class OpcionesPQRD implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7724838274235912152L;
 	private static String path_background_image;
 	private static String urlOrigen;
 	private static String fondoHeader;
@@ -49,6 +61,10 @@ public class ConsultarPQRD {
 	private static String fuenteTiulos;
 	private static String fuenteEtiquetas;
 	private static String fuenteContenido;
+	
+	private String emailConsulta;
+	private int pasoActual = 1;
+	
 	private String nroRadicado;
 	private String nroDocumento;
 	private String nroVerificacion;
@@ -68,24 +84,36 @@ public class ConsultarPQRD {
 	public void setNroVerificacion(final String nroVerificacion) {
 		this.nroVerificacion = nroVerificacion;
 	}
+	
+	
+	public String getEmailConsulta() {
+		return this.emailConsulta;
+	}
 
-	public ConsultarPQRD() {
+	public void setEmailConsulta(final String emailConsulta) {
+		this.emailConsulta = emailConsulta;
+	}
+
+	
+
+	public OpcionesPQRD() {
 		this.nroRadicadoExist = false;
 		this.mostrarFechaPosibleRespuesta = false;
 		try {
-			ConsultarPQRD.path_background_image = Util.getProperties("imagenFondo");
-			ConsultarPQRD.fondoHeader = Util.getProperties("imagenFondoHeader");
-			ConsultarPQRD.fondoFooter = Util.getProperties("imagenFondoFooter");
-			ConsultarPQRD.colorFondoBotones = "#02733A"; //Util.getProperties("colorFondoBotones");
-			ConsultarPQRD.colorLetraBotones = Util.getProperties("colorLetraBotones");
-			ConsultarPQRD.fuenteTiulos = Util.getProperties("fuenteTiulos");
-			ConsultarPQRD.fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");
-			ConsultarPQRD.fuenteContenido = Util.getProperties("fuenteContenido");
-			ConsultarPQRD.urlOrigen = Util.getProperties("linkOrigen");
+			OpcionesPQRD.path_background_image = Util.getProperties("imagenFondo");
+			OpcionesPQRD.fondoHeader = Util.getProperties("imagenFondoHeader");
+			OpcionesPQRD.fondoFooter = Util.getProperties("imagenFondoFooter");
+			OpcionesPQRD.colorFondoBotones = "#02733B";//Util.getProperties("colorFondoBotones");
+			OpcionesPQRD.colorLetraBotones = Util.getProperties("colorLetraBotones");
+			OpcionesPQRD.fuenteTiulos = Util.getProperties("fuenteTiulos");
+			OpcionesPQRD.fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");
+			OpcionesPQRD.fuenteContenido = Util.getProperties("fuenteContenido");
+			OpcionesPQRD.urlOrigen = Util.getProperties("linkOrigen");
 			this.textoAlternativoEncabezado = Util.getProperties("textoAlternativoEncabezado");
 			this.textoAlternativoPiedepagina = Util.getProperties("textoAlternativoPiedepagina");
+			//this.emailConsulta = "pepe@gmail.com";
 		} catch (Exception ex) {
-			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(OpcionesPQRD.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
@@ -105,7 +133,7 @@ public class ConsultarPQRD {
 		while (resultConsultaFecha.next()) {
 			final String trazText = resultConsultaFecha.getString("trazabilidad");
 			System.err.println(resultConsultaFecha.getString("trazabilidad"));
-			ConsultarPQRD.consultaPQRD.setFechaPosibleRespuesta(resultConsultaFecha.getString("trazabilidad"));
+			OpcionesPQRD.consultaPQRD.setFechaPosibleRespuesta(resultConsultaFecha.getString("trazabilidad"));
 			final String[] str = trazText.split("\n");
 			trazabList = Arrays.asList(str);
 		}
@@ -128,7 +156,7 @@ public class ConsultarPQRD {
 			try {
 				this.nroRadicado = this.nroRadicado.toUpperCase();
 				final DataBaseConection dataBaseConection1 = new DataBaseConection();
-				String query2 = "SELECT nroradicacion, email, numeroverificacion, fechaultimaconsulta, cantidadconsultaserradase FROM comunicacionprqd WHERE tipopantalla='ANONIMO' AND nroradicacion LIKE '?';";
+				String query2 = "SELECT nroradicacion, email, numeroverificacion, fechaultimaconsulta, cantidadconsultaserradase FROM comunicacionprqd WHERE nroradicacion LIKE '?';";
 				query2 = query2.replaceFirst("\\?", this.nroRadicado);
 				dataBaseConection1.consultarDB(query2);
 				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
@@ -200,35 +228,35 @@ public class ConsultarPQRD {
 						final ResultSet resultConsulta3 = dataBaseConection2.getResult();
 						System.err.println("PRIMERO3");
 						while (resultConsulta3.next()) {
-							(ConsultarPQRD.consultaPQRD = new ConsultaPQRD())
+							(OpcionesPQRD.consultaPQRD = new ConsultaPQRD())
 									.setNro_radicacion_respuesta(resultConsulta3.getString("nroradicadorespuesta"));
-							ConsultarPQRD.consultaPQRD
+							OpcionesPQRD.consultaPQRD
 									.setDatos_archivo_respuesta(resultConsulta3.getBinaryStream("archivorespuesta"));
-							ConsultarPQRD.consultaPQRD.setNombre_archivo_respuesta(
+							OpcionesPQRD.consultaPQRD.setNombre_archivo_respuesta(
 									resultConsulta3.getString("nombrearchivoarchivorespuesta"));
-							ConsultarPQRD.consultaPQRD
+							OpcionesPQRD.consultaPQRD
 									.setFecha_respuesta((java.util.Date) resultConsulta3.getDate("fecharespuesta"));
-							ConsultarPQRD.consultaPQRD.setEstado(resultConsulta3.getString("estado"));
-							ConsultarPQRD.consultaPQRD.setFechaprimeraconsultarespu(
+							OpcionesPQRD.consultaPQRD.setEstado(resultConsulta3.getString("estado"));
+							OpcionesPQRD.consultaPQRD.setFechaprimeraconsultarespu(
 									(java.util.Date) resultConsulta3.getDate("fechaprimeraconsultarespu"));
-							ConsultarPQRD.fileExist = (ConsultarPQRD.consultaPQRD.getDatos_archivo_respuesta() != null
-									&& ConsultarPQRD.consultaPQRD.getDatos_archivo_respuesta().available() != 0
-									&& !ConsultarPQRD.consultaPQRD.getEstado().contains("pendiente")
-									&& !ConsultarPQRD.consultaPQRD.getNombre_archivo_respuesta().isEmpty());
-							if (ConsultarPQRD.consultaPQRD.getNro_radicacion_respuesta() != null
-									&& !ConsultarPQRD.consultaPQRD.getNro_radicacion_respuesta().isEmpty()) {
+							OpcionesPQRD.fileExist = (OpcionesPQRD.consultaPQRD.getDatos_archivo_respuesta() != null
+									&& OpcionesPQRD.consultaPQRD.getDatos_archivo_respuesta().available() != 0
+									&& !OpcionesPQRD.consultaPQRD.getEstado().contains("pendiente")
+									&& !OpcionesPQRD.consultaPQRD.getNombre_archivo_respuesta().isEmpty());
+							if (OpcionesPQRD.consultaPQRD.getNro_radicacion_respuesta() != null
+									&& !OpcionesPQRD.consultaPQRD.getNro_radicacion_respuesta().isEmpty()) {
 								this.nroRadicadoExist = true;
 							}
-							System.err.println("Estado " + ConsultarPQRD.consultaPQRD.getEstado());
-							final String estado = ConsultarPQRD.consultaPQRD.getEstado();
+							System.err.println("Estado " + OpcionesPQRD.consultaPQRD.getEstado());
+							final String estado = OpcionesPQRD.consultaPQRD.getEstado();
 							switch (estado) {
 							case "Pendiente":
 							case "PENDIENTE": {
 								this.nroRadicadoExist = false;
-								ConsultarPQRD.fileExist = false;
+								OpcionesPQRD.fileExist = false;
 								this.posibleRespuesta();
-								if (ConsultarPQRD.consultaPQRD.getFechaPosibleRespuesta() == null
-										|| ConsultarPQRD.consultaPQRD.getFechaPosibleRespuesta().isEmpty()) {
+								if (OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta() == null
+										|| OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta().isEmpty()) {
 									this.mostrarFechaPosibleRespuesta = false;
 									break;
 								}
@@ -238,13 +266,13 @@ public class ConsultarPQRD {
 							case "RESPONDIDO":
 							case "Respondido": {
 								this.posibleRespuesta();
-								if (ConsultarPQRD.consultaPQRD.getFechaPosibleRespuesta() == null
-										|| ConsultarPQRD.consultaPQRD.getFechaPosibleRespuesta().isEmpty()) {
+								if (OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta() == null
+										|| OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta().isEmpty()) {
 									this.mostrarFechaPosibleRespuesta = false;
 								} else {
 									this.mostrarFechaPosibleRespuesta = true;
 								}
-								if (ConsultarPQRD.consultaPQRD.getFechaprimeraconsultarespu() == null) {
+								if (OpcionesPQRD.consultaPQRD.getFechaprimeraconsultarespu() == null) {
 									dataBaseConection2.actualizarDB(
 											"UPDATE comunicacionprqd SET usuarioconsultorespuesta = ?, fechaprimeraconsultarespu = ?, horaprimeraconsultarespue = ? WHERE nroradicacion LIKE ?;",
 											this.nroRadicado);
@@ -259,7 +287,7 @@ public class ConsultarPQRD {
 						System.err.println("PRIMERO4");
 						dataBaseConection2.logoutDB();
 					} else {
-						RequestContext.getCurrentInstance().execute("mensajeErrorRadicado('" + this.nroRadicado + "')");
+						RequestContext.getCurrentInstance().execute("mensajeError()");
 						fechaUltCons = fechaHoy;
 						System.err.println("" + numConsErr);
 						++numConsErr;
@@ -292,7 +320,208 @@ public class ConsultarPQRD {
 		}
 		return "";
 	}
+	
+	DataBaseConection dataBaseConection1;
+	
+	private DataBaseConection getConnection() {
+		if(dataBaseConection1 == null) {
+			dataBaseConection1 = new DataBaseConection();	
+		}
+		
+		if(dataBaseConection1.isClosed()) {
+			dataBaseConection1.loginDB();
+		} 
+		return dataBaseConection1;
+	}
+	
+	public boolean existeDirectorio() throws Exception {
+		
+		long records = 0;
+			
+			try {
 
+				final DataBaseConection dataBaseConection1 = getConnection(); 
+				String query2 = "SELECT COUNT(1) AS records FROM DIRECTORIOEMAILPRQD WHERE email LIKE '?';";
+				query2 = query2.replaceFirst("\\?", this.emailConsulta);
+				dataBaseConection1.consultarDB(query2);
+				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+				
+				while (resultConsulta1.next()) {
+					records = resultConsulta1.getLong("records");
+				}
+				
+			} catch (Exception ex) {
+				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+				throw ex;
+			}
+			
+			return records > 0;
+	
+	}
+	
+	public boolean existeCorrespondencia() throws Exception {
+		
+		long records = 0;
+			
+			try {
+
+				final DataBaseConection dataBaseConection1 = getConnection(); 
+				String query2 = "SELECT COUNT(1) AS records\r\n"
+						+ "FROM CORRESPONDENCIA \r\n"
+						+ "INNER JOIN COMUNICACIONPRQD \r\n"
+						+ "  ON CORRESPONDENCIA.numeroradicacioninterno = COMUNICACIONPRQD.nroradicacion \r\n"
+						+ "INNER JOIN directorioemailprqd \r\n"
+						+ "  ON directorioemailprqd.EMAIL = ANY (string_to_array(TRIM(REPLACE(CORRESPONDENCIA.EMAIL, ' ', '')), ';'))\r\n"
+						+ "WHERE COMUNICACIONPRQD.email LIKE '?';";
+				query2 = query2.replaceFirst("\\?", this.emailConsulta);
+				dataBaseConection1.consultarDB(query2);
+				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+				
+				while (resultConsulta1.next()) {
+					records = resultConsulta1.getLong("records");
+				}
+				
+			} catch (Exception ex) {
+				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+				throw ex;
+			}
+			
+			return records > 0;
+	
+	}
+	
+	public boolean existeCorrespondenciaBasic() throws Exception {
+		
+		long records = 0;
+			
+			try {
+
+				final DataBaseConection dataBaseConection1 = getConnection(); 
+				String query2 = "SELECT COUNT(1) AS records\r\n"
+						+ "FROM CORRESPONDENCIA \r\n"
+						+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE(CORRESPONDENCIA.EMAIL, ' ', '')), ';'))\r\n";
+
+				query2 = query2.replaceFirst("\\?", this.emailConsulta);
+				dataBaseConection1.consultarDB(query2);
+				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+				
+				while (resultConsulta1.next()) {
+					records = resultConsulta1.getLong("records");
+				}
+				
+			} catch (Exception ex) {
+				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+				throw ex;
+			}
+			
+			return records > 0;
+	
+	}
+	
+	public void deleteOldRecords() {
+		
+		try {
+			//this.nroRadicado = this.nroRadicado.toUpperCase();
+			final DataBaseConection dataBaseConection1 = getConnection();
+			String query2 = "DELETE FROM DIRECTORIOEMAILPRQD WHERE email LIKE '?' AND  fecha <> CURRENT_DATE;";
+			query2 = query2.replaceFirst("\\?", this.emailConsulta);
+			boolean affectRows = dataBaseConection1.actualizarConsultasPQRD(query2);
+			//final Calendar calendar = Calendar.getInstance();
+			//final Date fechaHoy = new Date(calendar.getTime().getTime());
+			
+		} catch (Exception ex) {
+			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			throw ex;
+		}
+	}
+	
+	public void createDirectory() throws Exception {
+		
+		try {
+			final DataBaseConection dataBaseConection1 = getConnection();
+			String query2 = "INSERT INTO directorioemailprqd (fldiddirectorioemailprqd, email, numeroverificacion, fecha)\r\n"
+					+ "values ((select max(fldiddirectorioemailprqd) + 1 AS id from directorioemailprqd) ,'?',"
+					+ "'" + generateCode() + "', CURRENT_DATE);\r\n";
+			query2 = query2.replaceFirst("\\?", this.emailConsulta);
+			boolean affectRows = dataBaseConection1.actualizarConsultasPQRD(query2);
+			if (!affectRows) {
+				throw new UnexpectedException("No record saved");
+			}
+			
+		} catch (Exception ex) {
+			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			throw ex;
+		}
+	}
+	
+	public String generateCode() {
+		
+		Random rand = new Random();
+	    int code = rand.nextInt(900000) + 100000; // Genera un número entre 100000 y 999999
+	    return Integer.toString(code);
+	}
+
+	public String validarEmail() {
+		if (this.emailConsulta != null) {
+			
+			try {
+				if (this.pasoActual == 1) {
+					return this.pasoUno();
+				}
+				else{
+					return this.pasoDos();
+				}
+				
+			} catch (Exception ex) {
+				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+				RequestContext.getCurrentInstance().execute("mensajeError()");
+			}
+			finally {
+				if(dataBaseConection1 != null) {
+					dataBaseConection1.logoutDB();	
+				}
+			}
+		} else {
+			System.err.println("Campos faltantes");
+		}
+		return null;
+	}
+	
+	public String pasoUno() throws Exception {
+		deleteOldRecords();
+		boolean existsDirectory = this.existeDirectorio();
+		if (existsDirectory) {
+			this.setPasoActual(2);
+			return null; //permanecer en la pagina
+		}
+		
+		if(!existeCorrespondenciaBasic()) {
+			//RequestContext.getCurrentInstance().execute("PF('bloqueoconsulta').show();");
+			String msg = "El email " + this.emailConsulta + " no registra correspondencia en nuestro sistema";
+			RequestContext.getCurrentInstance().execute("mensajeErrorCorrespondenciaNoExiste('" + msg + "')");
+		}
+		else {
+			createDirectory();
+			this.setPasoActual(2);
+			RequestContext.getCurrentInstance().execute("mensajeCorrreo()");
+		}
+		
+		return null; 
+	}
+	
+	public String pasoDos() throws Exception {
+		boolean existsCorrespondencia = this.existeCorrespondencia();
+		if (!existsCorrespondencia) {
+			//return "/faces/mispqrds.xhtml";
+			RequestContext.getCurrentInstance().execute("mensajeErrorMantenimiento('" + getUrlOrigen()  + "')");
+			return null; //permanecer en la pagina
+			
+		}
+		
+		return "/faces/mispqrds.xhtml"; 
+	}
+
+	
 	public StreamedContent getFile() {
 		try {
 			String mimeType = null;
@@ -301,10 +530,10 @@ public class ConsultarPQRD {
 			final Path path = Files.createTempFile("sample", ".txt", (FileAttribute<?>[]) new FileAttribute[0]);
 			final File fileTemp = path.toFile();
 			final String dirSalida = fileTemp.getAbsolutePath();
-			try (final InputStream inputStream = ConsultarPQRD.consultaPQRD.getDatos_archivo_respuesta()) {
-				final File fil = new File(dirSalida + ConsultarPQRD.consultaPQRD.getNombre_archivo_respuesta());
+			try (final InputStream inputStream = OpcionesPQRD.consultaPQRD.getDatos_archivo_respuesta()) {
+				final File fil = new File(dirSalida + OpcionesPQRD.consultaPQRD.getNombre_archivo_respuesta());
 				try (final FileOutputStream outputStream = new FileOutputStream(fil)) {
-					final int longs = ConsultarPQRD.consultaPQRD.getDatos_archivo_respuesta().available();
+					final int longs = OpcionesPQRD.consultaPQRD.getDatos_archivo_respuesta().available();
 					final byte[] bytes = new byte[longs];
 					int read;
 					while ((read = inputStream.read(bytes)) != -1) {
@@ -313,14 +542,14 @@ public class ConsultarPQRD {
 					inputStream.close();
 				}
 			}
-			final File file1 = new File(dirSalida + ConsultarPQRD.consultaPQRD.getNombre_archivo_respuesta());
+			final File file1 = new File(dirSalida + OpcionesPQRD.consultaPQRD.getNombre_archivo_respuesta());
 			mimeType = URLConnection.guessContentTypeFromName(file1.getName());
-			final String extensionArchivo = ConsultarPQRD.consultaPQRD.getNombre_archivo_respuesta();
+			final String extensionArchivo = OpcionesPQRD.consultaPQRD.getNombre_archivo_respuesta();
 			final String[] tokens = extensionArchivo.split("\\.(?=[^\\.]+$)");
-			ConsultarPQRD.consultaPQRD.setNombre_archivo_respuesta(
-					ConsultarPQRD.consultaPQRD.getNro_radicacion_respuesta() + "." + tokens[1]);
+			OpcionesPQRD.consultaPQRD.setNombre_archivo_respuesta(
+					OpcionesPQRD.consultaPQRD.getNro_radicacion_respuesta() + "." + tokens[1]);
 			this.file = (StreamedContent) new DefaultStreamedContent((InputStream) new FileInputStream(file1), mimeType,
-					ConsultarPQRD.consultaPQRD.getNombre_archivo_respuesta());
+					OpcionesPQRD.consultaPQRD.getNombre_archivo_respuesta());
 			final Timer temporizador = new Timer();
 			TimerTask task = new TimerTask() {
 
@@ -372,19 +601,19 @@ public class ConsultarPQRD {
 	}
 
 	public String getPath_background_image() {
-		return ConsultarPQRD.path_background_image;
+		return OpcionesPQRD.path_background_image;
 	}
 
 	public ConsultaPQRD getConsultaPQRD() {
-		return ConsultarPQRD.consultaPQRD;
+		return OpcionesPQRD.consultaPQRD;
 	}
 
 	public String getUrlOrigen() {
-		return ConsultarPQRD.urlOrigen;
+		return OpcionesPQRD.urlOrigen;
 	}
 
 	public boolean isFileExist() {
-		return ConsultarPQRD.fileExist;
+		return OpcionesPQRD.fileExist;
 	}
 
 	public boolean isNroRadicadoExist() {
@@ -392,31 +621,31 @@ public class ConsultarPQRD {
 	}
 
 	public String getFondoHeader() {
-		return ConsultarPQRD.fondoHeader;
+		return OpcionesPQRD.fondoHeader;
 	}
 
 	public String getFondoFooter() {
-		return ConsultarPQRD.fondoFooter;
+		return OpcionesPQRD.fondoFooter;
 	}
 
 	public String getColorFondoBotones() {
-		return ConsultarPQRD.colorFondoBotones;
+		return OpcionesPQRD.colorFondoBotones;
 	}
 
 	public String getColorLetraBotones() {
-		return ConsultarPQRD.colorLetraBotones;
+		return OpcionesPQRD.colorLetraBotones;
 	}
 
 	public String getFuenteTiulos() {
-		return ConsultarPQRD.fuenteTiulos;
+		return OpcionesPQRD.fuenteTiulos;
 	}
 
 	public String getFuenteEtiquetas() {
-		return ConsultarPQRD.fuenteEtiquetas;
+		return OpcionesPQRD.fuenteEtiquetas;
 	}
 
 	public String getFuenteContenido() {
-		return ConsultarPQRD.fuenteContenido;
+		return OpcionesPQRD.fuenteContenido;
 	}
 
 	public boolean isMostrarFechaPosibleRespuesta() {
@@ -431,7 +660,15 @@ public class ConsultarPQRD {
 		return textoAlternativoPiedepagina;
 	}
 
+	public int getPasoActual() {
+		return pasoActual;
+	}
+
+	public void setPasoActual(int pasoActual) {
+		this.pasoActual = pasoActual;
+	}
+
 	static {
-		ConsultarPQRD.fileExist = false;
+		OpcionesPQRD.fileExist = false;
 	}
 }

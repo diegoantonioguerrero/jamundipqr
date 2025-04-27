@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Consultar PQRD email</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content='text/html; charset=UTF-8' http-equiv="content-type"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="lang" content="es"/>
+        <h:outputStylesheet library="css" name="consultarResponsive.css"/>
+        <h:outputScript library="js" name="captcha.js" target="body"/>
+        <h:outputScript library="js" name="consultaemail.js" target="body"/>
+        <h:outputScript library="js" name="jsglobal.js" target="body"/>
+        <h:outputScript library="js" name="browserjs.js" target="body"/>
+        
+        <style>
+            
+            .ui-button{
+                background-color: #{opcionesPQRD.colorFondoBotones} !important;
+                color: #{indexPQRD.colorLetraBotones} !important;
+				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7) !important;
+            }
+            
+            @font-face {
+                font-family: "fuenteContenido";
+                src: url(../resources/font/#{indexPQRD.fuenteContenido});
+            }
+            
+            @font-face {
+                font-family: "fuenteEtiquetas";
+                src: url(../resources/font/#{indexPQRD.fuenteEtiquetas});
+            }
+            
+            @font-face {
+                font-family: "fuenteTitulos";
+                src: url(../resources/font/#{indexPQRD.fuenteTiulos});
+            }
+            
+            .ui-outputlabel{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            .labelFont{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            .contentFont{
+                
+                font-family: fuenteContenido !important;
+            }
+            
+            input{
+                font-family: fuenteContenido !important;
+            }
+            
+            .titleFont{
+                font-family: fuenteTitulos !important
+            }
+
+        </style>
+    </h:head>
+    <h:body class="bground"
+            onload="dialogWidth();"
+            style="background-image: url(../resources/img/#{consultarPQRD.path_background_image}); margin: 0">
+
+        <header class="headerResponsive" title="#{opcionesPQRD.textoAlternativoEncabezado}"
+                style="background-image: url(../resources/img/#{consultarPQRD.fondoHeader});">
+        </header>
+        <h:form id="formPrincipal" style="min-height: 550px; margin-bottom: 10px; margin-top: 10px">
+            <p:growl 
+                id="growl" 
+                showDetail="true" 
+                sticky="false" 
+                life="3000"/>
+            <div align="center"><p:panel class="panelConfig">
+            		<input type="hidden" id="pasoActual" value="#{opcionesPQRD.pasoActual}"/>
+                    <f:facet name="header">
+                        <p:outputLabel class="titleFont" value="Consultar todas mis PQRDS - Paso #{opcionesPQRD.pasoActual}"/>
+                    </f:facet>
+                    
+                    <h:panelGroup rendered="#{opcionesPQRD.pasoActual eq 1}">
+	    				<div class="ui-g idAdjust" style="size: auto">                        
+	                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
+	                            <p:outputLabel
+	                                id="emailConsultaLabel"
+	                                value="Ingrese su email:"/>   
+	                        </div>
+	                        <div class="ui-g-12 ui-md-6 js-radicadoConsulta" style="padding-left: 0">
+	                            <p:inputText 
+	                                id="emailConsulta" 
+	                                class="inputConsultar"
+	                                onkeyup="getEmailConsulta()"
+	                                onpaste="removerEspacios(this)"
+	                                value="#{opcionesPQRD.emailConsulta}">
+	                                <p:keyFilter preventPaste="false" regEx="/[a-z0-9_\-.@]/i" />
+	                            </p:inputText>
+	                        </div>
+	                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
+	                    </div>
+					</h:panelGroup>
+
+					<h:panelGroup rendered="#{opcionesPQRD.pasoActual eq 2}">
+					 	<div class="ui-g idAdjust" style="size: auto">                        
+	                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
+	                            <p:outputLabel
+	                                value="Consultando email"/>   
+	                        </div>
+	                        <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+	                         <p:outputLabel
+	                                id="emailConsultadoLabel"
+	                                value="#{opcionesPQRD.emailConsulta}"/>   
+	                        </div>
+	                    </div>
+	                        
+					    <div class="ui-g idAdjust" style="size: auto">                        
+	                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
+	                            <p:outputLabel
+	                                id="numVerificacionLabel"
+	                                value="Ingrese el número de verificación que recibió por email:"/>   
+	                        </div>
+	                        <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+	                            <p:inputText 
+	                                id="numVerificacion" 
+	                                class="inputConsultar"
+	                                onkeyup="getNroVerificacion()"
+	                                onpaste="removerEspacios(this)"
+	                                value="#{opcionesPQRD.nroVerificacion}">
+	                                <p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+	                            </p:inputText>
+	                        </div>
+	                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
+	                    </div>
+					    
+					</h:panelGroup>
+
+                   
+                    <div class="ui-g" style="size: auto; padding: 0">
+                        <div class="ui-g-12 ui-md-3 buttonAdjust1" style="size: auto; padding: 0">
+                         <!--  <p:commandButton 
+                            id="opcionesPQRD" 
+                            class="btn"  
+                            onclick="validadorEmail()"
+                            value="Continuar"/>
+                            -->
+                            <p:commandButton 
+                                id="EnviarConsulta"
+                                class="btn" 
+                                ajax="true"
+                                update="@form"
+                                action="#{opcionesPQRD.validarEmail}"
+                                onclick="return validateData();"
+                                value="Continuar"
+                                >
+                            </p:commandButton>  
+                        </div>
+                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
+                            <p:button 
+                                class="btn updateAdjust" 
+                                value="Regresar" 
+                                href="/faces/opcionesconsulta.xhtml"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
+                            <p:button 
+                            class="btn updateAdjust" 
+                            value="Salir" 
+                            href="#{consultarPQRD.urlOrigen}"/>
+                        </div>
+                    </div>
+                    
+                </p:panel>
+            </div>
+            
+                     
+             <!--Diálogo de correspondenciaNoExiste-->
+             <p:dialog header="" visible="false" closable="false" widgetVar="correspondenciaNoExiste" id="correspondenciaNoExiste" modal="true" resizable="false" 
+                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" width="400px" 
+                      style="align-content: center;">
+
+                <div id="captcha" align="center">
+                    <div class="ui-g confirmacion">
+                        <div class="ui-g-12">
+                            <p:outputLabel 
+                                value="CORRESPONDENCIA NO ENCONTRADA"
+                                style="font-weight: bold; color: #D20005; font-size: 110%"
+                                /><br/><br/>
+                            <label 
+                            	id="labelCorrespondencia"
+                                style="font-size: 95%"
+                                >
+                                </label><br/>
+                        </div> 
+                        <div class="ui-g-12">
+                            <p:button 
+                                class="btn"
+                                onclick="PF('correspondenciaNoExiste').hide();return false;"
+                                value="Aceptar" 
+                                style="width: 130px"/>   
+                        </div>
+                    </div>
+                </div>
+            </p:dialog>
+            <!--Diálogo de correspondenciaNoExiste-->
+            
+        </h:form>
+    </h:body>
+    
+    <footer class="footer" title="#{opcionesPQRD.textoAlternativoPiedepagina}"
+    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+</html>
