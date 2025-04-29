@@ -64,6 +64,12 @@ and open the template in the editor.
             .titleFont{
                 font-family: fuenteTitulos !important
             }
+            
+            .btnAdjust3{
+            	margin-left : 5px;
+            	margin-right : 5px;
+            	padding: 0;
+            }
 
         </style>
     </h:head>
@@ -80,7 +86,8 @@ and open the template in the editor.
                 showDetail="true" 
                 sticky="false" 
                 life="3000"/>
-            <div align="center"><p:panel class="panelConfig">
+            <div align="center">
+            	<p:panel class="panelConfig">
             		<input type="hidden" id="pasoActual" value="#{opcionesPQRD.pasoActual}"/>
                     <f:facet name="header">
                         <p:outputLabel class="titleFont" value="Consultar todas mis PQRDS - Paso #{opcionesPQRD.pasoActual}"/>
@@ -88,12 +95,12 @@ and open the template in the editor.
                     
                     <h:panelGroup rendered="#{opcionesPQRD.pasoActual eq 1}">
 	    				<div class="ui-g idAdjust" style="size: auto">                        
-	                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
+	                        <div class="ui-g-12 ui-md-4 labelAdjust" style="padding-left: 0">
 	                            <p:outputLabel
 	                                id="emailConsultaLabel"
 	                                value="Ingrese su email:"/>   
 	                        </div>
-	                        <div class="ui-g-12 ui-md-6 js-radicadoConsulta" style="padding-left: 0">
+	                        <div class="ui-g-12 ui-md-8 js-radicadoConsulta" style="padding-left: 0">
 	                            <p:inputText 
 	                                id="emailConsulta" 
 	                                class="inputConsultar"
@@ -142,34 +149,26 @@ and open the template in the editor.
 					</h:panelGroup>
 
                    
-                    <div class="ui-g" style="size: auto; padding: 0">
-                        <div class="ui-g-12 ui-md-3 buttonAdjust1" style="size: auto; padding: 0">
-                         <!--  <p:commandButton 
-                            id="opcionesPQRD" 
-                            class="btn"  
-                            onclick="validadorEmail()"
-                            value="Continuar"/>
-                            -->
+                    <div class="ui-g" style="padding: 0">
+    					<div class="ui-g-12" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
                             <p:commandButton 
                                 id="EnviarConsulta"
-                                class="btn" 
+                                class="btn btnAdjust3 ui-g-8 ui-md-3" 
                                 ajax="true"
                                 update="@form"
                                 action="#{opcionesPQRD.validarEmail}"
                                 onclick="return validateData();"
                                 value="Continuar"
                                 >
-                            </p:commandButton>  
-                        </div>
-                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
+                            </p:commandButton>
+                       
                             <p:button 
-                                class="btn updateAdjust" 
+                                class="btn btnAdjust3 ui-g-8 ui-md-3" 
                                 value="Regresar" 
                                 href="/faces/opcionesconsulta.xhtml"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
+                       
                             <p:button 
-                            class="btn updateAdjust" 
+                            class="btn btnAdjust3 ui-g-8 ui-md-3" 
                             value="Salir" 
                             href="#{consultarPQRD.urlOrigen}"/>
                         </div>

@@ -178,3 +178,7 @@ function mensajeCorrreo(){
 	alert("Hemos enviado un email con su número verificación");
 }
 
+function mensajeErrorDbg(errorDbg) {
+    alert("Ha ocurrido un error inesperado: " + errorDbg);
+}
+

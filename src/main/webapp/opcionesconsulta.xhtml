@@ -64,11 +64,17 @@ and open the template in the editor.
             .titleFont{
                 font-family: fuenteTitulos !important
             }
+            
+            .idAdjust{
+            	padding-top:10px;
+            }
+            .idAdjust button{
+            	min-width : 300px;
+            }
 
         </style>
     </h:head>
     <h:body class="bground"
-            
             style="background-image: url(../resources/img/#{consultarPQRD.path_background_image}); margin: 0">
 
         <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
@@ -80,7 +86,8 @@ and open the template in the editor.
                 showDetail="true" 
                 sticky="false" 
                 life="3000"/>
-            <div align="center"><p:panel class="panelConfig">    
+            <div align="center">
+            	<p:panel class="panelConfig">    
                     <f:facet name="header">
                         <p:outputLabel class="titleFont" value="Consulte el estado de su PQRD"/>
                     </f:facet>
@@ -93,10 +100,7 @@ and open the template in the editor.
                                 href="/faces/consultaemail.xhtml"/>
                                 
                         </div>
-                    </div>
-                    
-                    
-                    <div class="ui-g idAdjust" style="size: auto">                        
+                                            
                          <div class="ui-g-12 ui-md-12" style="size: auto; padding: 0">
                             <p:button 
                             class="btn" 
@@ -106,10 +110,10 @@ and open the template in the editor.
                     </div>
                     
                                      
-                    <div class="ui-g" style="size: auto; padding: 0">
+                    <div class="ui-g idAdjust" style="size: auto;">
                         <div class="ui-g-12 ui-md-12" style="size: auto; padding: 0">
                             <p:button 
-                            class="btn updateAdjust" 
+                            class="btn" 
                             value="Salir" 
                             href="#{opcionesPQRD.urlOrigen}"/>
                         </div>
@@ -120,203 +124,10 @@ and open the template in the editor.
                     
                 </p:panel>
             </div>       
-
-             <!--Diálogo Aceptación de Envío-->
-            <p:dialog header="Confirmación de envío" closable="false" widgetVar="confirmarEnvio" modal="true" resizable="false" 
-                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" width="400px" style="align-content: center">
-
-                <div id="captcha" align="center">
-                    <div class="ui-g confirmacion">
-                        <div class="ui-g-12">
-                            <p:outputLabel 
-                                value="¿Está seguro que desea enviar su solicitud?"
-                                style="font-weight: bold"/>
-                        </div> 
-
-                        <div class="ui-g-6">
-                            <p:commandButton 
-                                id="EnviarConsulta"
-                                class="btn" 
-                                ajax="true"
-                                update="@form"
-                                action="#{opcionesPQRD.consultarPQRD}"
-                                onclick="PF('confirmarEnvio').hide();"
-                                value="Sí"
-                                style="width: 100px">
-                            </p:commandButton>    
-                        </div>
-                        <div class="ui-g-6">
-                            <p:commandButton 
-                                class="btn" 
-                                onclick="PF('confirmarEnvio').hide()" 
-                                value="No" 
-                                style="width: 100px"/> 
-                        </div>
-                    </div>
-                </div>
-            </p:dialog>
-            <!--Diálogo Aceptación de Envío-->
-            
-            <p:dialog header="Estado de su Solicitud" widgetVar="result" modal="true" width="80%" resizable="false" id="dialogoEnvio"
-                      closable="false" showEffect="fade" hideEffect="fade" positionType="absolute" style="align-content: center">
-
-                <h:panelGrid columns="1" style=" margin: auto; text-align: center; margin-bottom: 10px">
-                    <p:outputLabel value="Estado de su respuesta:" style="font-size: 90%; margin-bottom: 5px"/>      
-                    <p:outputLabel 
-                        id="estado_respuesta" 
-                        value="#{opcionesPQRD.consultaPQRD.estado}" 
-                        style="
-                        font-size: 125%; 
-                        font-weight: bold; 
-                        color: #009900"/>
-                </h:panelGrid>  
-
-                <style>
-                .moveTop td{vertical-align: top; padding: 0};
-                
-                .ui-datalist-content{
-                    border:none!important; 
-                    padding: 0!important; 
-                }
-                
-                .ui-widget-content{
-                    border: none !important;
-                }
-                        
-                </style>
-                        
-                <h:panelGrid columns="2" style=" margin: auto; margin-bottom: 10px" styleClass="moveTop">
-                    <p:outputLabel 
-                        rendered="#{opcionesPQRD.nroRadicadoExist}"
-                        value="Nro radicado respuesta:" 
-                        style="
-                        margin-right: 5px; 
-                        font-size: 95%"/>  
-                    <p:outputLabel 
-                        rendered="#{opcionesPQRD.nroRadicadoExist}"
-                        id="radicado_respuesta" 
-                        value="#{opcionesPQRD.consultaPQRD.nro_radicacion_respuesta}" 
-                        style="
-                        font-weight: bold; 
-                        font-size: 95%"/>
-
-                    <p:outputLabel 
-                        rendered="#{opcionesPQRD.consultaPQRD.mostrarFecha}"
-                        value="Fecha de respuesta:" 
-                        style="
-                        margin-right: 5px; 
-                        font-size: 95%"/>  
-                    <p:outputLabel 
-                        id="fecha_respuesta" 
-                        rendered="#{opcionesPQRD.consultaPQRD.mostrarFecha}"
-                        value="#{opcionesPQRD.consultaPQRD.fechaRespuestaString}" 
-                        style="
-                        font-weight: bold; 
-                        font-size: 95%"/>
-                        
-                    <p:outputLabel 
-                        rendered="#{opcionesPQRD.mostrarFechaPosibleRespuesta}"
-                        style="
-                        margin-right: 5px; 
-                        font-size: 95%;
-                        display: flex;
-                        padding-top: 18px">Trazabilidad:</p:outputLabel>  
-                    
-                        
-                    <p:dataList value="#{opcionesPQRD.trazabilidad}" var="traz" rendered="#{opcionesPQRD.mostrarFechaPosibleRespuesta}" 
-                                styleClass="dataListClass contentFont" class="dataListClass contentFont"
-                                type="definition" style="font-weight: bold;">
-                        #{traz.trazabilidad}
-                    </p:dataList>
-                    
-                </h:panelGrid>
-                
-                <div align="center">
-                    <h:form style="margin-bottom: 10px">   
-                            <p:commandButton 
-                                rendered="#{opcionesPQRD.fileExist}"
-                                value="Descargue su respuesta" 
-                                ajax="false" 
-                                style="font-size: 90%">
-                                <p:fileDownload value="#{opcionesPQRD.file}" />
-                            </p:commandButton>      
-                    </h:form>
-                </div>
-
-                <div align="center" >                    
-                    <p:button 
-                        value="Nueva Consulta" 
-                        onclick="recargaropcionesPQRD()" 
-                        class="btn" 
-                        style="margin: 10px"/>
-                    <p:button 
-                        value="Salir" 
-                        href="#{opcionesPQRD.urlOrigen}" 
-                        class="btn" 
-                        style="margin: 10px"/>
-                </div>
-            </p:dialog>
-            
-             <!--Diálogo de Bloqueo-->
-             <p:dialog header="" visible="false" closable="false" widgetVar="bloqueoconsulta" modal="true" resizable="false" 
-                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" width="400px" 
-                      style="align-content: center;">
-
-                <div id="captcha" align="center">
-                    <div class="ui-g confirmacion">
-                        <div class="ui-g-12">
-                            <p:outputLabel 
-                                value="CONSULTA BLOQUEADA"
-                                style="font-weight: bold; color: #D20005; font-size: 110%"
-                                /><br/><br/>
-                            <p:outputLabel 
-                                value="Usted fue bloqueado(a) pues realizó cinco o más consultas fallidas."
-                                style="font-size: 95%"
-                                /><br/>
-                            <p:outputLabel 
-                                value="Mañana podrá intentarlo nuevamente."
-                                style="font-size: 95%"
-                                />
-                        </div> 
-
-                        <div class="ui-g-12">
-                            <p:button 
-                                class="btn"
-                                href="#{opcionesPQRD.urlOrigen}"
-                                value="Salir" 
-                                style="width: 130px"/>   
-                        </div>
-                    </div>
-                </div>
-            </p:dialog>
-            <!--Diálogo de Bloqueo-->
-            
         </h:form>
     </h:body>
     
     <footer class="footer" title="#{opcionesPQRD.textoAlternativoPiedepagina}"
-    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
-<script type="text/javascript">
-//console.info("hi");
-console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));
-var radicadoConsulta = document.getElementById("formPrincipal:radicadoConsulta");
-if(radicadoConsulta !== undefined &amp;&amp; radicadoConsulta !== null){
-	
-	radicadoConsulta.addEventListener("paste", function(evt){
-		evt.preventDefault();
-		evt.stopPropagation();
-	
-	    var data = evt.clipboardData.getData('text');
-		console.info("dt",data);
-	
-		//var data = obj.value;
-		data = data.replace(new RegExp(' ', 'g'), '');
-	    radicadoConsulta.value = data;
-	
-		});
-}
-else{
-	console.info("NO radicadoConsulta");
-}
-</script>
+    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});">
+    </footer>
 </html>

@@ -76,7 +76,7 @@ public class ConsultarPQRD {
 			ConsultarPQRD.path_background_image = Util.getProperties("imagenFondo");
 			ConsultarPQRD.fondoHeader = Util.getProperties("imagenFondoHeader");
 			ConsultarPQRD.fondoFooter = Util.getProperties("imagenFondoFooter");
-			ConsultarPQRD.colorFondoBotones = "#02733A"; //Util.getProperties("colorFondoBotones");
+			ConsultarPQRD.colorFondoBotones = Util.getProperties("colorFondoBotones");
 			ConsultarPQRD.colorLetraBotones = Util.getProperties("colorLetraBotones");
 			ConsultarPQRD.fuenteTiulos = Util.getProperties("fuenteTiulos");
 			ConsultarPQRD.fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");

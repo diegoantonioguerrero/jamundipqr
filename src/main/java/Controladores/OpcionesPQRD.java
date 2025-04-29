@@ -474,7 +474,7 @@ public class OpcionesPQRD implements Serializable {
 				
 			} catch (Exception ex) {
 				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
-				RequestContext.getCurrentInstance().execute("mensajeError()");
+				RequestContext.getCurrentInstance().execute("mensajeErrorDbg('" + ex.getMessage() + "')");
 			}
 			finally {
 				if(dataBaseConection1 != null) {
