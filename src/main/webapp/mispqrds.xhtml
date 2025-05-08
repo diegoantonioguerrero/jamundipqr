@@ -8,7 +8,9 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      >
     <h:head>
         <title>Mis PQRDS email</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -64,6 +66,18 @@ and open the template in the editor.
             .titleFont{
                 font-family: fuenteTitulos !important
             }
+            
+            .ui-align-left {
+			    text-align: left;
+			}
+			
+			.btnAdjust3{
+            	margin-left : 5px;
+            	margin-right : 5px;
+            	padding: 0;
+            	min-width: 370px;
+            }
+            
 
         </style>
     </h:head>
@@ -81,10 +95,82 @@ and open the template in the editor.
                 sticky="false" 
                 life="3000"/>
             <div align="center">
-            	<p:panel class="panelConfig">    
+            	<p:panel class="panelConfig">
+					<h:inputHidden id="emailConsulta" value="#{misPQRD.emailConsulta}" />
+					<h:inputHidden id="nroVerificacion" value="#{misPQRD.nroVerificacion}" />
                     <f:facet name="header">
                         <p:outputLabel class="titleFont" value="Mis PQRDS email: #{misPQRD.emailConsulta}"/>
                     </f:facet>
+                    
+                    <div class="ui-g" style="size: auto">
+	                    <ui:repeat value="#{misPQRD.registros}" var="item">
+						    <div class="item-block">
+						    
+						    <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
+	                           <strong>
+						        		#{item.tablaenviorecibo eq 'ENTRA' ?  'Enviada en:' : 'Recibida en:'}
+						        </strong>
+	                        </div>
+	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
+	                        	#{item.fecha}
+	                        </div>
+	                        <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
+	                        	<strong>Radicado:</strong>
+	                        </div>
+	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
+	                        	#{item.radicado}
+	                        </div>
+	                        <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
+	                        	<strong>Asunto:</strong>
+	                        </div>
+	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
+	                        	#{item.elAsunto}
+	                        </div>
+	                        <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
+	                        	<strong>Estado:</strong>
+	                        </div>
+	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
+	                        	#{item.estado}
+	                        </div>
+	                        <h:panelGroup rendered="#{not empty item.trazabilidad}">
+	    						<div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
+		                        	<strong>Trazabilidad:</strong>
+		                        </div>
+		                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
+		                        	<h:outputText value="#{item.trazabilidad}" escape="false" />
+		                        </div>
+							</h:panelGroup>
+	                        
+		    					<div class="ui-g-12" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+		                            <p:button 
+		                                class="btn btnAdjust3" 
+		                                value="Descargar Correspondencia Enviada" 
+		                                onclick="alert('Pendiente desarrollo...');return false;"
+		                                href="/faces/opcionesconsulta.xhtml"/>
+		                       
+									<h:panelGroup rendered="#{item.estado eq 'RESPONDIDO'}">
+									<!-- Este contenido solo se mostrará si tipoCara == "REVERSO" -->
+									         <p:button 
+				                                class="btn btnAdjust3" 
+				                                value="Descargar Correspondencia Respuesta" 
+				                                onclick="alert('Pendiente desarrollo...');return false;"
+				                                href="/faces/opcionesconsulta.xhtml"/>
+									</h:panelGroup>
+		                       
+		                       
+		                       
+		                            <p:button 
+		                                class="btn btnAdjust3"
+										onclick="alert('Pendiente desarrollo...');return false;"
+		                                value="Descargar Correspondencia Recibida" 
+		                                href="/faces/opcionesconsulta.xhtml"/>
+		                                
+		                        </div>
+						        
+						        <hr />
+						    </div>
+						</ui:repeat>
+                    </div>
                     
                     <div class="ui-g idAdjust" style="size: auto">                        
                         <div class="ui-g-12 ui-md-12" style="size: auto; padding: 0">

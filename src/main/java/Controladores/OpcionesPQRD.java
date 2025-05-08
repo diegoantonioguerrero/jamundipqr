@@ -39,8 +39,11 @@ import java.util.Random;
 
 import org.primefaces.model.StreamedContent;
 import Objetos.ConsultaPQRD;
+import Objetos.Correspondencia;
+
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 
 //@ManagedBean
@@ -64,6 +67,7 @@ public class OpcionesPQRD implements Serializable {
 	
 	private String emailConsulta;
 	private int pasoActual = 1;
+	private int intentos = 0;
 	
 	private String nroRadicado;
 	private String nroDocumento;
@@ -103,7 +107,7 @@ public class OpcionesPQRD implements Serializable {
 			OpcionesPQRD.path_background_image = Util.getProperties("imagenFondo");
 			OpcionesPQRD.fondoHeader = Util.getProperties("imagenFondoHeader");
 			OpcionesPQRD.fondoFooter = Util.getProperties("imagenFondoFooter");
-			OpcionesPQRD.colorFondoBotones = "#02733B";//Util.getProperties("colorFondoBotones");
+			OpcionesPQRD.colorFondoBotones = Util.getProperties("colorFondoBotones");
 			OpcionesPQRD.colorLetraBotones = Util.getProperties("colorLetraBotones");
 			OpcionesPQRD.fuenteTiulos = Util.getProperties("fuenteTiulos");
 			OpcionesPQRD.fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");
@@ -359,6 +363,36 @@ public class OpcionesPQRD implements Serializable {
 	
 	}
 	
+	
+public boolean validaDirectorio() throws Exception {
+		
+		long records = 0;
+			
+			try {
+
+				final DataBaseConection dataBaseConection1 = getConnection(); 
+				String query2 = "SELECT COUNT(1) AS records\r\n"
+						+ "FROM directorioemailprqd \r\n"
+						+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE( EMAIL, ' ', '')), ';'))\r\n"
+						+ "AND NUMEROVERIFICACION = '?';";
+				query2 = query2.replaceFirst("\\?", this.emailConsulta);
+				query2 = query2.replaceFirst("\\?", this.nroVerificacion);
+				dataBaseConection1.consultarDB(query2);
+				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+				
+				while (resultConsulta1.next()) {
+					records = resultConsulta1.getLong("records");
+				}
+				
+			} catch (Exception ex) {
+				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+				throw ex;
+			}
+			
+			return records > 0;
+	
+	}
+
 	public boolean existeCorrespondencia() throws Exception {
 		
 		long records = 0;
@@ -390,23 +424,33 @@ public class OpcionesPQRD implements Serializable {
 	
 	}
 	
-	public boolean existeCorrespondenciaBasic() throws Exception {
+	public Correspondencia existeCorrespondenciaBasic() throws Exception {
 		
-		long records = 0;
+		Correspondencia correspondencia = null;
 			
 			try {
 
 				final DataBaseConection dataBaseConection1 = getConnection(); 
-				String query2 = "SELECT COUNT(1) AS records\r\n"
+				String query2 = "SELECT fldidCorrespondencia, email,\r\n"
+						+ "       CASE enviorecibo \r\n"
+						+ "           WHEN 1 THEN solonombredestino\r\n"
+						+ "           WHEN 2 THEN solonombreorigen\r\n"
+						+ "           ELSE '' \r\n"
+						+ "       END AS nombre\r\n"
 						+ "FROM CORRESPONDENCIA \r\n"
-						+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE(CORRESPONDENCIA.EMAIL, ' ', '')), ';'))\r\n";
+						+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE(CORRESPONDENCIA.EMAIL, ' ', '')), ';'))\r\n"
+						+ "ORDER BY fldidCorrespondencia DESC\r\n"
+						+ "LIMIT 1;";
 
 				query2 = query2.replaceFirst("\\?", this.emailConsulta);
 				dataBaseConection1.consultarDB(query2);
 				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
 				
 				while (resultConsulta1.next()) {
-					records = resultConsulta1.getLong("records");
+					correspondencia = new Correspondencia();
+					correspondencia.setFldidCorrespondencia(resultConsulta1.getInt("fldidCorrespondencia"));
+					correspondencia.setEmail(this.emailConsulta);
+					correspondencia.setNombre(resultConsulta1.getString("nombre"));
 				}
 				
 			} catch (Exception ex) {
@@ -414,7 +458,7 @@ public class OpcionesPQRD implements Serializable {
 				throw ex;
 			}
 			
-			return records > 0;
+			return correspondencia;
 	
 	}
 	
@@ -423,8 +467,7 @@ public class OpcionesPQRD implements Serializable {
 		try {
 			//this.nroRadicado = this.nroRadicado.toUpperCase();
 			final DataBaseConection dataBaseConection1 = getConnection();
-			String query2 = "DELETE FROM DIRECTORIOEMAILPRQD WHERE email LIKE '?' AND  fecha <> CURRENT_DATE;";
-			query2 = query2.replaceFirst("\\?", this.emailConsulta);
+			String query2 = "DELETE FROM DIRECTORIOEMAILPRQD WHERE fecha <> CURRENT_DATE;";
 			boolean affectRows = dataBaseConection1.actualizarConsultasPQRD(query2);
 			//final Calendar calendar = Calendar.getInstance();
 			//final Date fechaHoy = new Date(calendar.getTime().getTime());
@@ -435,18 +478,21 @@ public class OpcionesPQRD implements Serializable {
 		}
 	}
 	
-	public void createDirectory() throws Exception {
+	public int createDirectory() throws Exception {
 		
 		try {
+			int numVerificacion = generateCode();
 			final DataBaseConection dataBaseConection1 = getConnection();
 			String query2 = "INSERT INTO directorioemailprqd (fldiddirectorioemailprqd, email, numeroverificacion, fecha)\r\n"
-					+ "values ((select max(fldiddirectorioemailprqd) + 1 AS id from directorioemailprqd) ,'?',"
-					+ "'" + generateCode() + "', CURRENT_DATE);\r\n";
+					+ "values ((select COALESCE(max(fldiddirectorioemailprqd), 0) + 1 AS id from directorioemailprqd) ,'?',"
+					+ "'" + numVerificacion + "', CURRENT_DATE);\r\n";
 			query2 = query2.replaceFirst("\\?", this.emailConsulta);
 			boolean affectRows = dataBaseConection1.actualizarConsultasPQRD(query2);
 			if (!affectRows) {
 				throw new UnexpectedException("No record saved");
 			}
+			
+			return numVerificacion; 
 			
 		} catch (Exception ex) {
 			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
@@ -454,11 +500,11 @@ public class OpcionesPQRD implements Serializable {
 		}
 	}
 	
-	public String generateCode() {
+	public int generateCode() {
 		
 		Random rand = new Random();
 	    int code = rand.nextInt(900000) + 100000; // Genera un número entre 100000 y 999999
-	    return Integer.toString(code);
+	    return code;
 	}
 
 	public String validarEmail() {
@@ -474,7 +520,9 @@ public class OpcionesPQRD implements Serializable {
 				
 			} catch (Exception ex) {
 				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
-				RequestContext.getCurrentInstance().execute("mensajeErrorDbg('" + ex.getMessage() + "')");
+				String msg = ex.getMessage();
+				msg = msg.replace("\r\n", "\\r\\n"); 
+				RequestContext.getCurrentInstance().execute("mensajeErrorDbg('" + msg + "')");
 			}
 			finally {
 				if(dataBaseConection1 != null) {
@@ -495,30 +543,54 @@ public class OpcionesPQRD implements Serializable {
 			return null; //permanecer en la pagina
 		}
 		
-		if(!existeCorrespondenciaBasic()) {
+		Correspondencia correspondencia = existeCorrespondenciaBasic(); 
+		if(correspondencia == null) {
 			//RequestContext.getCurrentInstance().execute("PF('bloqueoconsulta').show();");
 			String msg = "El email " + this.emailConsulta + " no registra correspondencia en nuestro sistema";
 			RequestContext.getCurrentInstance().execute("mensajeErrorCorrespondenciaNoExiste('" + msg + "')");
 		}
 		else {
-			createDirectory();
+			int numVerificacion = createDirectory();
+			correspondencia.setNumVerificacion(numVerificacion);
+			enviarCorreo(correspondencia);
 			this.setPasoActual(2);
-			RequestContext.getCurrentInstance().execute("mensajeCorrreo()");
+			RequestContext.getCurrentInstance().execute("mensajeCorreo()");
 		}
 		
 		return null; 
 	}
 	
+	private void enviarCorreo(Correspondencia correspondencia) throws Exception {
+		NumVerificacion numVerificacionBean = (NumVerificacion) FacesContext.getCurrentInstance()
+			    .getELContext()
+			    .getELResolver()
+			    .getValue(FacesContext.getCurrentInstance().getELContext(), null, "numVerificacion");
+
+		try {
+			numVerificacionBean.enviarCorreo(correspondencia);	
+		}
+		catch(Exception ex) {
+			throw ex;
+		}
+	
+	}
+
 	public String pasoDos() throws Exception {
-		boolean existsCorrespondencia = this.existeCorrespondencia();
-		if (!existsCorrespondencia) {
-			//return "/faces/mispqrds.xhtml";
-			RequestContext.getCurrentInstance().execute("mensajeErrorMantenimiento('" + getUrlOrigen()  + "')");
+		boolean checkDirectorio = this.validaDirectorio();
+		if (!checkDirectorio) {
+			this.intentos++;
+			boolean conDosMinutos = (this.intentos >= 3);
+			RequestContext.getCurrentInstance().execute("mensajeErrorNroVerificacion(" + conDosMinutos + ", '" + getUrlOrigen()  + "')");
 			return null; //permanecer en la pagina
-			
 		}
 		
-		return "/faces/mispqrds.xhtml"; 
+		Correspondencia correspondencia = existeCorrespondenciaBasic(); 
+		if(correspondencia == null) {
+			RequestContext.getCurrentInstance().execute("mensajeErrorMantenimiento('" + getUrlOrigen()  + "')");
+			return null; //permanecer en la pagina, pero el se redirecciona
+		}
+		
+		return "/faces/mispqrds.xhtml";//?email="+ this.emailConsulta+ "&nroVerificacion="+ this.nroVerificacion; 
 	}
 
 	
@@ -666,6 +738,14 @@ public class OpcionesPQRD implements Serializable {
 
 	public void setPasoActual(int pasoActual) {
 		this.pasoActual = pasoActual;
+	}
+
+	public int getIntentos() {
+		return intentos;
+	}
+
+	public void setIntentos(int intentos) {
+		this.intentos = intentos;
 	}
 
 	static {

@@ -29,6 +29,8 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Controladores.OpcionesPQRD;
+
 public class DataBaseConection {
 	public Connection conex;
 	public ResultSet result;
@@ -374,7 +376,8 @@ public class DataBaseConection {
 			PreparedStatement pstmt = conex.prepareStatement(query);
 			affectedrows = pstmt.executeUpdate();
 		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
+			System.out.println("Fallo actualizarConsultasPQRD :" + ex.getMessage());
+			Logger.getLogger(DataBaseConection.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return affectedrows > 0;
 	}
