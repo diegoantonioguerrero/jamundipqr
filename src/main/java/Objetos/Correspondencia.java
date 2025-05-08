@@ -11,6 +11,8 @@ public class Correspondencia{
 	private String estado;
 	private String trazabilidad;
 	private String tablaenviorecibo;
+	private String tieneAdjuntos;
+	private String requiereRespuesta;
 	
 
 	public int getFldidCorrespondencia() {
@@ -91,5 +93,21 @@ public class Correspondencia{
 
 	public void setTablaenviorecibo(String tablaenviorecibo) {
 		this.tablaenviorecibo = tablaenviorecibo;
+	}
+
+	public String getTieneAdjuntos() {
+		return tieneAdjuntos;
+	}
+
+	public void setTieneAdjuntos(String tieneAdjuntos) {
+		this.tieneAdjuntos = tieneAdjuntos;
+	}
+
+	public String getRequiereRespuesta() {
+		return requiereRespuesta;
+	}
+
+	public void setRequiereRespuesta(String requiereRespuesta) {
+		this.requiereRespuesta = requiereRespuesta;
 	}
 }

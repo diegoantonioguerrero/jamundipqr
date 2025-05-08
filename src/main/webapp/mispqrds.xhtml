@@ -18,8 +18,7 @@ and open the template in the editor.
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="lang" content="es"/>
         <h:outputStylesheet library="css" name="consultarResponsive.css"/>
-        <!--  <h:outputScript library="js" name="captcha.js" target="body"/>
-        -->
+        <h:outputScript library="js" name="mispqrds.js"/>
         <h:outputScript library="js" name="jsglobal.js" target="body"/>
         <h:outputScript library="js" name="browserjs.js" target="body"/>
         
@@ -67,9 +66,19 @@ and open the template in the editor.
                 font-family: fuenteTitulos !important
             }
             
-            .ui-align-left {
-			    text-align: left;
+			.labelpqr{
+				text-align: left;
+			 	padding: 0;
 			}
+			
+			.datapqr{
+				text-align: left;
+			 	padding-left: 10px;
+			 	padding-right: 0;
+			 	padding-top:0;
+			 	padding-bottom:0;
+			}
+			
 			
 			.btnAdjust3{
             	margin-left : 5px;
@@ -78,11 +87,16 @@ and open the template in the editor.
             	min-width: 370px;
             }
             
+            .btnAdjustPaginator{
+            	margin-left : 5px;
+            	margin-right : 5px;
+            	padding: 0;
+            }
+            
 
         </style>
     </h:head>
     <h:body class="bground"
-            
             style="background-image: url(../resources/img/#{indexPQRD.path_background_image}); margin: 0">
 
         <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
@@ -95,6 +109,20 @@ and open the template in the editor.
                 sticky="false" 
                 life="3000"/>
             <div align="center">
+            <!--Diálogo cargando...-->
+	            <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
+	          			id="dialogLoader" modal="true" resizable="false" 
+	          			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
+	          			width="300px" style="text-align: center;">
+	
+				    <h:panelGroup layout="block" style="padding: 20px;">
+				        <i class="pi pi-spin pi-spinner" style="font-size: 2em; color: #555;"></i>
+				        <br/><br/>
+				        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
+				    </h:panelGroup>
+				
+				</p:dialog>
+            
             	<p:panel class="panelConfig">
 					<h:inputHidden id="emailConsulta" value="#{misPQRD.emailConsulta}" />
 					<h:inputHidden id="nroVerificacion" value="#{misPQRD.nroVerificacion}" />
@@ -103,84 +131,153 @@ and open the template in the editor.
                     </f:facet>
                     
                     <div class="ui-g" style="size: auto">
-	                    <ui:repeat value="#{misPQRD.registros}" var="item">
-						    <div class="item-block">
+	                    <ui:repeat value="#{misPQRD.registros}" var="item" varStatus="status">
+						    <div id="registro_#{status.index}" class="item-block registro-item" style="display: none;">
 						    
-						    <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
-	                           <strong>
-						        		#{item.tablaenviorecibo eq 'ENTRA' ?  'Enviada en:' : 'Recibida en:'}
-						        </strong>
+						    <div class="ui-g-12 ui-md-2 labelpqr">
+								<strong> 
+									<p:outputLabel value="#{item.tablaenviorecibo eq 'ENTRA' ?  'Enviada en:' : 'Recibida en:'}" />
+								</strong>
+							</div>
+							<div class="ui-g-12 ui-md-10 datapqr">
+								<p:outputLabel value="#{item.fecha}" />
+							</div>
+							<div class="ui-g-12 ui-md-2 labelpqr">
+								<strong> 
+									<p:outputLabel value="Radicado:" />
+								</strong>
+							</div>
+	                        <div class="ui-g-12 ui-md-10 datapqr">
+	                        	<p:outputLabel value="#{item.radicado}" />
 	                        </div>
-	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
-	                        	#{item.fecha}
+	                        <div class="ui-g-12 ui-md-2 labelpqr">
+	                        	<strong>
+	                        		<p:outputLabel value="Asunto:" />
+	                        	</strong>
 	                        </div>
-	                        <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
-	                        	<strong>Radicado:</strong>
+	                        <div class="ui-g-12 ui-md-10 datapqr">
+	                        	<p:outputLabel value="#{item.elAsunto}" />
 	                        </div>
-	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
-	                        	#{item.radicado}
+	                        <div class="ui-g-12 ui-md-2 labelpqr">
+	                        	<strong>
+	                        		<p:outputLabel value="Estado:" />
+	                        	</strong>
 	                        </div>
-	                        <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
-	                        	<strong>Asunto:</strong>
-	                        </div>
-	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
-	                        	#{item.elAsunto}
-	                        </div>
-	                        <div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
-	                        	<strong>Estado:</strong>
-	                        </div>
-	                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
-	                        	#{item.estado}
+	                        <div class="ui-g-12 ui-md-10 datapqr">
+	                        	<p:outputLabel value="#{item.estado}" />
 	                        </div>
 	                        <h:panelGroup rendered="#{not empty item.trazabilidad}">
-	    						<div class="ui-g-12 ui-md-3 ui-align-left" style="padding-left: 0">
-		                        	<strong>Trazabilidad:</strong>
+	    						<div class="ui-g-12 ui-md-2 labelpqr">
+		                        	<strong>
+		                        		<p:outputLabel value="Trazabilidad:" />
+		                        	</strong>
 		                        </div>
-		                        <div class="ui-g-12 ui-md-9 ui-align-left" style="padding-left: 0">
-		                        	<h:outputText value="#{item.trazabilidad}" escape="false" />
+		                        <div class="ui-g-12 ui-md-10 datapqr">
+		                        	<h:outputText class="labelFont" value="#{item.trazabilidad}" escape="false" />
 		                        </div>
 							</h:panelGroup>
 	                        
 		    					<div class="ui-g-12" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
-		                            <p:button 
-		                                class="btn btnAdjust3" 
-		                                value="Descargar Correspondencia Enviada" 
-		                                onclick="alert('Pendiente desarrollo...');return false;"
-		                                href="/faces/opcionesconsulta.xhtml"/>
-		                       
+		
+
+										<p:commandButton 
+					                        class="btn btnAdjust3"
+											value="Descargar Correspondencia Recibida"
+											action="#{misPQRD.verificaExisteArchivo}"
+											>
+	        
+									        <!-- Aquí pasas el ID del archivo al bean -->
+									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
+									    </p:commandButton>
+										<p:commandButton
+											id="btnDescarga#{item.fldidCorrespondencia}"
+											style="display:none;" 
+					                        class="btn btnAdjust3"
+											value="Descargar Correspondencia Recibida hiddena"
+											action="#{misPQRD.descargarArchivo}"
+											ajax="false">
+	            							
+	            							<f:attribute name="title" value="#{item.fldidCorrespondencia}#{''}" />
+	        
+									        <!-- Aquí pasas el ID del archivo al bean -->
+									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
+									    </p:commandButton>
+									    
+									    <p:commandButton 
+					                        class="btn btnAdjust3"
+											value="Descargar Correspondencia Enviada"
+											action="#{misPQRD.verificaExisteArchivo}"
+											>
+	        
+									        <!-- Aquí pasas el ID del archivo al bean -->
+									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
+									    </p:commandButton>
+									    
+			
 									<h:panelGroup rendered="#{item.estado eq 'RESPONDIDO'}">
-									<!-- Este contenido solo se mostrará si tipoCara == "REVERSO" -->
-									         <p:button 
-				                                class="btn btnAdjust3" 
-				                                value="Descargar Correspondencia Respuesta" 
-				                                onclick="alert('Pendiente desarrollo...');return false;"
-				                                href="/faces/opcionesconsulta.xhtml"/>
+											<!-- Este contenido solo se mostrará si tipoCara == "REVERSO" -->
+
+				                       		<p:commandButton 
+						                        class="btn btnAdjust3"
+						                         
+												value="Descargar Correspondencia Respuesta"
+												action="#{misPQRD.descargarArchivo}"
+												onclick="alert('Pendiente desarrollo...');return false;"
+												ajax="false">
+		        
+										        <!-- Aquí pasas el ID del archivo al bean -->
+										        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
+										    </p:commandButton>
 									</h:panelGroup>
 		                       
-		                       
-		                       
-		                            <p:button 
-		                                class="btn btnAdjust3"
-										onclick="alert('Pendiente desarrollo...');return false;"
-		                                value="Descargar Correspondencia Recibida" 
-		                                href="/faces/opcionesconsulta.xhtml"/>
+		                            
 		                                
 		                        </div>
+						        <div class="ui-g-12">
+						        	<hr />
+						        </div>
 						        
-						        <hr />
 						    </div>
 						</ui:repeat>
                     </div>
                     
+                    
+                    <!-- Controles de paginación -->
+				    <div class="ui-g">
+				        <div class="ui-g-12" style="text-align: center; margin-top: 1em;">
+				            <p:button 
+                                class="btn btnAdjustPaginator"
+								onclick="return cambiarPagina(-1);"
+                                value="Anterior" 
+                                />
+				
+				            Página
+				            <select id="selectPagina" onchange="irAPagina(this.value)">
+				                <!-- JS llenará las opciones dinámicamente -->
+				            </select>
+				            de <span id="totalPaginasLabel">?</span>
+				            <p:button 
+                                class="btn btnAdjustPaginator"
+								onclick="return cambiarPagina(1);"
+                                value="Siguiente" 
+                                />
+				        </div>
+				    </div>
+    
                     <div class="ui-g idAdjust" style="size: auto">                        
                         <div class="ui-g-12 ui-md-12" style="size: auto; padding: 0">
+                        	<br/>
                             <p:button 
                             class="btn" 
-                            value="Consultar" 
-                                href="/faces/consultar.xhtml"/>
+                            value="Salir" 
+                            href="#{indexPQRD.urlOrigen}"/>
                                 
                         </div>
                     </div>
+                    
+                    <h:outputScript>
+					    mostrarPagina(0);
+					</h:outputScript>
                 </p:panel>
              </div>
         </h:form>
@@ -188,5 +285,4 @@ and open the template in the editor.
     
     <footer class="footer" title="#{opcionesPQRD.textoAlternativoPiedepagina}"
     	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
-
 </html>

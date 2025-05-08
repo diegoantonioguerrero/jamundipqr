@@ -101,6 +101,7 @@ function validadorNumVerificacion() {
     }
     
     if (emailConsultaOk) {
+    	PF('dialogLoader').show();
         return true;
         
     } else {
@@ -132,6 +133,7 @@ function validadorEmail() {
     
     
     if (emailConsultaOk) {
+    	PF('dialogLoader').show();
         return true;
         
     } else {
@@ -185,7 +187,7 @@ function mensajeErrorDbg(errorDbg) {
 }
 
 function mensajeErrorNroVerificacion(conDosMinutos, url){
-console.log("conDosMinutos", conDosMinutos, url);
+//console.log("conDosMinutos", conDosMinutos, url);
 	if (conDosMinutos){
 		mensajeDosMinutos(url);
 	} else{
@@ -222,4 +224,10 @@ var intervalo = setInterval(() => {
 }, 1000);
 
 
+}
+
+function hideLoader(){
+	if (PF('dialogLoader')) {
+		PF('dialogLoader').hide();
+	}
 }

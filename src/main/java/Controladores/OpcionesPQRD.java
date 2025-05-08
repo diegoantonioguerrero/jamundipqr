@@ -393,6 +393,35 @@ public boolean validaDirectorio() throws Exception {
 	
 	}
 
+
+public int getDirectorio() throws Exception {
+	
+	int numeroverificacion = 0;
+		
+		try {
+
+			final DataBaseConection dataBaseConection1 = getConnection(); 
+			String query2 = "SELECT numeroverificacion\r\n"
+					+ "FROM directorioemailprqd \r\n"
+					+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE( EMAIL, ' ', '')), ';'));";
+			query2 = query2.replaceFirst("\\?", this.emailConsulta);
+			dataBaseConection1.consultarDB(query2);
+			final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+			
+			while (resultConsulta1.next()) {
+				numeroverificacion = resultConsulta1.getInt("numeroverificacion");
+			}
+			
+		} catch (Exception ex) {
+			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			throw ex;
+		}
+		
+		return numeroverificacion;
+
+}
+
+
 	public boolean existeCorrespondencia() throws Exception {
 		
 		long records = 0;
@@ -654,6 +683,37 @@ public boolean validaDirectorio() throws Exception {
 			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return this.file;
+	}
+	
+	public String reenviarNumeroVerificacion() {
+		
+		if (this.emailConsulta == null) {
+			RequestContext.getCurrentInstance().execute("mensajeErrorDbg('Vaya atrás y digite nuevamente el correo')");
+			return null;
+		}
+		
+		try {
+
+			Correspondencia correspondencia = existeCorrespondenciaBasic();
+			int numVerificacion = getDirectorio();
+			correspondencia.setNumVerificacion(numVerificacion);
+			enviarCorreo(correspondencia);
+			RequestContext.getCurrentInstance().execute("mensajeCorreo()");
+			
+		} catch (Exception ex) {
+			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			String msg = ex.getMessage();
+			msg = msg.replace("\r\n", "\\r\\n"); 
+			RequestContext.getCurrentInstance().execute("mensajeErrorDbg('" + msg + "')");
+		}
+		finally {
+			if(dataBaseConection1 != null) {
+				dataBaseConection1.logoutDB();	
+			}
+		}
+		
+		return null; 
+		
 	}
 
 	public void setNroRadicado(final String nroRadicado) {

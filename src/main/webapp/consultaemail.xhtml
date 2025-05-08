@@ -80,6 +80,14 @@ and open the template in the editor.
             	background-color: gray !important;
             	cursor: default;
             }
+            
+            .ui-widget-content a.linkAcceso {
+			    font-size: 90% !important;
+			    text-decoration: underline;
+			    font-weight: bold;
+			    color: #036fab;
+			    text-align: center;
+			}		
 
         </style>
     </h:head>
@@ -161,12 +169,25 @@ and open the template in the editor.
 	                                class="timeLabel"
 	                                value="Por favor espere {}"/>   
 	                        </div>
+	                        <div class="ui-g" style="size: auto; padding: 0;" align="center">
+		                        <p:commandLink 
+								    id="linkAcceso"
+								    class="linkAcceso"
+								    ajax="true"
+								    update="@form"
+								    action="#{opcionesPQRD.reenviarNumeroVerificacion}"
+								    onclick="PF('dialogLoader').show();"
+								    oncomplete="hideLoader();"
+								    value="Reenviar número de verificación"
+								/>
+	                        </div>
 	                    </div>
 					    
 					</h:panelGroup>
 
                    
                     <div class="ui-g" style="padding: 0">
+                    	<br/>
     					<div class="ui-g-12" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
                             <p:commandButton 
                                 id="EnviarConsulta"
@@ -175,6 +196,7 @@ and open the template in the editor.
                                 update="@form"
                                 action="#{opcionesPQRD.validarEmail}"
                                 onclick="return validateData();"
+                                oncomplete="hideLoader();"
                                 value="Continuar"
                                 >
                             </p:commandButton>
@@ -226,6 +248,19 @@ and open the template in the editor.
             </p:dialog>
             <!--Diálogo de correspondenciaNoExiste-->
             
+            <!--Diálogo cargando...-->
+            <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
+          			id="dialogLoader" modal="true" resizable="false" 
+          			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
+          			width="300px" style="text-align: center;">
+
+			    <h:panelGroup layout="block" style="padding: 20px;">
+			        <i class="pi pi-spin pi-spinner" style="font-size: 2em; color: #555;"></i>
+			        <br/><br/>
+			        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
+			    </h:panelGroup>
+			
+			</p:dialog>
         </h:form>
     </h:body>
     
