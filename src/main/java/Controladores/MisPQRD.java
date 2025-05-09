@@ -65,8 +65,9 @@ public class MisPQRD implements Serializable {
 	private String emailConsulta;
 	private String nroVerificacion;
 	private List<Correspondencia> registros;
+   	private Long idArchivo;
 	DataBaseConection dataBaseConection1;
-	private int tiempoSesionConsulta;
+	private int tiempoSesionConsulta = 5;
 	
 	public String getNroVerificacion() {
 		return this.nroVerificacion;
@@ -94,16 +95,16 @@ public class MisPQRD implements Serializable {
 	}
 
 	public MisPQRD() {
-		String tiemposesionconsulta = "5";
+		String tiemposesionconsulta = null;
 		try {
-			tiemposesionconsulta = Util.getProperties("tiemposesionconsultas");
+			tiemposesionconsulta = Util.getProperties("tiemposesionconsulta");
+			if (tiemposesionconsulta != null) {
+				setTiempoSesionConsulta(Integer.valueOf(tiemposesionconsulta));	
+			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		if (tiemposesionconsulta != null) {
-			setTiempoSesionConsulta(Integer.valueOf(tiemposesionconsulta));	
 		}
 		
 		this.setRegistros(new ArrayList<Correspondencia>());
@@ -183,7 +184,8 @@ public class MisPQRD implements Serializable {
 						+ "ON CORRESPONDENCIA.esrespuesta = tablasino.fldidtablasino\r\n"
 						+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
 						+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"						
-						+ "WHERE lower('?') = ANY (string_to_array(TRIM(REPLACE(lower(email) , ' ', '')), ';'))\r\n"
+						+ "WHERE \r\n"
+						+ "lower('?') = ANY (string_to_array(TRIM(REPLACE(REPLACE(lower(CORRESPONDENCIA.email) , ' ', ''), ',', ';')), ';'))\r\n"
 						+ "AND tablaenviorecibo.tablaenviorecibo = 'ENTRA'\r\n"
 						+ "AND tablaexternointerno = 'EXTERNO'\r\n"
 						+ "AND primergrabado = 'SI'\r\n"
@@ -224,7 +226,7 @@ public class MisPQRD implements Serializable {
 						+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
 						+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
 						+ "WHERE \r\n"
-						+ "lower('?') = ANY (string_to_array(TRIM(REPLACE(lower(email) , ' ', '')), ';'))\r\n"
+						+ "lower('?') = ANY (string_to_array(TRIM(REPLACE(REPLACE(lower(CORRESPONDENCIA.email) , ' ', ''), ',', ';')), ';'))\r\n"
 						+ "AND tablaenviorecibo.tablaenviorecibo = 'SALE'\r\n"
 						+ "AND tablaexternointerno = 'EXTERNO'\r\n"
 						+ "AND primergrabado = 'SI'\r\n"
@@ -265,7 +267,6 @@ public class MisPQRD implements Serializable {
 
     	}
    	
-   	private Long idArchivo;
 
    	public void setIdArchivo(Long idArchivo) {
    	    this.idArchivo = idArchivo;
@@ -274,73 +275,26 @@ public class MisPQRD implements Serializable {
    	public Long getIdArchivo() {
    	    return idArchivo;
    	}
-   	/*
-   	public StreamedContent getDescargarArchivoNew() {
-        byte[] datos = obtenerDesdeDisco(idArchivo);
-        InputStream stream = new ByteArrayInputStream(datos);
-
-        
-        try {
-            // Supongamos que ya tienes el archivo en memoria o lo cargas por ID
-            Archivo archivo = obtenerArchivo();
-            byte[] contenido = archivo.getBytesData();
-            String nombreArchivo = archivo.getNombre();
-            String extension = "";
-            if(nombreArchivo != null) {
-            	int index = nombreArchivo.lastIndexOf(".");
-            	if(index >= 0) {
-            		extension = nombreArchivo.substring(index);
-            	}
-            }
-            
-            nombreArchivo = "Radicado " + archivo.getNumeroradicacioninterno() + extension;
-            
-            String mime = "application/octet-stream";
-            if(nombreArchivo != null && nombreArchivo.trim().toLowerCase().endsWith("pdf")) {
-            	mime = "application/pdf";
-            } 
-            	
-            FacesContext fc = FacesContext.getCurrentInstance();
-            ExternalContext ec = fc.getExternalContext();
-
-            ec.responseReset();
-            ec.setResponseContentType(mime);
-            ec.setResponseContentLength(contenido.length);
-            ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + nombreArchivo + "\"");
-
-            OutputStream out = ec.getResponseOutputStream();
-            out.write(contenido);
-            out.flush();
-
-            fc.responseComplete(); // <--- importante
-            
-            return DefaultStreamedContent.builder()
-                    .name("archivo.pdf")
-                    .contentType("application/pdf")
-                    .stream(() -> stream)
-                    .build();
-            
-        	} catch (Exception ex) {
-    			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
-    			String msg = ex.getMessage();
-    			msg = msg.replace("\r\n", "\\r\\n"); 
-    			RequestContext.getCurrentInstance().execute("mensajeErrorDbg('" + msg + "')");
-    		}
-    		finally {
-    			if(dataBaseConection1 != null) {
-    				dataBaseConection1.logoutDB();	
-    			}
-    		}
-
-        
-        
-    }*/
    	
-    public void descargarArchivo() throws IOException {
-    	
+    public void descargarArchivoUsuario(){
+    	descargarArchivoGeneric("usuario");
+    }
+	public void descargarArchivoRespuesta(){
+		descargarArchivoGeneric("respuesta");
+	}
+    		
+    public void descargarArchivoGeneric(String tipo){
+
+        ArchivoFull archivoFull;
     	try {
-        // Supongamos que ya tienes el archivo en memoria o lo cargas por ID
-        ArchivoFull archivoFull = obtenerArchivo();
+
+        if(tipo.equals("usuario")) {
+        	archivoFull = obtenerArchivo();
+        }
+        else {
+        	archivoFull = obtenerArchivoRespuesta();
+        }
+        
         
         byte[] contenido;
         String nombreArchivo = "";
@@ -350,7 +304,10 @@ public class MisPQRD implements Serializable {
         {
         	contenido = archivoFull.comprimirArchivos();
         	extension = ".zip";
-        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno() + extension;
+        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno();
+        	nombreArchivo += tipo.equals("usuario") ? "" :
+        		" respuesta de " + archivoFull.getNumeroradicacioninterno(); 
+        	nombreArchivo += extension;
         }
         else {
         	Archivo archivo = archivoFull.getArchivos().get(0);
@@ -362,7 +319,10 @@ public class MisPQRD implements Serializable {
             		extension = nombreArchivo.substring(index);
             	}
             }
-        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno() + extension;
+        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno(); 
+        	nombreArchivo += tipo.equals("usuario") ? "" :
+        		" respuesta de " + archivoFull.getNumeroradicacioninterno(); 
+        	nombreArchivo += extension;
         }
          
         
@@ -394,6 +354,7 @@ public class MisPQRD implements Serializable {
 			RequestContext.getCurrentInstance().execute("mensajeErrorDbg('" + msg + "')");
 		}
 		finally {
+			archivoFull = null;
 			if(dataBaseConection1 != null) {
 				dataBaseConection1.logoutDB();	
 			}
@@ -402,16 +363,31 @@ public class MisPQRD implements Serializable {
     }
     
     public String verificaExisteArchivo() {
-    
+    	return verificaExisteArchivoEnvio("usuario"); 
+    }
+
+    public String verificaExisteArchivoRespuesta() {
+    	return verificaExisteArchivoEnvio("respuesta");
+    }
+
+    public String verificaExisteArchivoEnvio(String tipo) {
+   
     	try {
-    		Archivo archivo = existeArchivo();
+    		Archivo archivo;
+    		if (tipo.equals("usuario")) {
+    			archivo = existeArchivo();	
+    		}
+    		else {
+    			archivo = existeArchivoRespuesta();
+    		}
+    		
     		if(archivo == null) {
     			String msg = "El archivo adjunto todavía no ha sido cargado en el sistema; favor intentar más tarde";
     			RequestContext.getCurrentInstance().execute("mensajeArchivo('" + msg + "')");
     			return null;
     		}
     		
-    		RequestContext.getCurrentInstance().execute("descargaArchivo('" + this.idArchivo + "')");
+    		RequestContext.getCurrentInstance().execute("descargaArchivo('" + tipo + "', '" + this.idArchivo + "')");
     		return null;
     		
 	    } catch (Exception ex) {
@@ -427,6 +403,8 @@ public class MisPQRD implements Serializable {
 		}
     	return null;
     }
+    
+    
     
     public ArchivoFull obtenerArchivo() throws Exception {
 
@@ -467,7 +445,53 @@ public class MisPQRD implements Serializable {
 		return archivoFull; 
 
 	}
-    
+
+    public ArchivoFull obtenerArchivoRespuesta() throws Exception {
+
+		ArchivoFull archivoFull = new ArchivoFull();
+		try {
+
+			final DataBaseConection dataBaseConection1 = getConnection(); 
+			String query2 = "SELECT archivo,nombrearchivoarchivo, tablatipoadjuntocorrespon, numeroradicacioninterno\r\n"
+					+ "FROM CORRESPONDENCIA \r\n"
+					+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
+					+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
+					+ "INNER JOIN tablarequiererespuestacor\r\n"
+					+ "ON CORRESPONDENCIA.requiererespuesta = tablarequiererespuestacor.fldidtablarequiererespuestacor\r\n"
+					+ "INNER JOIN IMAGENESANEXAS \r\n"
+					+ "ON CORRESPONDENCIA.fldidcorrespondencia = IMAGENESANEXAS.fldidcorrespondencia\r\n"
+					+ "INNER JOIN tablatipoadjuntocorrespon\r\n"
+					+ "ON IMAGENESANEXAS.tipoadjunto = tablatipoadjuntocorrespon.fldidtablatipoadjuntocorrespon\r\n"
+					+ "WHERE CORRESPONDENCIA.fldidcorrespondencia = ? "
+					+ "AND tablarequiererespuestacor = 'RESPONDIDO'\r\n"
+					+ "AND primergrabado = 'SI'\r\n"
+					+ "AND tablasinoadjunto.tablasino = 'SI'\r\n"
+					+ "AND tablatipoadjuntocorrespon = 'ORIGINAL'";
+			
+
+			query2 = query2.replaceFirst("\\?", this.idArchivo + "");
+			
+			dataBaseConection1.consultarDB(query2);
+			final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+			
+			while (resultConsulta1.next()) {
+				Archivo archivo = new Archivo();	
+				archivo.setBytesData(resultConsulta1.getBytes("archivo"));
+				archivo.setNombre(resultConsulta1.getString("nombrearchivoarchivo"));
+				archivo.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+				archivoFull.getArchivos().add(archivo);
+				archivoFull.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+			}
+			
+		} catch (Exception ex) {
+			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			throw ex;
+		}
+		
+		return archivoFull; 
+
+	}
+
     
     public Archivo existeArchivo() throws Exception {
 
@@ -485,6 +509,49 @@ public class MisPQRD implements Serializable {
 					+ "ON IMAGENESANEXAS.tipoadjunto = tablatipoadjuntocorrespon.fldidtablatipoadjuntocorrespon\r\n"
 					+ "WHERE CORRESPONDENCIA.fldidcorrespondencia = ? AND tablatipoadjuntocorrespon = 'ORIGINAL'\r\n"
 					+ "AND tablasinoadjunto.tablasino = 'SI'";
+			query2 = query2.replaceFirst("\\?", this.idArchivo + "");
+			
+			dataBaseConection1.consultarDB(query2);
+			final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+			
+			while (resultConsulta1.next()) {
+				archivo = new Archivo();
+				archivo.setNombre(resultConsulta1.getString("nombrearchivoarchivo"));
+				archivo.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+			}
+			
+		} catch (Exception ex) {
+			Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			throw ex;
+		}
+		
+		return archivo; 
+
+	}
+    
+    public Archivo existeArchivoRespuesta() throws Exception {
+
+		Archivo archivo = null;
+		try {
+
+			final DataBaseConection dataBaseConection1 = getConnection(); 
+			String query2 = "SELECT nombrearchivoarchivo, tablatipoadjuntocorrespon, numeroradicacioninterno\r\n"
+					+ "FROM CORRESPONDENCIA \r\n"
+					+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
+					+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
+					+ "INNER JOIN tablarequiererespuestacor\r\n"
+					+ "ON CORRESPONDENCIA.requiererespuesta = tablarequiererespuestacor.fldidtablarequiererespuestacor\r\n"
+					+ "INNER JOIN IMAGENESANEXAS \r\n"
+					+ "ON CORRESPONDENCIA.fldidcorrespondencia = IMAGENESANEXAS.fldidcorrespondencia\r\n"
+					+ "INNER JOIN tablatipoadjuntocorrespon\r\n"
+					+ "ON IMAGENESANEXAS.tipoadjunto = tablatipoadjuntocorrespon.fldidtablatipoadjuntocorrespon\r\n"
+					+ "WHERE CORRESPONDENCIA.fldidcorrespondencia = ? "
+					+ "AND tablarequiererespuestacor = 'RESPONDIDO'\r\n"
+					+ "AND primergrabado = 'SI'\r\n"
+					+ "AND tablasinoadjunto.tablasino = 'SI'\r\n"
+					+ "AND tablatipoadjuntocorrespon = 'ORIGINAL'";
+			
+			
 			query2 = query2.replaceFirst("\\?", this.idArchivo + "");
 			
 			dataBaseConection1.consultarDB(query2);

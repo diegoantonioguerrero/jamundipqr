@@ -92,6 +92,25 @@ and open the template in the editor.
             	margin-right : 5px;
             	padding: 0;
             }
+            .sessionTime{
+            	padding-left: 0;
+            	text-align: right;
+            	color:red;
+            }
+            
+            .simple-spinner {
+				  width: 40px;
+				  height: 40px;
+				  border: 4px solid #ccc;
+				  border-top: 4px solid #555;
+				  border-radius: 50%;
+				  animation: spin 1s linear infinite;
+				  margin: 20px auto;
+				}
+				
+				@keyframes spin {
+				  to { transform: rotate(360deg); }
+			}
             
 
         </style>
@@ -116,8 +135,8 @@ and open the template in the editor.
 	          			width="300px" style="text-align: center;">
 	
 				    <h:panelGroup layout="block" style="padding: 20px;">
-				        <i class="pi pi-spin pi-spinner" style="font-size: 2em; color: #555;"></i>
-				        <br/><br/>
+				        <div class="simple-spinner"></div>
+			        	<br/>
 				        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
 				    </h:panelGroup>
 				
@@ -131,18 +150,12 @@ and open the template in the editor.
                     </f:facet>
                     
                     <div class="ui-g" style="size: auto">
-                    
+                    	<div class="ui-g-12 sessionTime">                   
                             <p:outputLabel
 	                                id="timeLabel"
-	                                class="timeLabel"
+	                                class="timeLabel contentFont"
 	                                value="Por favor espere {}"/>
-                    	<!-- 
-                    	
-                    	<div class="ui-g-12" style="padding-left: 0">
-	                       
 	                    </div>
-	                        
-                     -->
                     </div>
                     <div class="ui-g" style="size: auto">
 	                    <ui:repeat value="#{misPQRD.registros}" var="item" varStatus="status">
@@ -200,41 +213,43 @@ and open the template in the editor.
 					                        class="btn btnAdjust3"
 											value="#{item.tablaenviorecibo eq 'ENTRA' ?  'Descargar Correspondencia Enviada' : 'Descargar Correspondencia Recibida'}"
 											action="#{misPQRD.verificaExisteArchivo}"
+											onclick="PF('dialogLoader').show();"
 											>
-	        
-									        <!-- Aquí pasas el ID del archivo al bean -->
 									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
 									    </p:commandButton>
 										<p:commandButton
-											id="btnDescarga#{item.fldidCorrespondencia}"
 											style="display:none;" 
-					                        class="btn btnAdjust3"
-											value="Descargar Correspondencia Recibida hiddena"
-											action="#{misPQRD.descargarArchivo}"
+											value="HIDDEN"
+											action="#{misPQRD.descargarArchivoUsuario}"
 											ajax="false">
 	            							
 	            							<f:attribute name="title" value="#{item.fldidCorrespondencia}#{''}" />
-	        
-									        <!-- Aquí pasas el ID del archivo al bean -->
 									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
 									    </p:commandButton>
 									    
 									    
 			
 									<h:panelGroup rendered="#{item.estado eq 'RESPONDIDO'}">
-											<!-- Este contenido solo se mostrará si tipoCara == "REVERSO" -->
 
-				                       		<p:commandButton 
-						                        class="btn btnAdjust3"
-						                         
-												value="Descargar Correspondencia Respuesta"
-												action="#{misPQRD.descargarArchivo}"
-												onclick="alert('Pendiente desarrollo...');return false;"
-												ajax="false">
-		        
-										        <!-- Aquí pasas el ID del archivo al bean -->
-										        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
-										    </p:commandButton>
+										<p:commandButton 
+					                        class="btn btnAdjust3"
+											value="Descargar Correspondencia Respuesta"
+											action="#{misPQRD.verificaExisteArchivoRespuesta}"
+											onclick="PF('dialogLoader').show();"
+											>
+									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
+									    </p:commandButton>
+										<p:commandButton
+											style="display:none;"
+											value="HIDDEN"
+											action="#{misPQRD.descargarArchivoRespuesta}"
+											ajax="false">
+	            							
+	            							<f:attribute name="title" value="respuesta_#{item.fldidCorrespondencia}#{''}" />
+	            							<f:attribute name="name" value="respuesta_#{item.fldidCorrespondencia}#{''}" />
+									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
+									    </p:commandButton>
+									    
 									</h:panelGroup>
 		                       
 		                            
@@ -291,7 +306,7 @@ and open the template in the editor.
              </div>
         </h:form>
         <h:outputScript>
-			iniciarTimerSesion(#{misPQRD.tiempoSesionConsulta},'indexPQRD.urlOrigen}');
+			iniciarTimerSesion(#{misPQRD.tiempoSesionConsulta},'#{indexPQRD.urlOrigen}');
 		</h:outputScript>
     </h:body>
     

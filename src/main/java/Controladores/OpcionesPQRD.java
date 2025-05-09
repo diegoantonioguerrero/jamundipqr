@@ -1,6 +1,3 @@
-//Decompiled by Procyon v0.5.36
-// 
-
 package Controladores;
 
 import java.util.TimerTask;
@@ -17,17 +14,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import java.rmi.UnexpectedException;
-import java.text.DateFormat;
 import java.io.IOException;
 import org.primefaces.context.RequestContext;
-import java.text.SimpleDateFormat;
-import java.sql.Date;
-import java.util.Calendar;
-import java.sql.SQLException;
-//import java.util.Iterator;
 import java.sql.ResultSet;
-import java.util.Arrays;
-import java.util.ArrayList;
 import DataBaseConection.DataBaseConection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,18 +25,13 @@ import Utilidades.Util;
 import Objetos.Trazabilidad;
 import java.util.List;
 import java.util.Random;
-
 import org.primefaces.model.StreamedContent;
 import Objetos.ConsultaPQRD;
 import Objetos.Correspondencia;
-
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 
-//@ManagedBean
-//@RequestScoped
 @ManagedBean(name = "opcionesPQRD")
 @ViewScoped
 public class OpcionesPQRD implements Serializable {
@@ -120,7 +104,7 @@ public class OpcionesPQRD implements Serializable {
 			Logger.getLogger(OpcionesPQRD.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
-
+/*
 	public void posibleRespuesta() throws SQLException {
 		System.err.println("TERCERO");
 		final DataBaseConection dataBaseConection = new DataBaseConection();
@@ -324,7 +308,7 @@ public class OpcionesPQRD implements Serializable {
 		}
 		return "";
 	}
-	
+	*/
 	DataBaseConection dataBaseConection1;
 	
 	private DataBaseConection getConnection() {
@@ -468,7 +452,8 @@ public int getDirectorio() throws Exception {
 						+ "           ELSE '' \r\n"
 						+ "       END AS nombre\r\n"
 						+ "FROM CORRESPONDENCIA \r\n"
-						+ "WHERE lower('?') = ANY (string_to_array(TRIM(REPLACE(lower(CORRESPONDENCIA.EMAIL), ' ', '')), ';'))\r\n"
+						+ "WHERE \r\n"
+						+ "lower('?') = ANY (string_to_array(TRIM(REPLACE(REPLACE(lower(CORRESPONDENCIA.email) , ' ', ''), ',', ';')), ';'))\r\n"
 						+ "ORDER BY fldidCorrespondencia DESC\r\n"
 						+ "LIMIT 1;";
 

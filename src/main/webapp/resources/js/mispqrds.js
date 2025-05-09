@@ -38,6 +38,8 @@ function mostrarPagina(nuevaPagina) {
 	if(PF('dialogLoader')){
 		PF('dialogLoader').hide();
 	}
+	// Scroll arriba
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function cambiarPagina(cambio) {
@@ -67,48 +69,71 @@ function actualizarControles() {
     document.getElementById("totalPaginasLabel").innerText = totalPaginas;
 }
 
-function descargaArchivo(id){
-	var query = '[title="' + id +'"]';
+function descargaArchivo(tipo, id){
+	if(PF('dialogLoader')){
+		PF('dialogLoader').hide();	
+	}
+	
+	var query;
+	if(tipo === 'usuario'){
+		query = '[title="' + id +'"]';
+	}
+	else{
+		query = '[title="respuesta_' + id +'"]';
+	}
+	
+	//console.log(query);
+	
 	var btn = document.querySelector(query);
 	btn.click();
 }
 
 function mensajeArchivo(msg){
+	if(PF('dialogLoader')){
+		PF('dialogLoader').hide();	
+	}
 	alert(msg);
 }
 
 function iniciarTimerSesion(tiempo, url){
 
-	//console.log("iniciarTimerSesion",tiempo);
-/*var enviarConsulta = document.getElementById("formPrincipal:EnviarConsulta");
-var regresar = document.getElementById("formPrincipal:Regresar");
+    /*var enviarConsulta = document.getElementById("formPrincipal:EnviarConsulta");
+    var regresar = document.getElementById("formPrincipal:Regresar");
 
-enviarConsulta.disabled = true;
-regresar.disabled = true;
-*/
-var label = document.getElementById("formPrincipal:timeLabel");
-label.textContent = "Tienes " + tiempo + " segundos para finalizar tu sesión de consulta";
-label.style.display = 'inline';
+    enviarConsulta.disabled = true;
+    regresar.disabled = true;
+    */
+    var label = document.getElementById("formPrincipal:timeLabel");
+	if(label){
+		label.textContent = "Tienes " + tiempo + " minutos para finalizar tu sesión de consulta";
+		label.style.display = 'inline';	
+	}
+    
+    var inicio = new Date();
+    var intervalo = setInterval(() => {
+    	
+    	var fin = new Date();
+    	var diffMs = fin - inicio;
+    	var diffMin = Math.floor(diffMs / 60000);
+    	var diffSec = Math.floor((diffMs % 60000) / 1000);
+		var restaMin = tiempo - 1 - diffMin;
+		var restaSec = 59 - diffSec;  
+		if (diffMin < tiempo){
+			var msg = "Tienes " + restaMin + ":" + restaSec.toString().padStart(2, '0') + " minutos para finalizar tu sesión de consulta";		
+        	//console.log(msg);
+			if(label){
+            	label.textContent = msg;
+			}
+        
+        } else {
+            clearInterval(intervalo);
+            //label.textContent = "Redirigiendo...";
+            alert("El tiempo de sesión de consulta ha finalizado, muchas gracias");
+            window.location=url;
+        }
+    	
+    }, 1000);
 
-var inicio = new Date();
-
-
-var intervalo = setInterval(() => {
-	var fin = new Date('2024-05-09T10:45:30');
-	var diffMs = fin - inicio;
-	var diffMin = Math.floor(diffMs / 60000);
-	var diffSec = Math.floor((diffMs % 60000) / 1000);
-	
-    if (diffMin < tiempo  ) {
-        label.textContent = "Tienes " + diffMin + ":" + diffSec + " segundos para finalizar tu sesión de consulta";
-    } else {
-        clearInterval(intervalo);
-        //label.textContent = "Redirigiendo...";
-        alert("El tiempo de sesión de consulta ha finalizado, muchas gracias");
-        window.location=url;
+ 
+    
     }
-}, 1000);
-
-
-	
-}
