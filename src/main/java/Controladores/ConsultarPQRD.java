@@ -128,7 +128,7 @@ public class ConsultarPQRD {
 			try {
 				this.nroRadicado = this.nroRadicado.toUpperCase();
 				final DataBaseConection dataBaseConection1 = new DataBaseConection();
-				String query2 = "SELECT nroradicacion, email, numeroverificacion, fechaultimaconsulta, cantidadconsultaserradase FROM comunicacionprqd WHERE nroradicacion LIKE '?';";
+				String query2 = "SELECT nroradicacion, email, numeroverificacion, fechaultimaconsulta, cantidadconsultaserradase FROM comunicacionprqd WHERE tipopantalla='ANONIMO' AND nroradicacion LIKE '?';";
 				query2 = query2.replaceFirst("\\?", this.nroRadicado);
 				dataBaseConection1.consultarDB(query2);
 				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
@@ -259,7 +259,7 @@ public class ConsultarPQRD {
 						System.err.println("PRIMERO4");
 						dataBaseConection2.logoutDB();
 					} else {
-						RequestContext.getCurrentInstance().execute("mensajeError()");
+						RequestContext.getCurrentInstance().execute("mensajeErrorRadicado('" + this.nroRadicado + "')");
 						fechaUltCons = fechaHoy;
 						System.err.println("" + numConsErr);
 						++numConsErr;

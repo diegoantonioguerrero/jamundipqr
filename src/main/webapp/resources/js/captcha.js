@@ -5,8 +5,13 @@ var d = Math.ceil(Math.random() * 9)+ '';
 var e = Math.ceil(Math.random() * 9)+ '';
 
 var code = a + b + c + d + e;
+if(document.getElementById("txtCaptcha")){
 document.getElementById("txtCaptcha").value = code;
+}
+if(document.getElementById("CaptchaDiv")){
 document.getElementById("CaptchaDiv").innerHTML = a+'  '+b+'  '+c+'  '+d+'  '+e;
+}
+
 if(document.getElementById("captchaOk")){
 	document.getElementById("captchaOk").style.display = "none";
 }
@@ -24,8 +29,10 @@ function pagFormular(){
     document.getElementById("CaptchaIn").value = "";
 }
 
-function comprobarCaptcha(ingresado){ 
-    var ingresado;
+function comprobarCaptcha(ingresado){
+//ingresado = document.getElementById("txtCaptcha").value;
+//document.getElementById("CaptchaIn").value = ingresado;  
+
     if (ingresado === ''){
         alert('Favor ingrese un codigo');
     }
@@ -35,7 +42,7 @@ function comprobarCaptcha(ingresado){
         if (pagina === 2){
             window.location.href="faces/formularpqrd.xhtml";
         } else if (pagina === 1) {
-            window.location.href="faces/consultar.xhtml";
+            window.location.href="faces/opcionesconsulta.xhtml";
             localStorage.setItem("nroRadicadoConsultar","");
             localStorage.setItem("nroVerificacionConsultar","");
         }

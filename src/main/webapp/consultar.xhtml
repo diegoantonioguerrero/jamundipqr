@@ -24,7 +24,7 @@ and open the template in the editor.
         <style>
             
             .ui-button{
-                background-color: #{indexPQRD.colorFondoBotones} !important;
+                background-color: #{consultarPQRD.colorFondoBotones} !important;
                 color: #{indexPQRD.colorLetraBotones} !important;
 				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7) !important;
             }
@@ -126,7 +126,7 @@ and open the template in the editor.
                     
                                      
                     <div class="ui-g" style="size: auto; padding: 0">
-                        <div class="ui-g-12 ui-md-6 buttonAdjust1" style="size: auto; padding: 0">
+                        <div class="ui-g-12 ui-md-3 buttonAdjust1" style="size: auto; padding: 0">
                           <p:commandButton 
                             id="consultarPQRD" 
                             class="btn updateAdjust"  
@@ -134,7 +134,13 @@ and open the template in the editor.
                             value="Consultar"/> 
                           <script> /*OJO - UPDATE ESTABA EN @FORM*/ </script>
                         </div>
-                        <div class="ui-g-12 ui-md-6 buttonAdjust2" style="size: auto; padding: 0">
+                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
+                            <p:button 
+                                class="btn updateAdjust" 
+                                value="Regresar" 
+                                href="/faces/opcionesconsulta.xhtml"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
                             <p:button 
                             class="btn updateAdjust" 
                             value="Salir" 
@@ -330,24 +336,23 @@ and open the template in the editor.
     <footer class="footer" title="#{consultarPQRD.textoAlternativoPiedepagina}"
     	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
 <script type="text/javascript">
-console.info("hi");
-console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));
+//console.info("hi");
+//console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));
 var radicadoConsulta = document.getElementById("formPrincipal:radicadoConsulta");
-if( radicadoConsulta !== undefined){
+if( radicadoConsulta !== undefined &amp;&amp; radicadoConsulta !== null){
 	
+	radicadoConsulta.addEventListener("paste", function(evt){
+		evt.preventDefault();
+		evt.stopPropagation();
 	
-}
-radicadoConsulta.addEventListener("paste", function(evt){
-	evt.preventDefault();
-	evt.stopPropagation();
-
-    var data = evt.clipboardData.getData('text');
-	console.info("dt",data);
-
-	//var data = obj.value;
-	data = data.replace(new RegExp(' ', 'g'), '');
-    radicadoConsulta.value = data;
-
-	});
+	    var data = evt.clipboardData.getData('text');
+		console.info("dt",data);
+	
+		//var data = obj.value;
+		data = data.replace(new RegExp(' ', 'g'), '');
+	    radicadoConsulta.value = data;
+	
+		});
+}	
 </script>
 </html>

@@ -17,11 +17,19 @@ function mostrarIngresado() {
         localStorage.setItem("AccesoURL", permitir);
         document.getElementById("formPrincipal").style.display = "block";
     } else {
+    
         document.getElementById("formPrincipal").style.display = "none";
         var origen = window.location.href.split("/faces")[0];
+        alert("chao " + origen);
         location.href = origen;
     }
 }
+
+function allowAccess(){
+	alert("allowAccess ");
+	var permitir = 1;
+	localStorage.setItem("AccesoURL",permitir);
+} 
 
 function accesoEnvioPqrd() {
     permitir = 1;
