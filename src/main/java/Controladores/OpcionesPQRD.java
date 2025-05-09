@@ -345,7 +345,7 @@ public class OpcionesPQRD implements Serializable {
 			try {
 
 				final DataBaseConection dataBaseConection1 = getConnection(); 
-				String query2 = "SELECT COUNT(1) AS records FROM DIRECTORIOEMAILPRQD WHERE email LIKE '?';";
+				String query2 = "SELECT COUNT(1) AS records FROM DIRECTORIOEMAILPRQD WHERE lower(email) LIKE lower('?');";
 				query2 = query2.replaceFirst("\\?", this.emailConsulta);
 				dataBaseConection1.consultarDB(query2);
 				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
@@ -373,7 +373,7 @@ public boolean validaDirectorio() throws Exception {
 				final DataBaseConection dataBaseConection1 = getConnection(); 
 				String query2 = "SELECT COUNT(1) AS records\r\n"
 						+ "FROM directorioemailprqd \r\n"
-						+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE( EMAIL, ' ', '')), ';'))\r\n"
+						+ "WHERE lower('?') = ANY (string_to_array(TRIM(REPLACE( lower(EMAIL), ' ', '')), ';'))\r\n"
 						+ "AND NUMEROVERIFICACION = '?';";
 				query2 = query2.replaceFirst("\\?", this.emailConsulta);
 				query2 = query2.replaceFirst("\\?", this.nroVerificacion);
@@ -403,7 +403,7 @@ public int getDirectorio() throws Exception {
 			final DataBaseConection dataBaseConection1 = getConnection(); 
 			String query2 = "SELECT numeroverificacion\r\n"
 					+ "FROM directorioemailprqd \r\n"
-					+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE( EMAIL, ' ', '')), ';'));";
+					+ "WHERE lower('?') = ANY (string_to_array(TRIM(REPLACE( lower(EMAIL), ' ', '')), ';'));";
 			query2 = query2.replaceFirst("\\?", this.emailConsulta);
 			dataBaseConection1.consultarDB(query2);
 			final ResultSet resultConsulta1 = dataBaseConection1.getResult();
@@ -435,7 +435,8 @@ public int getDirectorio() throws Exception {
 						+ "  ON CORRESPONDENCIA.numeroradicacioninterno = COMUNICACIONPRQD.nroradicacion \r\n"
 						+ "INNER JOIN directorioemailprqd \r\n"
 						+ "  ON directorioemailprqd.EMAIL = ANY (string_to_array(TRIM(REPLACE(CORRESPONDENCIA.EMAIL, ' ', '')), ';'))\r\n"
-						+ "WHERE COMUNICACIONPRQD.email LIKE '?';";
+						+ "WHERE lower(COMUNICACIONPRQD.email) LIKE lower('?');";
+
 				query2 = query2.replaceFirst("\\?", this.emailConsulta);
 				dataBaseConection1.consultarDB(query2);
 				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
@@ -467,7 +468,7 @@ public int getDirectorio() throws Exception {
 						+ "           ELSE '' \r\n"
 						+ "       END AS nombre\r\n"
 						+ "FROM CORRESPONDENCIA \r\n"
-						+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE(CORRESPONDENCIA.EMAIL, ' ', '')), ';'))\r\n"
+						+ "WHERE lower('?') = ANY (string_to_array(TRIM(REPLACE(lower(CORRESPONDENCIA.EMAIL), ' ', '')), ';'))\r\n"
 						+ "ORDER BY fldidCorrespondencia DESC\r\n"
 						+ "LIMIT 1;";
 
@@ -513,7 +514,7 @@ public int getDirectorio() throws Exception {
 			int numVerificacion = generateCode();
 			final DataBaseConection dataBaseConection1 = getConnection();
 			String query2 = "INSERT INTO directorioemailprqd (fldiddirectorioemailprqd, email, numeroverificacion, fecha)\r\n"
-					+ "values ((select COALESCE(max(fldiddirectorioemailprqd), 0) + 1 AS id from directorioemailprqd) ,'?',"
+					+ "values ((select COALESCE(max(fldiddirectorioemailprqd), 0) + 1 AS id from directorioemailprqd) ,lower('?'),"
 					+ "'" + numVerificacion + "', CURRENT_DATE);\r\n";
 			query2 = query2.replaceFirst("\\?", this.emailConsulta);
 			boolean affectRows = dataBaseConection1.actualizarConsultasPQRD(query2);

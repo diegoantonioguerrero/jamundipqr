@@ -69,11 +69,46 @@ function actualizarControles() {
 
 function descargaArchivo(id){
 	var query = '[title="' + id +'"]';
-	//console.log("queryTsssT",query);	
 	var btn = document.querySelector(query);
 	btn.click();
 }
 
 function mensajeArchivo(msg){
 	alert(msg);
+}
+
+function iniciarTimerSesion(tiempo, url){
+
+	//console.log("iniciarTimerSesion",tiempo);
+/*var enviarConsulta = document.getElementById("formPrincipal:EnviarConsulta");
+var regresar = document.getElementById("formPrincipal:Regresar");
+
+enviarConsulta.disabled = true;
+regresar.disabled = true;
+*/
+var label = document.getElementById("formPrincipal:timeLabel");
+label.textContent = "Tienes " + tiempo + " segundos para finalizar tu sesión de consulta";
+label.style.display = 'inline';
+
+var inicio = new Date();
+
+
+var intervalo = setInterval(() => {
+	var fin = new Date('2024-05-09T10:45:30');
+	var diffMs = fin - inicio;
+	var diffMin = Math.floor(diffMs / 60000);
+	var diffSec = Math.floor((diffMs % 60000) / 1000);
+	
+    if (diffMin < tiempo  ) {
+        label.textContent = "Tienes " + diffMin + ":" + diffSec + " segundos para finalizar tu sesión de consulta";
+    } else {
+        clearInterval(intervalo);
+        //label.textContent = "Redirigiendo...";
+        alert("El tiempo de sesión de consulta ha finalizado, muchas gracias");
+        window.location=url;
+    }
+}, 1000);
+
+
+	
 }

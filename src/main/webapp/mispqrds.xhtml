@@ -131,6 +131,20 @@ and open the template in the editor.
                     </f:facet>
                     
                     <div class="ui-g" style="size: auto">
+                    
+                            <p:outputLabel
+	                                id="timeLabel"
+	                                class="timeLabel"
+	                                value="Por favor espere {}"/>
+                    	<!-- 
+                    	
+                    	<div class="ui-g-12" style="padding-left: 0">
+	                       
+	                    </div>
+	                        
+                     -->
+                    </div>
+                    <div class="ui-g" style="size: auto">
 	                    <ui:repeat value="#{misPQRD.registros}" var="item" varStatus="status">
 						    <div id="registro_#{status.index}" class="item-block registro-item" style="display: none;">
 						    
@@ -140,7 +154,7 @@ and open the template in the editor.
 								</strong>
 							</div>
 							<div class="ui-g-12 ui-md-10 datapqr">
-								<p:outputLabel value="#{item.fecha}" />
+								<p:outputLabel class="contentFont" value="#{item.fecha}" />
 							</div>
 							<div class="ui-g-12 ui-md-2 labelpqr">
 								<strong> 
@@ -148,7 +162,7 @@ and open the template in the editor.
 								</strong>
 							</div>
 	                        <div class="ui-g-12 ui-md-10 datapqr">
-	                        	<p:outputLabel value="#{item.radicado}" />
+	                        	<p:outputLabel class="contentFont" value="#{item.radicado}" />
 	                        </div>
 	                        <div class="ui-g-12 ui-md-2 labelpqr">
 	                        	<strong>
@@ -156,16 +170,18 @@ and open the template in the editor.
 	                        	</strong>
 	                        </div>
 	                        <div class="ui-g-12 ui-md-10 datapqr">
-	                        	<p:outputLabel value="#{item.elAsunto}" />
+	                        	<p:outputLabel class="contentFont" value="#{item.elAsunto}" />
 	                        </div>
-	                        <div class="ui-g-12 ui-md-2 labelpqr">
-	                        	<strong>
-	                        		<p:outputLabel value="Estado:" />
-	                        	</strong>
-	                        </div>
-	                        <div class="ui-g-12 ui-md-10 datapqr">
-	                        	<p:outputLabel value="#{item.estado}" />
-	                        </div>
+	                        <h:panelGroup rendered="#{item.tablaenviorecibo eq 'ENTRA'}">
+		                        <div class="ui-g-12 ui-md-2 labelpqr">
+		                        	<strong>
+		                        		<p:outputLabel value="Estado:" />
+		                        	</strong>
+		                        </div>
+		                        <div class="ui-g-12 ui-md-10 datapqr">
+		                        	<p:outputLabel class="contentFont" value="#{item.estado}" />
+		                        </div>	
+	                        </h:panelGroup>
 	                        <h:panelGroup rendered="#{not empty item.trazabilidad}">
 	    						<div class="ui-g-12 ui-md-2 labelpqr">
 		                        	<strong>
@@ -173,16 +189,16 @@ and open the template in the editor.
 		                        	</strong>
 		                        </div>
 		                        <div class="ui-g-12 ui-md-10 datapqr">
-		                        	<h:outputText class="labelFont" value="#{item.trazabilidad}" escape="false" />
+		                        	<h:outputText class="contentFont" value="#{item.trazabilidad}" escape="false" />
 		                        </div>
 							</h:panelGroup>
 	                        
-		    					<div class="ui-g-12" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+		    					<div class="ui-g-12" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 0px;">
 		
 
 										<p:commandButton 
 					                        class="btn btnAdjust3"
-											value="Descargar Correspondencia Recibida"
+											value="#{item.tablaenviorecibo eq 'ENTRA' ?  'Descargar Correspondencia Enviada' : 'Descargar Correspondencia Recibida'}"
 											action="#{misPQRD.verificaExisteArchivo}"
 											>
 	        
@@ -203,15 +219,6 @@ and open the template in the editor.
 									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
 									    </p:commandButton>
 									    
-									    <p:commandButton 
-					                        class="btn btnAdjust3"
-											value="Descargar Correspondencia Enviada"
-											action="#{misPQRD.verificaExisteArchivo}"
-											>
-	        
-									        <!-- Aquí pasas el ID del archivo al bean -->
-									        <f:setPropertyActionListener value="#{item.fldidCorrespondencia}" target="#{misPQRD.idArchivo}" />
-									    </p:commandButton>
 									    
 			
 									<h:panelGroup rendered="#{item.estado eq 'RESPONDIDO'}">
@@ -233,7 +240,7 @@ and open the template in the editor.
 		                            
 		                                
 		                        </div>
-						        <div class="ui-g-12">
+						        <div class="ui-g-12" style="padding-top: 0px;">
 						        	<hr />
 						        </div>
 						        
@@ -244,7 +251,7 @@ and open the template in the editor.
                     
                     <!-- Controles de paginación -->
 				    <div class="ui-g">
-				        <div class="ui-g-12" style="text-align: center; margin-top: 1em;">
+				        <div class="ui-g-12" style="text-align: center;">
 				            <p:button 
                                 class="btn btnAdjustPaginator"
 								onclick="return cambiarPagina(-1);"
@@ -255,7 +262,9 @@ and open the template in the editor.
 				            <select id="selectPagina" onchange="irAPagina(this.value)">
 				                <!-- JS llenará las opciones dinámicamente -->
 				            </select>
-				            de <span id="totalPaginasLabel">?</span>
+				            de 
+				            <span style="margin-right:10px;" id="totalPaginasLabel">?</span>
+				            
 				            <p:button 
                                 class="btn btnAdjustPaginator"
 								onclick="return cambiarPagina(1);"
@@ -281,6 +290,9 @@ and open the template in the editor.
                 </p:panel>
              </div>
         </h:form>
+        <h:outputScript>
+			iniciarTimerSesion(#{misPQRD.tiempoSesionConsulta},'indexPQRD.urlOrigen}');
+		</h:outputScript>
     </h:body>
     
     <footer class="footer" title="#{opcionesPQRD.textoAlternativoPiedepagina}"

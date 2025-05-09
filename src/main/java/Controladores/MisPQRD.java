@@ -42,6 +42,7 @@ import java.util.Random;
 import org.primefaces.model.StreamedContent;
 
 import Objetos.Archivo;
+import Objetos.ArchivoFull;
 import Objetos.ConsultaPQRD;
 import Objetos.Correspondencia;
 
@@ -57,11 +58,16 @@ import javax.faces.bean.ManagedBean;
 @ViewScoped
 public class MisPQRD implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8447310530685750423L;
 	private String emailConsulta;
 	private String nroVerificacion;
 	private List<Correspondencia> registros;
 	DataBaseConection dataBaseConection1;
-
+	private int tiempoSesionConsulta;
+	
 	public String getNroVerificacion() {
 		return this.nroVerificacion;
 	}
@@ -87,9 +93,28 @@ public class MisPQRD implements Serializable {
 		this.registros = registros;
 	}
 
-
 	public MisPQRD() {
+		String tiemposesionconsulta = "5";
+		try {
+			tiemposesionconsulta = Util.getProperties("tiemposesionconsultas");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (tiemposesionconsulta != null) {
+			setTiempoSesionConsulta(Integer.valueOf(tiemposesionconsulta));	
+		}
+		
 		this.setRegistros(new ArrayList<Correspondencia>());
+	}
+	
+	public int getTiempoSesionConsulta() {
+		return tiempoSesionConsulta;
+	}
+
+	public void setTiempoSesionConsulta(int tiempoSesionConsulta) {
+		this.tiempoSesionConsulta = tiempoSesionConsulta;
 	}
 	
 	@PostConstruct
@@ -141,7 +166,8 @@ public class MisPQRD implements Serializable {
 						+ "	primergrabado, \r\n"
 						+ "	tipomarcacorrespondencia.marca,\r\n"
 						+ "	tablasinoadjunto.tablasino AS tieneadjuntos,\r\n"
-						+ "	tablasino.tablasino AS requiererespuesta\r\n"
+						+ "	tablasino.tablasino AS requiererespuesta,\r\n"
+						+ " LLAVEORDENAMIENTO\r\n"
 						+ "FROM CORRESPONDENCIA \r\n"
 						+ "INNER JOIN tablaenviorecibo\r\n"
 						+ "ON CORRESPONDENCIA.enviorecibo = tablaenviorecibo.fldidtablaenviorecibo\r\n"
@@ -157,7 +183,7 @@ public class MisPQRD implements Serializable {
 						+ "ON CORRESPONDENCIA.esrespuesta = tablasino.fldidtablasino\r\n"
 						+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
 						+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"						
-						+ "WHERE '?' = ANY (string_to_array(TRIM(REPLACE(email , ' ', '')), ';'))\r\n"
+						+ "WHERE lower('?') = ANY (string_to_array(TRIM(REPLACE(lower(email) , ' ', '')), ';'))\r\n"
 						+ "AND tablaenviorecibo.tablaenviorecibo = 'ENTRA'\r\n"
 						+ "AND tablaexternointerno = 'EXTERNO'\r\n"
 						+ "AND primergrabado = 'SI'\r\n"
@@ -180,7 +206,8 @@ public class MisPQRD implements Serializable {
 						+ "	primergrabado,\r\n"
 						+ "	tipomarcacorrespondencia.marca,\r\n"
 						+ "	tablasinoadjunto.tablasino AS tieneadjuntos,\r\n"
-						+ "	tablasino.tablasino AS requiererespuesta\r\n"
+						+ "	tablasino.tablasino AS requiererespuesta,\r\n"
+						+ " LLAVEORDENAMIENTO\r\n"
 						+ "FROM CORRESPONDENCIA \r\n"
 						+ "INNER JOIN tablaenviorecibo\r\n"
 						+ "ON CORRESPONDENCIA.enviorecibo = tablaenviorecibo.fldidtablaenviorecibo\r\n"
@@ -197,12 +224,12 @@ public class MisPQRD implements Serializable {
 						+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
 						+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
 						+ "WHERE \r\n"
-						+ "'?' = ANY (string_to_array(TRIM(REPLACE(email , ' ', '')), ';'))\r\n"
+						+ "lower('?') = ANY (string_to_array(TRIM(REPLACE(lower(email) , ' ', '')), ';'))\r\n"
 						+ "AND tablaenviorecibo.tablaenviorecibo = 'SALE'\r\n"
 						+ "AND tablaexternointerno = 'EXTERNO'\r\n"
 						+ "AND primergrabado = 'SI'\r\n"
 						+ "AND tablasino.tablasino = 'NO'\r\n"
-						+ "ORDER BY fecha;";
+						+ "ORDER BY LLAVEORDENAMIENTO;";
 				
 				 
 				query2 = query2.replaceFirst("\\?", this.emailConsulta);
@@ -313,22 +340,37 @@ public class MisPQRD implements Serializable {
     	
     	try {
         // Supongamos que ya tienes el archivo en memoria o lo cargas por ID
-        Archivo archivo = obtenerArchivo();
-        byte[] contenido = archivo.getBytesData();
-        String nombreArchivo = archivo.getNombre();
-        String extension = "";
-        if(nombreArchivo != null) {
-        	int index = nombreArchivo.lastIndexOf(".");
-        	if(index >= 0) {
-        		extension = nombreArchivo.substring(index);
-        	}
-        }
+        ArchivoFull archivoFull = obtenerArchivo();
         
-        nombreArchivo = "Radicado " + archivo.getNumeroradicacioninterno() + extension;
+        byte[] contenido;
+        String nombreArchivo = "";
+        String extension = "";
+        
+        if (archivoFull.getArchivos().size() > 1)
+        {
+        	contenido = archivoFull.comprimirArchivos();
+        	extension = ".zip";
+        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno() + extension;
+        }
+        else {
+        	Archivo archivo = archivoFull.getArchivos().get(0);
+        	contenido = archivo.getBytesData();
+        	nombreArchivo = archivo.getNombre();
+        	if(nombreArchivo != null) {
+            	int index = nombreArchivo.lastIndexOf(".");
+            	if(index >= 0) {
+            		extension = nombreArchivo.substring(index);
+            	}
+            }
+        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno() + extension;
+        }
+         
         
         String mime = "application/octet-stream";
         if(nombreArchivo != null && nombreArchivo.trim().toLowerCase().endsWith("pdf")) {
         	mime = "application/pdf";
+        }else if(nombreArchivo != null && nombreArchivo.trim().toLowerCase().endsWith("zip")) {
+        	mime = "application/zip";
         } 
         	
         FacesContext fc = FacesContext.getCurrentInstance();
@@ -386,9 +428,9 @@ public class MisPQRD implements Serializable {
     	return null;
     }
     
-    public Archivo obtenerArchivo() throws Exception {
+    public ArchivoFull obtenerArchivo() throws Exception {
 
-		Archivo archivo = new Archivo();
+		ArchivoFull archivoFull = new ArchivoFull();
 		try {
 
 			final DataBaseConection dataBaseConection1 = getConnection(); 
@@ -409,10 +451,12 @@ public class MisPQRD implements Serializable {
 			final ResultSet resultConsulta1 = dataBaseConection1.getResult();
 			
 			while (resultConsulta1.next()) {
-
+				Archivo archivo = new Archivo();	
 				archivo.setBytesData(resultConsulta1.getBytes("archivo"));
 				archivo.setNombre(resultConsulta1.getString("nombrearchivoarchivo"));
 				archivo.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+				archivoFull.getArchivos().add(archivo);
+				archivoFull.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
 			}
 			
 		} catch (Exception ex) {
@@ -420,7 +464,7 @@ public class MisPQRD implements Serializable {
 			throw ex;
 		}
 		
-		return archivo; 
+		return archivoFull; 
 
 	}
     
@@ -460,5 +504,5 @@ public class MisPQRD implements Serializable {
 		return archivo; 
 
 	}
-	
+
 }
