@@ -179,7 +179,15 @@ function mensajeErrorMantenimiento(urlOrigen){
 }
 
 function mensajeCorreo(){
-	alert("Hemos enviado un email con su número verificación");
+	if (PF('dialogLoader')) {
+		PF('dialogLoader').cfg.onHide = function() {
+		    alert("Hemos enviado un email con su número verificación");
+		    PF('dialogLoader').cfg.onHide = null;
+		};
+	}
+	
+	
+	hideLoader();
 }
 
 function mensajeErrorDbg(errorDbg) {
@@ -227,6 +235,7 @@ var intervalo = setInterval(() => {
 }
 
 function hideLoader(){
+	
 	if (PF('dialogLoader')) {
 		PF('dialogLoader').hide();
 	}

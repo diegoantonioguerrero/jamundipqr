@@ -208,7 +208,7 @@ public class MisPQRD implements Serializable {
 						+ "	primergrabado,\r\n"
 						+ "	tipomarcacorrespondencia.marca,\r\n"
 						+ "	tablasinoadjunto.tablasino AS tieneadjuntos,\r\n"
-						+ "	tablasino.tablasino AS requiererespuesta,\r\n"
+						+ "	tablasinoEsrespuesta.tablasino AS requiererespuesta,\r\n"
 						+ " LLAVEORDENAMIENTO\r\n"
 						+ "FROM CORRESPONDENCIA \r\n"
 						+ "INNER JOIN tablaenviorecibo\r\n"
@@ -221,16 +221,15 @@ public class MisPQRD implements Serializable {
 						+ "ON CORRESPONDENCIA.tipodocumento = tiposdedocumentos.fldidtiposdedocumentos\r\n"
 						+ "INNER JOIN tablarequiererespuestacor\r\n"
 						+ "ON CORRESPONDENCIA.requiererespuesta = tablarequiererespuestacor.fldidtablarequiererespuestacor\r\n"
-						+ "INNER JOIN tablasino\r\n"
-						+ "ON CORRESPONDENCIA.esrespuesta = tablasino.fldidtablasino\r\n"
 						+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
 						+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
+						+ "INNER JOIN tablasino AS tablasinoEsrespuesta\r\n"
+						+ "ON CORRESPONDENCIA.esrespuesta = tablasinoEsrespuesta.fldidtablasino\r\n"						
 						+ "WHERE \r\n"
 						+ "lower('?') = ANY (string_to_array(TRIM(REPLACE(REPLACE(lower(CORRESPONDENCIA.email) , ' ', ''), ',', ';')), ';'))\r\n"
 						+ "AND tablaenviorecibo.tablaenviorecibo = 'SALE'\r\n"
 						+ "AND tablaexternointerno = 'EXTERNO'\r\n"
 						+ "AND primergrabado = 'SI'\r\n"
-						+ "AND tablasino.tablasino = 'NO'\r\n"
 						+ "ORDER BY LLAVEORDENAMIENTO;";
 				
 				 

@@ -38,7 +38,7 @@ and open the template in the editor.
             
             
             .ui-button{
-                background-color: #{opcionesPQRD.colorFondoBotones} !important;
+                background-color: #{indexPQRD.colorFondoBotones} !important;
                 color: #{indexPQRD.colorLetraBotones} !important;
 				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7) !important;
             }
@@ -101,7 +101,16 @@ and open the template in the editor.
 			    font-weight: bold;
 			    color: #036fab;
 			    text-align: center;
-			}		
+			}
+			
+			.txtMargin{
+		        margin-left: 0;
+		        margin-top: 30px;
+		        margin-bottom: 10px;
+		        text-align: left; 
+		        font-size: 80%
+		    }
+			.moveTop td{vertical-align: top; padding: 0};
 
         </style>
     </h:head>
@@ -109,7 +118,7 @@ and open the template in the editor.
             onload="dialogWidth();"
             style="background-image: url(../resources/img/#{consultarPQRD.path_background_image}); margin: 0">
 
-        <header class="headerResponsive" title="#{opcionesPQRD.textoAlternativoEncabezado}"
+        <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
                 style="background-image: url(../resources/img/#{consultarPQRD.fondoHeader});">
         </header>
         <h:form id="formPrincipal" style="min-height: 550px; margin-bottom: 10px; margin-top: 10px">
@@ -142,6 +151,27 @@ and open the template in the editor.
 	                                <p:keyFilter preventPaste="false" regEx="/[a-z0-9_\-.@]/i" />
 	                            </p:inputText>
 	                        </div>
+	                        
+	                        
+                           
+                            <div id="CheckboxDiv" align="left" class="txtMargin">
+                                <h:panelGrid columns="2" styleClass="moveTop">
+                                    <p:selectBooleanCheckbox 
+                                        id="CheckboxNotificaciones"
+                                        widgetVar="CheckBoxWidget"
+                                        onchange="checkbox();"
+                                        />
+                                    <label id="labelCheckboxNotificaciones" class="labelFont" style="color: #4f4f4f">
+                                        <script>
+                                            document.getElementById("labelCheckboxNotificaciones").innerHTML ="#{opcionesPQRD.textTermsConditionsMisPQRD}"
+                                        </script>
+                                    </label>
+        
+                                </h:panelGrid>
+                            </div>
+                        
+	                        
+	                        
 	                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
 	                    </div>
 					</h:panelGroup>
@@ -261,23 +291,22 @@ and open the template in the editor.
                 </div>
             </p:dialog>
             <!--Diálogo de correspondenciaNoExiste-->
-            
-            <!--Diálogo cargando...-->
-            <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
-          			id="dialogLoader" modal="true" resizable="false" 
-          			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
-          			width="300px" style="text-align: center;">
-
-			    <h:panelGroup layout="block" style="padding: 20px;">
-			        <div class="simple-spinner"></div>
-			        <br/>
-			        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
-			    </h:panelGroup>
-			
-			</p:dialog>
         </h:form>
+        <!--Diálogo cargando...-->
+          <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
+        			id="dialogLoader" modal="true" resizable="false" 
+        			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
+        			width="300px" style="text-align: center;">
+
+	    <h:panelGroup layout="block" style="padding: 20px;">
+	        <div class="simple-spinner"></div>
+	        <br/>
+	        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
+	    </h:panelGroup>
+	
+		</p:dialog>
     </h:body>
     
-    <footer class="footer" title="#{opcionesPQRD.textoAlternativoPiedepagina}"
+    <footer class="footer" title="#{indexPQRD.textoAlternativoPiedepagina}"
     	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
 </html>

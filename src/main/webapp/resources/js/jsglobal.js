@@ -20,7 +20,7 @@ function mostrarIngresado() {
     
         document.getElementById("formPrincipal").style.display = "none";
         var origen = window.location.href.split("/faces")[0];
-        alert("chao " + origen);
+        //alert("chao " + origen);
         location.href = origen;
     }
 }

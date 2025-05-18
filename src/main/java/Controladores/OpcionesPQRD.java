@@ -41,13 +41,7 @@ public class OpcionesPQRD implements Serializable {
 	private static final long serialVersionUID = 7724838274235912152L;
 	private static String path_background_image;
 	private static String urlOrigen;
-	private static String fondoHeader;
-	private static String fondoFooter;
-	private static String colorFondoBotones;
-	private static String colorLetraBotones;
-	private static String fuenteTiulos;
-	private static String fuenteEtiquetas;
-	private static String fuenteContenido;
+	private static String textTermsConditionsMisPQRD;	
 	
 	private String emailConsulta;
 	private int pasoActual = 1;
@@ -58,13 +52,11 @@ public class OpcionesPQRD implements Serializable {
 	private String nroVerificacion;
 	private static ConsultaPQRD consultaPQRD;
 	private StreamedContent file;
-	private static boolean fileExist;
 	private boolean nroRadicadoExist;
 	private boolean mostrarFechaPosibleRespuesta;
-	private List<Trazabilidad> trazList;
-	private String textoAlternativoEncabezado;
-	private String textoAlternativoPiedepagina;
 
+	DataBaseConection dataBaseConection1;
+	
 	public String getNroVerificacion() {
 		return this.nroVerificacion;
 	}
@@ -89,227 +81,13 @@ public class OpcionesPQRD implements Serializable {
 		this.mostrarFechaPosibleRespuesta = false;
 		try {
 			OpcionesPQRD.path_background_image = Util.getProperties("imagenFondo");
-			OpcionesPQRD.fondoHeader = Util.getProperties("imagenFondoHeader");
-			OpcionesPQRD.fondoFooter = Util.getProperties("imagenFondoFooter");
-			OpcionesPQRD.colorFondoBotones = Util.getProperties("colorFondoBotones");
-			OpcionesPQRD.colorLetraBotones = Util.getProperties("colorLetraBotones");
-			OpcionesPQRD.fuenteTiulos = Util.getProperties("fuenteTiulos");
-			OpcionesPQRD.fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");
-			OpcionesPQRD.fuenteContenido = Util.getProperties("fuenteContenido");
-			OpcionesPQRD.urlOrigen = Util.getProperties("linkOrigen");
-			this.textoAlternativoEncabezado = Util.getProperties("textoAlternativoEncabezado");
-			this.textoAlternativoPiedepagina = Util.getProperties("textoAlternativoPiedepagina");
-			//this.emailConsulta = "pepe@gmail.com";
+			OpcionesPQRD.textTermsConditionsMisPQRD = Util.getProperties("textTermsConditionsMisPQRD");
+
 		} catch (Exception ex) {
 			Logger.getLogger(OpcionesPQRD.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
-/*
-	public void posibleRespuesta() throws SQLException {
-		System.err.println("TERCERO");
-		final DataBaseConection dataBaseConection = new DataBaseConection();
-		String queryRespuesta = "SELECT trazabilidad FROM comunicacionprqd as cpqrd INNER JOIN tablapqrestado as estados ON (estados.fldidtablapqrestado = cpqrd.estado) WHERE cpqrd.nroradicacion LIKE '?'";
-		// Se deja en comentarios esta otra condicional para obtener la trazabilidad aun
-		// cuando sea con el id del ultimo radicado
-		// queryRespuesta += " AND cpqrd.numeroverificacion LIKE '?';";
-		queryRespuesta = queryRespuesta.replaceFirst("\\?", this.nroRadicado);
-		// queryRespuesta = queryRespuesta.replaceFirst("\\?", this.nroVerificacion);
-		System.err.println("QUERY " + queryRespuesta);
-		dataBaseConection.consultarDB(queryRespuesta);
-		final ResultSet resultConsultaFecha = dataBaseConection.getResult();
-		List<String> trazabList = new ArrayList<String>();
-		while (resultConsultaFecha.next()) {
-			final String trazText = resultConsultaFecha.getString("trazabilidad");
-			System.err.println(resultConsultaFecha.getString("trazabilidad"));
-			OpcionesPQRD.consultaPQRD.setFechaPosibleRespuesta(resultConsultaFecha.getString("trazabilidad"));
-			final String[] str = trazText.split("\n");
-			trazabList = Arrays.asList(str);
-		}
-		final List<Trazabilidad> trazList2 = new ArrayList<Trazabilidad>();
-		for (final String s : trazabList) {
-			trazList2.add(new Trazabilidad(s));
-			System.err.println(s);
-		}
-		this.trazList = trazList2;
-		dataBaseConection.logoutDB();
-	}
 
-	public List<Trazabilidad> getTrazabilidad() {
-		return this.trazList;
-	}
-
-	public String consultarPQRD() {
-		if (this.nroRadicado != null && !this.nroRadicado.isEmpty() && this.nroVerificacion != null
-				&& !this.nroVerificacion.isEmpty()) {
-			try {
-				this.nroRadicado = this.nroRadicado.toUpperCase();
-				final DataBaseConection dataBaseConection1 = new DataBaseConection();
-				String query2 = "SELECT nroradicacion, email, numeroverificacion, fechaultimaconsulta, cantidadconsultaserradase FROM comunicacionprqd WHERE nroradicacion LIKE '?';";
-				query2 = query2.replaceFirst("\\?", this.nroRadicado);
-				dataBaseConection1.consultarDB(query2);
-				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
-				boolean validador = false;
-				boolean permitirConsulta = true;
-				boolean numRadicadoExists = false;
-				Date fechaUltCons = null;
-				int numConsErr = 0;
-				final Calendar calendar = Calendar.getInstance();
-				final Date fechaHoy = new Date(calendar.getTime().getTime());
-				while (resultConsulta1.next()) {
-					final String numRad = resultConsulta1.getString("nroradicacion");
-					final String emailConsulta = resultConsulta1.getString("email");
-					final String numVerifA = resultConsulta1.getString("numeroverificacion");
-					fechaUltCons = resultConsulta1.getDate("fechaultimaconsulta");
-					numConsErr = resultConsulta1.getInt("cantidadconsultaserradase");
-					System.err.println("Value db: " + resultConsulta1.getInt("cantidadconsultaserradase"));
-					if (fechaUltCons == null) {
-						fechaUltCons = new Date(calendar.getTime().getTime());
-					}
-					String query3 = "SELECT numeroverificacion, fldidcomunicacionprqd FROM comunicacionprqd WHERE email LIKE '?' ORDER BY fldidcomunicacionprqd DESC LIMIT 1;";
-					query3 = query3.replaceFirst("\\?", emailConsulta);
-					dataBaseConection1.consultarDB(query3);
-					final ResultSet resultConsulta2 = dataBaseConection1.getResult();
-					while (resultConsulta2.next()) {
-						final String numVerifB = resultConsulta2.getString("numeroverificacion");
-						if (numRad != null && !numRad.isEmpty()) {
-							numRadicadoExists = true;
-							final String pattern = "yyyy-MM-dd";
-							final DateFormat df = new SimpleDateFormat(pattern);
-							final String fechaUlt = df.format(fechaUltCons);
-							final String fechaHo = df.format(fechaHoy);
-							System.err.println("ULT: " + fechaUlt + " HOY: " + fechaHo);
-							if (!fechaUlt.equals(fechaHo)) {
-								System.err.println("fechas dif");
-								fechaUltCons = fechaHoy;
-								numConsErr = 0;
-							}
-							permitirConsulta = (numConsErr < 5);
-							if (permitirConsulta && numVerifA != null && !numVerifA.isEmpty() && numVerifB != null
-									&& !numVerifB.isEmpty()) {
-								if (numVerifA.equals(this.nroVerificacion) || numVerifB.equals(this.nroVerificacion)) {
-									fechaUltCons = fechaHoy;
-									System.err.println("veri igual");
-									numConsErr = 0;
-									validador = true;
-								} else {
-									validador = false;
-								}
-							} else {
-								validador = false;
-							}
-						} else {
-							validador = false;
-							numRadicadoExists = false;
-						}
-					}
-				}
-				System.err.println("PRIMERO " + numConsErr);
-				dataBaseConection1.logoutDB();
-				if (permitirConsulta) {
-					System.err.println("PRIMERO1");
-					if (validador) {
-						System.err.println("PRIMERO2");
-						final DataBaseConection dataBaseConection2 = new DataBaseConection();
-						String query4 = "SELECT cpqrd.nroradicadorespuesta, cpqrd.archivorespuesta, cpqrd.nombrearchivoarchivorespuesta, cpqrd.fecharespuesta, cpqrd.fechaprimeraconsultarespu, estados.estado as estado FROM comunicacionprqd as cpqrd INNER JOIN tablapqrestado as estados ON (estados.fldidtablapqrestado = cpqrd.estado) WHERE cpqrd.nroradicacion LIKE '?';";
-						query4 = query4.replaceFirst("\\?", this.nroRadicado);
-						dataBaseConection2.consultarDB(query4);
-						final ResultSet resultConsulta3 = dataBaseConection2.getResult();
-						System.err.println("PRIMERO3");
-						while (resultConsulta3.next()) {
-							(OpcionesPQRD.consultaPQRD = new ConsultaPQRD())
-									.setNro_radicacion_respuesta(resultConsulta3.getString("nroradicadorespuesta"));
-							OpcionesPQRD.consultaPQRD
-									.setDatos_archivo_respuesta(resultConsulta3.getBinaryStream("archivorespuesta"));
-							OpcionesPQRD.consultaPQRD.setNombre_archivo_respuesta(
-									resultConsulta3.getString("nombrearchivoarchivorespuesta"));
-							OpcionesPQRD.consultaPQRD
-									.setFecha_respuesta((java.util.Date) resultConsulta3.getDate("fecharespuesta"));
-							OpcionesPQRD.consultaPQRD.setEstado(resultConsulta3.getString("estado"));
-							OpcionesPQRD.consultaPQRD.setFechaprimeraconsultarespu(
-									(java.util.Date) resultConsulta3.getDate("fechaprimeraconsultarespu"));
-							OpcionesPQRD.fileExist = (OpcionesPQRD.consultaPQRD.getDatos_archivo_respuesta() != null
-									&& OpcionesPQRD.consultaPQRD.getDatos_archivo_respuesta().available() != 0
-									&& !OpcionesPQRD.consultaPQRD.getEstado().contains("pendiente")
-									&& !OpcionesPQRD.consultaPQRD.getNombre_archivo_respuesta().isEmpty());
-							if (OpcionesPQRD.consultaPQRD.getNro_radicacion_respuesta() != null
-									&& !OpcionesPQRD.consultaPQRD.getNro_radicacion_respuesta().isEmpty()) {
-								this.nroRadicadoExist = true;
-							}
-							System.err.println("Estado " + OpcionesPQRD.consultaPQRD.getEstado());
-							final String estado = OpcionesPQRD.consultaPQRD.getEstado();
-							switch (estado) {
-							case "Pendiente":
-							case "PENDIENTE": {
-								this.nroRadicadoExist = false;
-								OpcionesPQRD.fileExist = false;
-								this.posibleRespuesta();
-								if (OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta() == null
-										|| OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta().isEmpty()) {
-									this.mostrarFechaPosibleRespuesta = false;
-									break;
-								}
-								this.mostrarFechaPosibleRespuesta = true;
-								break;
-							}
-							case "RESPONDIDO":
-							case "Respondido": {
-								this.posibleRespuesta();
-								if (OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta() == null
-										|| OpcionesPQRD.consultaPQRD.getFechaPosibleRespuesta().isEmpty()) {
-									this.mostrarFechaPosibleRespuesta = false;
-								} else {
-									this.mostrarFechaPosibleRespuesta = true;
-								}
-								if (OpcionesPQRD.consultaPQRD.getFechaprimeraconsultarespu() == null) {
-									dataBaseConection2.actualizarDB(
-											"UPDATE comunicacionprqd SET usuarioconsultorespuesta = ?, fechaprimeraconsultarespu = ?, horaprimeraconsultarespue = ? WHERE nroradicacion LIKE ?;",
-											this.nroRadicado);
-									break;
-								}
-								break;
-							}
-							}
-							System.err.println("ULTIMO");
-							RequestContext.getCurrentInstance().execute("PF('result').show();");
-						}
-						System.err.println("PRIMERO4");
-						dataBaseConection2.logoutDB();
-					} else {
-						RequestContext.getCurrentInstance().execute("mensajeError()");
-						fechaUltCons = fechaHoy;
-						System.err.println("" + numConsErr);
-						++numConsErr;
-						System.err.println("YA SUM" + numConsErr);
-					}
-				} else {
-					RequestContext.getCurrentInstance().execute("PF('bloqueoconsulta').show();");
-				}
-				System.err.println("PRIMERO5");
-				if (numRadicadoExists) {
-					System.err.println("PRIMERO6");
-					final DataBaseConection baseConection = new DataBaseConection();
-					final String pattern2 = "yyyy-MM-dd";
-					final DateFormat df2 = new SimpleDateFormat(pattern2);
-					final String fecha = df2.format(fechaUltCons);
-					System.err.println("PRIMERO7");
-					baseConection.actualizarConsultasPQRD("UPDATE comunicacionprqd SET fechaultimaconsulta = '" + fecha
-							+ "', cantidadconsultaserradase = " + numConsErr + " WHERE nroradicacion LIKE '"
-							+ this.nroRadicado + "';");
-					System.err.println("PRIMERO8");
-					baseConection.logoutDB();
-				}
-				System.err.println("PRIMERO9");
-			} catch (Exception ex) {
-				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
-				RequestContext.getCurrentInstance().execute("mensajeError()");
-			}
-		} else {
-			System.err.println("Campos faltantes");
-		}
-		return "";
-	}
-	*/
-	DataBaseConection dataBaseConection1;
 	
 	private DataBaseConection getConnection() {
 		if(dataBaseConection1 == null) {
@@ -730,14 +508,15 @@ public int getDirectorio() throws Exception {
 		return OpcionesPQRD.urlOrigen;
 	}
 
-	public boolean isFileExist() {
-		return OpcionesPQRD.fileExist;
-	}
+	
 
 	public boolean isNroRadicadoExist() {
 		return this.nroRadicadoExist;
 	}
-
+/*
+  public boolean isFileExist() {
+		return OpcionesPQRD.fileExist;
+	}
 	public String getFondoHeader() {
 		return OpcionesPQRD.fondoHeader;
 	}
@@ -765,17 +544,21 @@ public int getDirectorio() throws Exception {
 	public String getFuenteContenido() {
 		return OpcionesPQRD.fuenteContenido;
 	}
-
-	public boolean isMostrarFechaPosibleRespuesta() {
-		return this.mostrarFechaPosibleRespuesta;
-	}
-
-	public String getTextoAlternativoEncabezado() {
+		public String getTextoAlternativoEncabezado() {
 		return textoAlternativoEncabezado;
 	}
 
 	public String getTextoAlternativoPiedepagina() {
 		return textoAlternativoPiedepagina;
+	}
+
+*/
+	public String getTextTermsConditionsMisPQRD() {
+		return OpcionesPQRD.textTermsConditionsMisPQRD;
+	}
+
+	public boolean isMostrarFechaPosibleRespuesta() {
+		return this.mostrarFechaPosibleRespuesta;
 	}
 
 	public int getPasoActual() {
@@ -792,9 +575,5 @@ public int getDirectorio() throws Exception {
 
 	public void setIntentos(int intentos) {
 		this.intentos = intentos;
-	}
-
-	static {
-		OpcionesPQRD.fileExist = false;
 	}
 }

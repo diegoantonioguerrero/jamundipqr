@@ -83,7 +83,7 @@ and open the template in the editor.
                 life="3000"/>
             <div align="center"><p:panel class="panelConfig">    
                     <f:facet name="header">
-                        <p:outputLabel class="titleFont" value="Consulta el estado de tu PQRD"/>
+                        <p:outputLabel class="titleFont" value="Consulte el estado de su PQRD Anónima"/>
                     </f:facet>
                     
                     <div class="ui-g idAdjust" style="size: auto">                        
@@ -110,7 +110,7 @@ and open the template in the editor.
                         <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
                             <p:outputLabel 
                                 id="numVerificacionLabel"
-                                value="Ingrese el número de verificación que usted recibió por email:"/>   
+                                value="Ingrese el número de verificación:"/>   
                         </div>
                         <div class="ui-g-12 ui-md-4" style="padding-left: 0">
                             <p:inputText 
@@ -146,15 +146,7 @@ and open the template in the editor.
                             value="Salir" 
                             href="#{consultarPQRD.urlOrigen}"/>
                         </div>
-                        <div class="ui-g" style="size: auto; padding: 0;" align="center">
-                        <a>
-                            <p:outputLabel 
-                                style="cursor: pointer;"
-                                onclick="accesoNumVerificacion();"
-                                class ="linkAcceso"
-                                value="Haga click aquí si olvidó el número de verificación"/>
-                        </a>
-                        </div>
+                        
                     </div>
                     
                 </p:panel>
