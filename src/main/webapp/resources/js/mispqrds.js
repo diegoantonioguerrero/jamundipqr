@@ -103,11 +103,11 @@ function iniciarTimerSesion(tiempo, url){
     enviarConsulta.disabled = true;
     regresar.disabled = true;
     */
-    var label = document.getElementById("formPrincipal:timeLabel");
-	if(label){
+    //var label = document.getElementById("formPrincipal:timeLabel");
+	/*if(label){
 		label.textContent = "Tienes " + tiempo + " minutos para finalizar tu sesión de consulta";
 		label.style.display = 'inline';	
-	}
+	}*/
     
     var inicio = new Date();
     var intervalo = setInterval(() => {
@@ -121,9 +121,9 @@ function iniciarTimerSesion(tiempo, url){
 		if (diffMin < tiempo){
 			var msg = "Tienes " + restaMin + ":" + restaSec.toString().padStart(2, '0') + " minutos para finalizar tu sesión de consulta";		
         	//console.log(msg);
-			if(label){
-            	label.textContent = msg;
-			}
+			//if(label){
+//            	label.textContent = msg;
+//			}
         
         } else {
             clearInterval(intervalo);

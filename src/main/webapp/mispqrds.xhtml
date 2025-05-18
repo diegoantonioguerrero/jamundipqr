@@ -148,15 +148,6 @@ and open the template in the editor.
                     <f:facet name="header">
                         <p:outputLabel class="titleFont" value="Mis PQRDS email: #{misPQRD.emailConsulta}"/>
                     </f:facet>
-                    
-                    <div class="ui-g" style="size: auto">
-                    	<div class="ui-g-12 sessionTime">                   
-                            <p:outputLabel
-	                                id="timeLabel"
-	                                class="timeLabel contentFont"
-	                                value="Por favor espere {}"/>
-	                    </div>
-                    </div>
                     <div class="ui-g" style="size: auto">
 	                    <ui:repeat value="#{misPQRD.registros}" var="item" varStatus="status">
 						    <div id="registro_#{status.index}" class="item-block registro-item" style="display: none;">

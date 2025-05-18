@@ -304,9 +304,13 @@ public class MisPQRD implements Serializable {
         {
         	contenido = archivoFull.comprimirArchivos();
         	extension = ".zip";
-        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno();
-        	nombreArchivo += tipo.equals("usuario") ? "" :
-        		" respuesta de " + archivoFull.getNumeroradicacioninterno(); 
+        	nombreArchivo = "Radicado ";
+        	if(tipo.equals("usuario")) {
+        		nombreArchivo += archivoFull.getNumeroradicacioninterno(); 
+        	}else {
+        		nombreArchivo += archivoFull.getRespondidopor() + " respuesta de " + archivoFull.getNumeroradicacioninterno();	
+        	}
+        	
         	nombreArchivo += extension;
         }
         else {
@@ -319,9 +323,13 @@ public class MisPQRD implements Serializable {
             		extension = nombreArchivo.substring(index);
             	}
             }
-        	nombreArchivo = "Radicado " + archivoFull.getNumeroradicacioninterno(); 
-        	nombreArchivo += tipo.equals("usuario") ? "" :
-        		" respuesta de " + archivoFull.getNumeroradicacioninterno(); 
+        	nombreArchivo = "Radicado ";
+        	
+        	if(tipo.equals("usuario")) {
+        		nombreArchivo += archivoFull.getNumeroradicacioninterno(); 
+        	}else {
+        		nombreArchivo += archivoFull.getRespondidopor() + " respuesta de " + archivoFull.getNumeroradicacioninterno();	
+        	}
         	nombreArchivo += extension;
         }
          
@@ -412,7 +420,7 @@ public class MisPQRD implements Serializable {
 		try {
 
 			final DataBaseConection dataBaseConection1 = getConnection(); 
-			String query2 = "SELECT archivo,nombrearchivoarchivo, tablatipoadjuntocorrespon, numeroradicacioninterno\r\n"
+			String query2 = "SELECT archivo,nombrearchivoarchivo, tablatipoadjuntocorrespon, numeroradicacioninterno, respondidopor\r\n"
 					+ "FROM CORRESPONDENCIA \r\n"
 					+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
 					+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
@@ -433,8 +441,11 @@ public class MisPQRD implements Serializable {
 				archivo.setBytesData(resultConsulta1.getBytes("archivo"));
 				archivo.setNombre(resultConsulta1.getString("nombrearchivoarchivo"));
 				archivo.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+				archivo.setRespondidopor(resultConsulta1.getString("respondidopor"));
+				
 				archivoFull.getArchivos().add(archivo);
 				archivoFull.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+				archivoFull.setRespondidopor(resultConsulta1.getString("respondidopor"));
 			}
 			
 		} catch (Exception ex) {
@@ -452,19 +463,23 @@ public class MisPQRD implements Serializable {
 		try {
 
 			final DataBaseConection dataBaseConection1 = getConnection(); 
-			String query2 = "SELECT archivo,nombrearchivoarchivo, tablatipoadjuntocorrespon, numeroradicacioninterno\r\n"
+			String query2 = "SELECT CORRESPONDENCIA.numeroradicacioninterno,\r\n"
+					+ "CORRESPONDENCIA.respondidopor,\r\n"
+					+ "archivo,nombrearchivoarchivo, tablatipoadjuntocorrespon\r\n"
 					+ "FROM CORRESPONDENCIA \r\n"
-					+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
-					+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
 					+ "INNER JOIN tablarequiererespuestacor\r\n"
 					+ "ON CORRESPONDENCIA.requiererespuesta = tablarequiererespuestacor.fldidtablarequiererespuestacor\r\n"
+					+ "LEFT JOIN CORRESPONDENCIA AS CORRESPONDENCIARESPUESTA\r\n"
+					+ "ON CORRESPONDENCIA.respondidopor = CORRESPONDENCIARESPUESTA.numeroradicacioninterno\r\n"
+					+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
+					+ "ON CORRESPONDENCIARESPUESTA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
 					+ "INNER JOIN IMAGENESANEXAS \r\n"
-					+ "ON CORRESPONDENCIA.fldidcorrespondencia = IMAGENESANEXAS.fldidcorrespondencia\r\n"
+					+ "ON CORRESPONDENCIARESPUESTA.fldidcorrespondencia = IMAGENESANEXAS.fldidcorrespondencia\r\n"
 					+ "INNER JOIN tablatipoadjuntocorrespon\r\n"
 					+ "ON IMAGENESANEXAS.tipoadjunto = tablatipoadjuntocorrespon.fldidtablatipoadjuntocorrespon\r\n"
-					+ "WHERE CORRESPONDENCIA.fldidcorrespondencia = ? "
+					+ "WHERE CORRESPONDENCIA.fldidcorrespondencia = ?\r\n"
 					+ "AND tablarequiererespuestacor = 'RESPONDIDO'\r\n"
-					+ "AND primergrabado = 'SI'\r\n"
+					+ "AND CORRESPONDENCIARESPUESTA.primergrabado = 'SI'\r\n"
 					+ "AND tablasinoadjunto.tablasino = 'SI'\r\n"
 					+ "AND tablatipoadjuntocorrespon = 'ORIGINAL'";
 			
@@ -479,8 +494,10 @@ public class MisPQRD implements Serializable {
 				archivo.setBytesData(resultConsulta1.getBytes("archivo"));
 				archivo.setNombre(resultConsulta1.getString("nombrearchivoarchivo"));
 				archivo.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+				archivo.setRespondidopor(resultConsulta1.getString("respondidopor"));
 				archivoFull.getArchivos().add(archivo);
 				archivoFull.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
+				archivoFull.setRespondidopor(resultConsulta1.getString("respondidopor"));
 			}
 			
 		} catch (Exception ex) {
@@ -535,19 +552,21 @@ public class MisPQRD implements Serializable {
 		try {
 
 			final DataBaseConection dataBaseConection1 = getConnection(); 
-			String query2 = "SELECT nombrearchivoarchivo, tablatipoadjuntocorrespon, numeroradicacioninterno\r\n"
+			String query2 = "SELECT CORRESPONDENCIA.numeroradicacioninterno\r\n"
 					+ "FROM CORRESPONDENCIA \r\n"
-					+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
-					+ "ON CORRESPONDENCIA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
 					+ "INNER JOIN tablarequiererespuestacor\r\n"
 					+ "ON CORRESPONDENCIA.requiererespuesta = tablarequiererespuestacor.fldidtablarequiererespuestacor\r\n"
+					+ "LEFT JOIN CORRESPONDENCIA AS CORRESPONDENCIARESPUESTA\r\n"
+					+ "ON CORRESPONDENCIA.respondidopor = CORRESPONDENCIARESPUESTA.numeroradicacioninterno\r\n"
+					+ "INNER JOIN tablasino AS tablasinoadjunto\r\n"
+					+ "ON CORRESPONDENCIARESPUESTA.tieneadjuntos = tablasinoadjunto.fldidtablasino\r\n"
 					+ "INNER JOIN IMAGENESANEXAS \r\n"
-					+ "ON CORRESPONDENCIA.fldidcorrespondencia = IMAGENESANEXAS.fldidcorrespondencia\r\n"
+					+ "ON CORRESPONDENCIARESPUESTA.fldidcorrespondencia = IMAGENESANEXAS.fldidcorrespondencia\r\n"
 					+ "INNER JOIN tablatipoadjuntocorrespon\r\n"
 					+ "ON IMAGENESANEXAS.tipoadjunto = tablatipoadjuntocorrespon.fldidtablatipoadjuntocorrespon\r\n"
-					+ "WHERE CORRESPONDENCIA.fldidcorrespondencia = ? "
+					+ "WHERE CORRESPONDENCIA.fldidcorrespondencia = ? \r\n"
 					+ "AND tablarequiererespuestacor = 'RESPONDIDO'\r\n"
-					+ "AND primergrabado = 'SI'\r\n"
+					+ "AND CORRESPONDENCIARESPUESTA.primergrabado = 'SI'\r\n"
 					+ "AND tablasinoadjunto.tablasino = 'SI'\r\n"
 					+ "AND tablatipoadjuntocorrespon = 'ORIGINAL'";
 			
@@ -559,7 +578,7 @@ public class MisPQRD implements Serializable {
 			
 			while (resultConsulta1.next()) {
 				archivo = new Archivo();
-				archivo.setNombre(resultConsulta1.getString("nombrearchivoarchivo"));
+				//archivo.setNombre(resultConsulta1.getString("nombrearchivoarchivo"));
 				archivo.setNumeroradicacioninterno(resultConsulta1.getString("numeroradicacioninterno"));
 			}
 			

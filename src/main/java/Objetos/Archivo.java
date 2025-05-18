@@ -5,6 +5,7 @@ public class Archivo{
 	private byte[] bytesData;
 	private String nombre;
 	private String numeroradicacioninterno;
+	private String respondidopor;
 
 	public byte[] getBytesData() {
 		return bytesData;
@@ -28,5 +29,13 @@ public class Archivo{
 
 	public void setNumeroradicacioninterno(String numeroradicacioninterno) {
 		this.numeroradicacioninterno = numeroradicacioninterno;
+	}
+
+	public String getRespondidopor() {
+		return respondidopor;
+	}
+
+	public void setRespondidopor(String respondidopor) {
+		this.respondidopor = respondidopor;
 	}
 }

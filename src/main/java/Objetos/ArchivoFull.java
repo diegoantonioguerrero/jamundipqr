@@ -13,7 +13,8 @@ public class ArchivoFull{
 	private byte[] bytesData;
 	private String nombre;
 	private String numeroradicacioninterno;
-
+	private String respondidopor;
+	
 	public ArchivoFull() {
 		this.archivos = new ArrayList<Archivo>();
 	}
@@ -73,6 +74,14 @@ public class ArchivoFull{
         zipOut.close();
         return zipEnMemoria.toByteArray();
     }
+
+	public String getRespondidopor() {
+		return respondidopor;
+	}
+
+	public void setRespondidopor(String respondidopor) {
+		this.respondidopor = respondidopor;
+	}
 
 }
 
