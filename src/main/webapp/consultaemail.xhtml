@@ -86,7 +86,6 @@ and open the template in the editor.
             }
             
             .timeLabel{
-            	color : red;
             	display: none;
             }
             
@@ -111,6 +110,22 @@ and open the template in the editor.
 		        font-size: 80%
 		    }
 			.moveTop td{vertical-align: top; padding: 0};
+			
+			.fixHeight{
+				 margin-bottom: 10px; margin-top: 10px
+			}
+			@media screen and (max-width: 800px) {
+				.fixHeight{
+					min-height: 820px;
+				}
+			}
+			@media screen and (min-width: 800px) {
+				.fixHeight{
+					min-height: 620px;
+				}
+			}
+			
+			
 
         </style>
     </h:head>
@@ -121,7 +136,7 @@ and open the template in the editor.
         <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
                 style="background-image: url(../resources/img/#{consultarPQRD.fondoHeader});">
         </header>
-        <h:form id="formPrincipal" style="min-height: 550px; margin-bottom: 10px; margin-top: 10px">
+        <h:form id="formPrincipal" class="fixHeight">
             <p:growl 
                 id="growl" 
                 showDetail="true" 
@@ -152,8 +167,6 @@ and open the template in the editor.
 	                            </p:inputText>
 	                        </div>
 	                        
-	                        
-                           
                             <div id="CheckboxDiv" align="left" class="txtMargin">
                                 <h:panelGrid columns="2" styleClass="moveTop">
                                     <p:selectBooleanCheckbox 
@@ -162,11 +175,8 @@ and open the template in the editor.
                                         onchange="checkbox();"
                                         />
                                     <label id="labelCheckboxNotificaciones" class="labelFont" style="color: #4f4f4f">
-                                        <script>
-                                            document.getElementById("labelCheckboxNotificaciones").innerHTML ="#{opcionesPQRD.textTermsConditionsMisPQRD}"
-                                        </script>
+                                    	#{opcionesPQRD.textTermsConditionsMisPQRD}
                                     </label>
-        
                                 </h:panelGrid>
                             </div>
                         
@@ -207,12 +217,6 @@ and open the template in the editor.
 	                            </p:inputText>
 	                        </div>
 	                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
-	                        <div class="ui-g-12" style="padding-left: 0">
-	                            <p:outputLabel
-	                                id="timeLabel"
-	                                class="timeLabel"
-	                                value="Por favor espere {}"/>   
-	                        </div>
 	                        <div class="ui-g" style="size: auto; padding: 0;" align="center">
 		                        <p:commandLink 
 								    id="linkAcceso"
@@ -293,20 +297,38 @@ and open the template in the editor.
             <!--Diálogo de correspondenciaNoExiste-->
         </h:form>
         <!--Diálogo cargando...-->
-          <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
+        <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
         			id="dialogLoader" modal="true" resizable="false" 
         			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
         			width="300px" style="text-align: center;">
 
-	    <h:panelGroup layout="block" style="padding: 20px;">
-	        <div class="simple-spinner"></div>
-	        <br/>
-	        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
-	    </h:panelGroup>
+		    <h:panelGroup layout="block" style="padding: 20px;">
+		        <div class="simple-spinner"></div>
+		        <br/>
+		        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
+		    </h:panelGroup>
 	
 		</p:dialog>
+		<!--Diálogo espere...-->
+        <p:dialog header="" visible="false" closable="false" widgetVar="dialogWait" 
+        			id="dialogWait" modal="true" resizable="false" 
+        			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
+        			width="300px" style="text-align: center;">
+
+		    <h:panelGroup layout="block" style="padding: 20px;">
+		        <div class="simple-spinner"></div>
+		        <br/>
+		        <div class="ui-g-12" style="padding-left: 0">
+	                            <p:outputLabel
+	                                id="timeLabel"
+	                                class="timeLabel"
+	                                value="Por favor espere {}"/>   
+				</div>
+		    </h:panelGroup>
+	
+		</p:dialog>
+		<footer class="footer fixed" title="#{indexPQRD.textoAlternativoPiedepagina}"
+	    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});">
+		</footer>		
     </h:body>
-    
-    <footer class="footer" title="#{indexPQRD.textoAlternativoPiedepagina}"
-    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
 </html>

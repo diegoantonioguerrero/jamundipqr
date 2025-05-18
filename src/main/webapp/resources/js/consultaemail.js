@@ -113,12 +113,16 @@ function validadorNumVerificacion() {
 }
 
 function validadorEmail() {
-	//console.log("validadorEmail new ");
     var msg = 'Por favor complete los campos faltantes.';
+
+	notificacionesAceptadas = PF('CheckBoxWidget').input.is(':checked');
 
 	emailConsultaLabel = document.getElementById("formPrincipal:emailConsultaLabel");
 	emailConsultaInput = document.getElementById("formPrincipal:emailConsulta");
 	emailConsultaValue = emailConsultaInput.value;
+	
+	var labelCheckBoxNotificaciones = document.getElementById("labelCheckboxNotificaciones");
+    labelCheckBoxNotificaciones.style = 'color: #4f4f4f;';
 
     if (emailConsultaValue === "") {
         emailConsultaOk = false;
@@ -132,16 +136,22 @@ function validadorEmail() {
     }
     
     
-    if (emailConsultaOk) {
-    	PF('dialogLoader').show();
-        return true;
-        
-    } else {
+    if (!emailConsultaOk)
+    {
         emailConsultaInput.style = 'border: 1px solid #cd0a0a;';
         emailConsultaLabel.style = 'color: #cd0a0a;';
         alert(msg);
+    	return false;    
     }
-	return false;
+
+    if(!notificacionesAceptadas){
+        labelCheckBoxNotificaciones.style = 'color: #cd0a0a;';
+        alert(msg);
+       	return false;
+    }
+        
+	PF('dialogLoader').show();
+    return true;
 }
 
 function getNumVerificacion() { //Funciona OnKeyUp
@@ -199,15 +209,19 @@ function mensajeErrorNroVerificacion(conDosMinutos, url){
 	if (conDosMinutos){
 		mensajeDosMinutos(url);
 	} else{
-		alert(msgEscribaNroVerificacion);
+	
+		if (PF('dialogLoader')) {
+			PF('dialogLoader').cfg.onHide = function() {
+			    alert(msgEscribaNroVerificacion);
+			    PF('dialogLoader').cfg.onHide = null;
+			};
+			hideLoader();			
+		}
 	}
-    
 }
 
 function mensajeDosMinutos(url){
-
-
-var tiempo = 30; // tiempo en segundos
+var tiempo = 4; // tiempo en segundos
 
 var enviarConsulta = document.getElementById("formPrincipal:EnviarConsulta");
 var regresar = document.getElementById("formPrincipal:Regresar");
@@ -215,14 +229,32 @@ var regresar = document.getElementById("formPrincipal:Regresar");
 enviarConsulta.disabled = true;
 regresar.disabled = true;
 
-var label = document.getElementById("formPrincipal:timeLabel");
-label.textContent = "Por favor espere " + tiempo + " segundos";
+var label = document.getElementById("timeLabel");
+var timeLabel;
+if(tiempo >= 60){
+	timeLabel = "1:"+ (tiempo - 60).toString().padStart(2, '0') +" segundos";
+}
+else{
+	timeLabel = tiempo.toString().padStart(2, '0') + " segundos";
+}
+label.textContent = "Por favor espere " + timeLabel;
 label.style.display = 'inline';
 
+PF('dialogWait').show();
+
 var intervalo = setInterval(() => {
+
+if(tiempo >= 60){
+	timeLabel = "1:"+ (tiempo - 60).toString().padStart(2, '0') +" segundos";
+}
+else{
+	timeLabel = tiempo.toString().padStart(2, '0') + " segundos";
+}
+	
+	
     if (tiempo > 0) {
-        tiempo--;
-        label.textContent = "Por favor espere " + tiempo + " segundos";
+        label.textContent = "Por favor espere " + timeLabel;
+		tiempo--;
     } else {
         clearInterval(intervalo);
         label.textContent = "Redirigiendo...";

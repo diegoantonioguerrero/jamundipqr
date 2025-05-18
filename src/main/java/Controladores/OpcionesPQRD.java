@@ -81,6 +81,7 @@ public class OpcionesPQRD implements Serializable {
 		this.mostrarFechaPosibleRespuesta = false;
 		try {
 			OpcionesPQRD.path_background_image = Util.getProperties("imagenFondo");
+			OpcionesPQRD.urlOrigen = Util.getProperties("linkOrigen");
 			OpcionesPQRD.textTermsConditionsMisPQRD = Util.getProperties("textTermsConditionsMisPQRD");
 
 		} catch (Exception ex) {
@@ -508,51 +509,10 @@ public int getDirectorio() throws Exception {
 		return OpcionesPQRD.urlOrigen;
 	}
 
-	
-
 	public boolean isNroRadicadoExist() {
 		return this.nroRadicadoExist;
 	}
-/*
-  public boolean isFileExist() {
-		return OpcionesPQRD.fileExist;
-	}
-	public String getFondoHeader() {
-		return OpcionesPQRD.fondoHeader;
-	}
 
-	public String getFondoFooter() {
-		return OpcionesPQRD.fondoFooter;
-	}
-
-	public String getColorFondoBotones() {
-		return OpcionesPQRD.colorFondoBotones;
-	}
-
-	public String getColorLetraBotones() {
-		return OpcionesPQRD.colorLetraBotones;
-	}
-
-	public String getFuenteTiulos() {
-		return OpcionesPQRD.fuenteTiulos;
-	}
-
-	public String getFuenteEtiquetas() {
-		return OpcionesPQRD.fuenteEtiquetas;
-	}
-
-	public String getFuenteContenido() {
-		return OpcionesPQRD.fuenteContenido;
-	}
-		public String getTextoAlternativoEncabezado() {
-		return textoAlternativoEncabezado;
-	}
-
-	public String getTextoAlternativoPiedepagina() {
-		return textoAlternativoPiedepagina;
-	}
-
-*/
 	public String getTextTermsConditionsMisPQRD() {
 		return OpcionesPQRD.textTermsConditionsMisPQRD;
 	}

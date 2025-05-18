@@ -83,7 +83,8 @@ and open the template in the editor.
         <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
                 style="background-image: url(../resources/img/#{indexPQRD.fondoHeader});">
         </header>
-        <h:form id="formPrincipal" style="min-height: 550px; margin-bottom: 10px; margin-top: 10px">
+        
+        <h:form id="formPrincipal" style="min-height: 360px; margin-bottom: 10px; margin-top: 10px">
             <p:growl 
                 id="growl" 
                 showDetail="true" 
@@ -115,7 +116,7 @@ and open the template in the editor.
                             <p:button 
                             class="btn" 
                             value="Salir" 
-                            href="#{opcionesPQRD.urlOrigen}"/>
+                            href="#{indexPQRD.urlOrigen}"/>
                         </div>
                         <div class="ui-g" style="size: auto; padding: 0;" align="center">
                         
@@ -125,11 +126,10 @@ and open the template in the editor.
                 </p:panel>
             </div>       
         </h:form>
-    </h:body>
-    
-    <footer class="footer" title="#{indexPQRD.textoAlternativoPiedepagina}"
-    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});">
-    </footer>
+	    <footer class="footer fixed" title="#{indexPQRD.textoAlternativoPiedepagina}"
+	    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});">
+	    </footer>
+	</h:body>
 </html>
 
 
