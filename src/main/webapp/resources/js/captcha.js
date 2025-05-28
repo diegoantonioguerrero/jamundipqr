@@ -30,8 +30,8 @@ function pagFormular(){
 }
 
 function comprobarCaptcha(ingresado){
-ingresado = document.getElementById("txtCaptcha").value;
-document.getElementById("CaptchaIn").value = ingresado;  
+//ingresado = document.getElementById("txtCaptcha").value;
+//document.getElementById("CaptchaIn").value = ingresado;  
 
     if (ingresado === ''){
         alert('Favor ingrese un codigo');

@@ -185,7 +185,38 @@ public int getDirectorio() throws Exception {
 }
 
 
-	public boolean existeCorrespondencia() throws Exception {
+	public String getComuniacionUltimoRadicado() throws Exception {
+		
+		String nroradicacion = null;
+			
+			try {
+
+				final DataBaseConection dataBaseConection1 = getConnection(); 
+				String query2 = "SELECT nroradicacion \r\n"
+						+ "FROM COMUNICACIONPRQD\r\n"
+						+ "WHERE \r\n"
+						+ "LOWER('?') = ANY (string_to_array(TRIM(REPLACE(COMUNICACIONPRQD.EMAIL, ' ', '')), ';'))\r\n"
+						+ "ORDER BY COMUNICACIONPRQD.fecha DESC, COMUNICACIONPRQD.hora DESC\r\n"
+						+ "LIMIT 1;";
+
+				query2 = query2.replaceFirst("\\?", this.emailConsulta);
+				dataBaseConection1.consultarDB(query2);
+				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
+				
+				while (resultConsulta1.next()) {
+					nroradicacion = resultConsulta1.getString("nroradicacion");
+				}
+				
+			} catch (Exception ex) {
+				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
+				throw ex;
+			}
+			
+			return nroradicacion;
+	
+	}
+	
+public boolean existeCorresponciaConUtimoRadicado(String ultimoRadicado) throws Exception {
 		
 		long records = 0;
 			
@@ -196,11 +227,11 @@ public int getDirectorio() throws Exception {
 						+ "FROM CORRESPONDENCIA \r\n"
 						+ "INNER JOIN COMUNICACIONPRQD \r\n"
 						+ "  ON CORRESPONDENCIA.numeroradicacioninterno = COMUNICACIONPRQD.nroradicacion \r\n"
-						+ "INNER JOIN directorioemailprqd \r\n"
-						+ "  ON directorioemailprqd.EMAIL = ANY (string_to_array(TRIM(REPLACE(CORRESPONDENCIA.EMAIL, ' ', '')), ';'))\r\n"
-						+ "WHERE lower(COMUNICACIONPRQD.email) LIKE lower('?');";
+						+ "WHERE \r\n"
+						+ "COMUNICACIONPRQD.nroradicacion = '?' \r\n"
+						+ "LIMIT 1;";
 
-				query2 = query2.replaceFirst("\\?", this.emailConsulta);
+				query2 = query2.replaceFirst("\\?", ultimoRadicado);
 				dataBaseConection1.consultarDB(query2);
 				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
 				
@@ -224,7 +255,7 @@ public int getDirectorio() throws Exception {
 			try {
 
 				final DataBaseConection dataBaseConection1 = getConnection(); 
-				String query2 = "SELECT fldidCorrespondencia, email,\r\n"
+				String query2 = "SELECT CORRESPONDENCIA.fldidCorrespondencia, CORRESPONDENCIA.email,\r\n"
 						+ "       CASE enviorecibo \r\n"
 						+ "           WHEN 1 THEN solonombredestino\r\n"
 						+ "           WHEN 2 THEN solonombreorigen\r\n"
@@ -380,10 +411,15 @@ public int getDirectorio() throws Exception {
 			return null; //permanecer en la pagina
 		}
 		
-		Correspondencia correspondencia = existeCorrespondenciaBasic(); 
-		if(correspondencia == null) {
-			RequestContext.getCurrentInstance().execute("mensajeErrorMantenimiento('" + getUrlOrigen()  + "')");
-			return null; //permanecer en la pagina, pero el se redirecciona
+		String ultimoRadicado = getComuniacionUltimoRadicado(); 
+		if(ultimoRadicado != null) {
+			boolean existeCorresponciaConUtimoRadicado = existeCorresponciaConUtimoRadicado(ultimoRadicado);
+			if (!existeCorresponciaConUtimoRadicado)
+			{
+				RequestContext.getCurrentInstance().execute("mensajeErrorMantenimiento('" + getUrlOrigen()  + "')");
+				return null; //permanecer en la pagina, pero el se redirecciona	
+			}
+			
 		}
 		
 		return "/faces/mispqrds.xhtml";//?email="+ this.emailConsulta+ "&nroVerificacion="+ this.nroVerificacion; 

@@ -98,7 +98,7 @@ function validadorNumVerificacion() {
     } else {
         numVerificacionInput.style = 'border: 1px solid #cd0a0a;';
         numVerificacionLabel.style = 'color: #cd0a0a;';
-		mensajeErrorNroVerificacion(false);
+		alert(msgEscribaNroVerificacion);
     }
 	return false;
 }
