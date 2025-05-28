@@ -116,6 +116,8 @@ and open the template in the editor.
         </style>
     </h:head>
     <h:body class="bground"
+    		onload="deshabilitaRetroceso(); mostrarIngresado();"
+            onunload="deshabilitaRetroceso()"
             style="background-image: url(../resources/img/#{indexPQRD.path_background_image}); margin: 0">
 
         <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
@@ -299,8 +301,8 @@ and open the template in the editor.
         <h:outputScript>
 			iniciarTimerSesion(#{misPQRD.tiempoSesionConsulta},'#{indexPQRD.urlOrigen}');
 		</h:outputScript>
+		<footer class="footer fixedMax" title="#{indexPQRD.textoAlternativoPiedepagina}"
+    		style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});">
+    	</footer>		
     </h:body>
-    
-    <footer class="footer" title="#{indexPQRD.textoAlternativoPiedepagina}"
-    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
 </html>

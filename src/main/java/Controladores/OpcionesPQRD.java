@@ -325,6 +325,7 @@ public int getDirectorio() throws Exception {
 			}
 		} else {
 			System.err.println("Campos faltantes");
+			RequestContext.getCurrentInstance().execute("mensajeErrorDbg('Campos faltantes')");
 		}
 		return null;
 	}
@@ -334,6 +335,7 @@ public int getDirectorio() throws Exception {
 		boolean existsDirectory = this.existeDirectorio();
 		if (existsDirectory) {
 			this.setPasoActual(2);
+			RequestContext.getCurrentInstance().execute("hideLoader();");
 			return null; //permanecer en la pagina
 		}
 		

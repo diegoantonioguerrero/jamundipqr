@@ -136,7 +136,8 @@ and open the template in the editor.
                         </div>
                         <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
                             <p:button 
-                                class="btn updateAdjust" 
+                                class="btn updateAdjust"
+                                onclick="allowAccess()" 
                                 value="Regresar" 
                                 href="/faces/opcionesconsulta.xhtml"/>
                         </div>
@@ -210,10 +211,7 @@ and open the template in the editor.
                     padding: 0!important; 
                 }
                 
-                .ui-widget-content{
-                    border: none !important;
-                }
-                        
+                       
                 </style>
                         
                 <h:panelGrid columns="2" style=" margin: auto; margin-bottom: 10px" styleClass="moveTop">

@@ -37,15 +37,6 @@ function accesoNumVerificacion(){
     var consultar = window.location.href.split("/faces")[0] + "/faces/numverificacion.xhtml";
     location.href=consultar;
 }
-/*
-function inicializarConsultar(){
-    numRadicadoInput.value = localStorage.getItem("nroRadicadoConsultar").toString();
-    numRadicadoValue = numRadicadoInput.value;
-    numVerificacionInput.value = localStorage.getItem("nroVerificacionConsultar").toString();
-    numVerificacionValue = numVerificacionInput.value;
-    localStorage.setItem("nroRadicadoConsultar","");
-    localStorage.setItem("nroVerificacionConsultar","");
-}*/
 
 
 function getEmailConsulta() { //Funciona OnKeyUp
@@ -160,8 +151,18 @@ function getNumVerificacion() { //Funciona OnKeyUp
     numVerificacionLabel.style = 'color: #4f4f4f;';
 }
 
+function showLoader(){
+	if (PF('dialogLoader')) {
+		PF('dialogLoader').show();
+	}
+}
 
-
+function hideLoader(){
+	
+	if (PF('dialogLoader')) {
+		PF('dialogLoader').hide();
+	}
+}
 
 function recargarConsultarPqrd(){
     permitir = 1;
@@ -176,6 +177,7 @@ function mensajeError() {
 }
 
 function mensajeErrorCorrespondenciaNoExiste(correo) {
+	hideLoader();
     PF('correspondenciaNoExiste').show();
     var elementos = document.querySelectorAll('#labelCorrespondencia');
     elementos.forEach(function(elem, index) {
@@ -201,7 +203,16 @@ function mensajeCorreo(){
 }
 
 function mensajeErrorDbg(errorDbg) {
-    alert("Ha ocurrido un error inesperado: " + errorDbg);
+	if (PF('dialogLoader')) {
+		PF('dialogLoader').cfg.onHide = function() {
+		    alert("Ha ocurrido un error inesperado: " + errorDbg);
+		    PF('dialogLoader').cfg.onHide = null;
+		};
+		hideLoader();
+	}else{
+		alert("Ha ocurrido un error inesperado: " + errorDbg);
+	}
+   
 }
 
 function mensajeErrorNroVerificacion(conDosMinutos, url){
@@ -210,18 +221,21 @@ function mensajeErrorNroVerificacion(conDosMinutos, url){
 		mensajeDosMinutos(url);
 	} else{
 	
-		if (PF('dialogLoader')) {
-			PF('dialogLoader').cfg.onHide = function() {
-			    alert(msgEscribaNroVerificacion);
-			    PF('dialogLoader').cfg.onHide = null;
-			};
-			hideLoader();			
-		}
+		var intervalo = setTimeout(() => {
+			if (PF('dialogLoader')) {
+				PF('dialogLoader').cfg.onHide = function() {
+				    alert(msgEscribaNroVerificacion);
+				    PF('dialogLoader').cfg.onHide = null;
+				};
+				hideLoader();			
+			}
+
+		}, 10000);
 	}
 }
 
 function mensajeDosMinutos(url){
-var tiempo = 4; // tiempo en segundos
+var tiempo = 20; // tiempo en segundos
 
 var enviarConsulta = document.getElementById("formPrincipal:EnviarConsulta");
 var regresar = document.getElementById("formPrincipal:Regresar");
@@ -237,7 +251,7 @@ if(tiempo >= 60){
 else{
 	timeLabel = tiempo.toString().padStart(2, '0') + " segundos";
 }
-label.textContent = "Por favor espere " + timeLabel;
+label.textContent = "Por favor espere";
 label.style.display = 'inline';
 
 PF('dialogWait').show();
@@ -253,7 +267,7 @@ else{
 	
 	
     if (tiempo > 0) {
-        label.textContent = "Por favor espere " + timeLabel;
+        label.textContent = "Por favor espere";
 		tiempo--;
     } else {
         clearInterval(intervalo);
@@ -264,11 +278,4 @@ else{
 }, 1000);
 
 
-}
-
-function hideLoader(){
-	
-	if (PF('dialogLoader')) {
-		PF('dialogLoader').hide();
-	}
 }

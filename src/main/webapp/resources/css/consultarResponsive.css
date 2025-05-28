@@ -100,6 +100,11 @@ dialog{
 		position : fixed;
 		height: 190px;
 	}
+	
+	.footer.fixedMax{
+		position : static;
+		height: 190px;
+	}
 }
 
 
@@ -163,5 +168,9 @@ dialog{
     
     .footer.fixed{
     	position : fixed;
+	}
+	
+	.footer.fixedMax{
+		position : static;
 	}
 }

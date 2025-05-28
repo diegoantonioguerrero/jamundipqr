@@ -60,12 +60,35 @@ public class ArchivoFull{
         ByteArrayOutputStream zipEnMemoria = new ByteArrayOutputStream();
         ZipOutputStream zipOut = new ZipOutputStream(zipEnMemoria);
 
-        for (int i=0; i< this.archivos.size(); i++) {
-        	Archivo entrada = this.archivos.get(i);
-            String nombreArchivo = entrada.getNombre();
+
+        // Mapa para rastrear cuántas veces ha aparecido un nombre base
+        Map<String, Integer> nombreArchivoCount = new HashMap<>();
+
+        for (Archivo entrada : this.archivos) {
+            String nombreOriginal = entrada.getNombre();
             byte[] datosArchivo = entrada.getBytesData();
 
-            ZipEntry zipEntry = new ZipEntry(nombreArchivo);
+            // Separar nombre y extensión
+            String nombreBase = nombreOriginal;
+            String extension = "";
+            int lastDot = nombreOriginal.lastIndexOf('.');
+            if (lastDot != -1) {
+                nombreBase = nombreOriginal.substring(0, lastDot);
+                extension = nombreOriginal.substring(lastDot);
+            }
+
+            // Generar nombre único
+            String nombreFinal = nombreOriginal;
+            if (nombreArchivoCount.containsKey(nombreOriginal)) {
+                int count = nombreArchivoCount.get(nombreOriginal) + 1;
+                nombreFinal = nombreBase + "-" + count + extension;
+                nombreArchivoCount.put(nombreOriginal, count);
+            } else {
+                nombreArchivoCount.put(nombreOriginal, 1);
+            }
+
+            // Agregar entrada al ZIP
+            ZipEntry zipEntry = new ZipEntry(nombreFinal);
             zipOut.putNextEntry(zipEntry);
             zipOut.write(datosArchivo);
             zipOut.closeEntry();

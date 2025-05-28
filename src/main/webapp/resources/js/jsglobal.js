@@ -12,6 +12,7 @@ function deshabilitaRetroceso() {
 
 function mostrarIngresado() {
     var gestionAcceso = localStorage.getItem("AccesoURL").toString();
+    //console.log("gestionAcceso", gestionAcceso);
     if (gestionAcceso === "1") {
         permitir = 0;
         localStorage.setItem("AccesoURL", permitir);
@@ -26,14 +27,14 @@ function mostrarIngresado() {
 }
 
 function allowAccess(){
-	alert("allowAccess ");
+	//alert("allowAccess ");
 	var permitir = 1;
 	localStorage.setItem("AccesoURL",permitir);
 } 
 
 function accesoEnvioPqrd() {
     permitir = 1;
-    localStorage.setItem("AccesoURL", permitir);
+    localStorage.setItem("AccesoURL",permitir);
 }
 
 var sizeLimit = document.getElementById("limitearhivosize")

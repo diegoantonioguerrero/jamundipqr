@@ -130,7 +130,8 @@ and open the template in the editor.
         </style>
     </h:head>
     <h:body class="bground"
-            onload="dialogWidth();"
+    		onload="deshabilitaRetroceso(); mostrarIngresado();dialogWidth();"
+            onunload="deshabilitaRetroceso()"
             style="background-image: url(../resources/img/#{consultarPQRD.path_background_image}); margin: 0">
 
         <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
@@ -217,7 +218,7 @@ and open the template in the editor.
 	                            </p:inputText>
 	                        </div>
 	                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
-	                        <div class="ui-g" style="size: auto; padding: 0;" align="center">
+	                        <div class="ui-g-12" style="size: auto; padding: 0;" align="center">
 		                        <p:commandLink 
 								    id="linkAcceso"
 								    class="linkAcceso"
@@ -244,21 +245,21 @@ and open the template in the editor.
                                 update="@form"
                                 action="#{opcionesPQRD.validarEmail}"
                                 onclick="return validateData();"
-                                oncomplete="hideLoader();"
                                 value="Continuar"
                                 >
                             </p:commandButton>
                        
                             <p:button 
                             	id="Regresar"
-                                class="btn btnAdjust3 ui-g-8 ui-md-3" 
+                                class="btn btnAdjust3 ui-g-8 ui-md-3"
+                                onclick="showLoader();allowAccess();" 
                                 value="Regresar" 
                                 href="/faces/opcionesconsulta.xhtml"/>
                        
                             <p:button 
                             class="btn btnAdjust3 ui-g-8 ui-md-3" 
                             value="Salir" 
-                            href="#{consultarPQRD.urlOrigen}"/>
+                            href="#{indexPQRD.urlOrigen}"/>
                         </div>
                     </div>
                     
