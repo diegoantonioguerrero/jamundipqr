@@ -1,18 +1,36 @@
 function deshabilitaRetroceso() {
-    window.location.hash = "no-back-button";
-    window.location.hash = "Again-No-back-button"; //chrome
-    window.onhashchange = function () {
-        window.location.hash = "no-back-button";
-    };
-    window.history.forward(1);
-    window.onunload = function () {
-        null;
-    }
+	try{
+	
+	    window.location.hash = "no-back-button";
+	    window.location.hash = "Again-No-back-button"; //chrome
+	    window.onhashchange = function () {
+	        
+			try{
+	        
+	        	window.location.hash = "no-back-button";
+	        
+	        }
+			catch(err){
+				alert(err);
+			}
+	        
+	    };
+	    window.history.forward(1);
+	    window.onunload = function () {
+	        null;
+	    }
+	
+	}
+	catch(err){
+		alert(err);
+	}
 }
 
 function mostrarIngresado() {
-    var gestionAcceso = localStorage.getItem("AccesoURL").toString();
-    //console.log("gestionAcceso", gestionAcceso);
+	var accesoURL = localStorage.getItem("AccesoURL");
+    //console.log("gestionAcceso", accesoURL);
+    var gestionAcceso = (accesoURL !== undefined && accesoURL !== null) ? accesoURL.toString() : 0;
+    
     if (gestionAcceso === "1") {
         permitir = 0;
         localStorage.setItem("AccesoURL", permitir);
