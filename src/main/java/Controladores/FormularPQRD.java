@@ -470,6 +470,10 @@ public class FormularPQRD implements Serializable {
    }
 
    private void empaquetarZip() {
+	   if (filesEmpaquetar == null || filesEmpaquetar.size() == 0)
+	   {
+		   return;
+	   }
 	   
 	   File[] archivosParaZip = filesEmpaquetar.toArray(new File[0]);
 

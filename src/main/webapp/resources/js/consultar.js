@@ -115,8 +115,14 @@ function recargarConsultarPqrd(){
     localStorage.setItem("nroVerificacionConsultar","");
 }
 
-function mensajeErrorRadicado(numRad) {
-    alert("El número de radicado " + numRad + " no es anónimo; esta pantalla sólo se utiliza para consultar correos anónimos");
+function mensajeErrorRadicado(numRad, numeroVerificacionErrado) {
+	if (numeroVerificacionErrado){
+		alert("Número de verificación está errado");
+	}
+	else{
+		alert("El número de radicado " + numRad + " no es anónimo; esta pantalla sólo se utiliza para consultar correos anónimos");
+	}
+    
 }
 
 function mensajeError() {

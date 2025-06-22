@@ -352,8 +352,8 @@ public class Util {
 		multipart.addBodyPart(messageBodyPart);
 		message.setContent(multipart);
 		
-		//return true;
-		
+		return true;
+		/*
 		//Se reintenta enviar el correo 3 veces
 		for(int i=0; i<3; i++) {
 			try {			
@@ -365,7 +365,7 @@ public class Util {
 			}
 		}
 		
-		return false;
+		return false;*/
 
 	}
 

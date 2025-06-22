@@ -299,7 +299,7 @@ and open the template in the editor.
                                 style="font-weight: bold; color: #D20005; font-size: 110%"
                                 /><br/><br/>
                             <p:outputLabel 
-                                value="Usted fue bloqueado(a) pues realizó cinco o más consultas fallidas."
+                                value="Usted fue bloqueado(a) pues realizó tres o más consultas fallidas."
                                 style="font-size: 95%"
                                 /><br/>
                             <p:outputLabel 
@@ -336,7 +336,7 @@ if( radicadoConsulta !== undefined &amp;&amp; radicadoConsulta !== null){
 		evt.stopPropagation();
 	
 	    var data = evt.clipboardData.getData('text');
-		console.info("dt",data);
+		//console.info("dt",data);
 	
 		//var data = obj.value;
 		data = data.replace(new RegExp(' ', 'g'), '');
