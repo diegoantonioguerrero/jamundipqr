@@ -70,17 +70,22 @@
             	height:100vh;
             }
             
+            .headerTheme{
+            	background-image: url(./resources/img/#{indexPQRD.fondoHeader});
+            }
+            
             .footerTheme{
             	background-image: url(./resources/img/#{indexPQRD.fondoFooter});
             }
+            
+            
 
         </style>
     </h:head>
     <h:body class="bground bodyTheme"
             onload="deshabilitaRetroceso()">
         
-        <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
-                style="background-image: url(./resources/img/#{indexPQRD.fondoHeader});">
+        <header class="headerResponsive headerTheme" title="#{indexPQRD.textoAlternativoEncabezado}">
         </header>
             <div class="center" align="center">
                 <h:form id="formIndex" style="display: none; align-self: center">

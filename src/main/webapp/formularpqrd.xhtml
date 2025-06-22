@@ -25,6 +25,20 @@ and open the template in the editor.
         
         <style>
             
+            .simple-spinner {
+				  width: 40px;
+				  height: 40px;
+				  border: 4px solid #ccc;
+				  border-top: 4px solid #555;
+				  border-radius: 50%;
+				  animation: spin 1s linear infinite;
+				  margin: 20px auto;
+				}
+				
+				@keyframes spin {
+				  to { transform: rotate(360deg); }
+			}
+			
             .ui-button{
                 background-color: #{formularPQRD.colorFondoBotones} !important;
                 color: #{formularPQRD.colorLetraBotones} !important;
@@ -85,19 +99,78 @@ and open the template in the editor.
                 float:left;
             }
             
+            .moveTop td{
+            	vertical-align: top; padding: 0;
+            }
+            
+            #tipoPQRHolder.invalid{
+            }
+            
+            .invalid #formPrincipal\:tipoPQR{
+            	border: 1px solid #cd0a0a; width: 90%;
+            }
+            
+            .invalid #formPrincipal\:tipoPQR_label{
+            	color: #cd0a0a;
+            }
+            
+            .invalid #formPrincipal\:labeltipopqr{
+            	color: #cd0a0a;
+            }
+            /*
+            .upload.test{
+            	background-color: red;
+            }
+            .deletePanel{
+            	background-color: olive;
+            }
+            
+            .upload.new{
+            	background-color: purple;
+            }
+            */
+            .deletePanelFull{
+            	/*background-color: orange;*/
+            	padding: 0px;
+            }
+            /*
+            .attachments{
+            	background-color: blue;
+            }*/
+        
+            
+            .headerTheme{
+            	background-image: url(../resources/img/#{indexPQRD.fondoHeader});
+            }
+            .footerTheme{
+            	background-image: url(../resources/img/#{indexPQRD.fondoFooter});
+            }
+            
+            
         </style>
         
     </h:head>
     <h:body class="bground"
-            onload="deshabilitaRetroceso(); mostrarIngresado()"
-            onunload="deshabilitaRetroceso()"
+		onload="deshabilitaRetroceso();mostrarIngresado();"
+        onunload="deshabilitaRetroceso();"
             style="background-image: url(../resources/img/#{formularPQRD.path_background_image}); margin: 0">  
         
-        <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
-                style="background-image: url(../resources/img/#{formularPQRD.fondoHeader});">
+        <header class="headerResponsive headerTheme" title="#{indexPQRD.textoAlternativoEncabezado}">
         </header>
         
+       
         <h:form id="formPrincipal" enctype="multipart/form-data" style="min-height: 550px; margin-top: 10px; margin-bottom: 10px; display: none">
+	        <!-- p:remoteCommand for ajax-->
+	        <p:remoteCommand name="recargarComboTipoSolicitud" action="#{formularPQRD.cargarTipos}" update="tipoPQR" 
+				oncomplete="hideLoaderDialog();"
+				onerror="displayError(arguments);"
+			/>
+			<p:remoteCommand name="recargarAdjuntos" action="#{formularPQRD.recargarAdjuntos}" update="adjuntos"
+				onstart="showLoaderDialog();"
+				oncomplete="reconfigureAdjuntosHandler();"
+				onerror="displayError(arguments);" 
+			/>
+
             <p:growl 
                 id="growl" 
                 showDetail="true" 
@@ -124,12 +197,13 @@ and open the template in the editor.
                                 style="margin-right: 5px"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 buttonAdjust" style="padding-left: 0">
+                        
                             <p:selectOneMenu 
                                 class="contentFont"
                                 id="tipoIdentificacion"
                                 required="true"
                                 autoWidth="false"
-                                onchange="validator()"
+                                onchange="validator();recargarComboTipoSolicitud();"
                                 widgetVar="tipoIdentificacion"
                                 value="#{formularPQRD.tipoIdenficacion}"
                                 style="width: 90%; font-family: fuenteContenido !important;">
@@ -519,7 +593,7 @@ and open the template in the editor.
                                         </p:selectOneMenu>
                                     </div>
                                 </div>   
-                                <div class="ui-g-12 ui-md-6" style="padding-left: 0">                            
+                                <div id="tipoPQRHolder" class="ui-g-12 ui-md-6" style="padding-left: 0">                            
                                     <div class="ui-g-12 ui-md-6 txtColumn" style="padding-left: 0">
                                         <p:outputLabel 
                                             id="labeltipopqr"
@@ -528,12 +602,14 @@ and open the template in the editor.
                                     <div class="ui-g-12 ui-md-6 btnColumn" style="padding-left: 0">
                                         <p:selectOneMenu 
                                             id="tipoPQR"
-                                            value="#{formularPQRD.comunicacionPQRD.id_tipo_pqrd}"
+                                            value="#{formularPQRD.tipoPqr}"
                                             autoWidth="false"
                                             class="verdanaFontSolicitud contentFont"
-                                            onchange="validatorTipoPQR()"
+                                            onchange="validatorTipoPQR();"
                                             widgetVar="tipoSolicitud"
-                                            style="width: 90%;">
+                                            style="width: 90%;"
+                               
+                                            >
                                             <f:selectItem 
                                                 itemLabel="Seleccione una opción" 
                                                 itemValue="" 
@@ -646,40 +722,64 @@ and open the template in the editor.
                                 </div>
 
                             </div>
-                            <p:outputLabel id="labelfilename" value="" style="
-                                           text-align: left;
-                                           display: block;
-                                           padding-left: 20px;
-                                           font-size: 90%;
-                                           font-weight: bold;"/> 
-                            <p:commandButton 
-                                id="buttondelete"
-                                style="
-                                display: none; 
-                                box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
-                                float: left;
-                                margin-left: 18px;
-                                margin-top: 10px;"
-                                onclick="deleteFile();"
-                                value="Eliminar adjunto"
-                                title="Eliminar adjunto"/> 
-                            <br />
-                            <div id="divupload" class="upload">
-                                <p:fileUpload 
-                                    id="inputdelfile"
-                                    label="Adjuntar Soportes"
-                                    value="#{formularPQRD.filePrime}"
-                                    allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|docx|txt)$/"
-                                    fileLimit="1"
-                                    mode="simple"
-                                    skinSimple="true"
-                                    />  
-                                <br/>
-                                <br/>
-                                <p:outputLabel id="labellimitearchivosize" value="" style="font-size: 90%"/> <br />
-                                <p:outputLabel value="Formatos admitidos: .txt, .docx, .doc, .xls, .xlsx, .jpeg, .pdf, .gif, .png, .jpg, .zip, .rar" style="font-size: 90%"/><br/>
+                            <h:panelGroup id="adjuntos">
+                            <div class="attachments ui-g-12" style="size: auto">
+                            
+	                            <c:forEach items="#{formularPQRD.tiposAdjuntos}" var="tipoAdjunto" varStatus="status">
+	                                <div class="deletePanelFull ui-g-12">
+		                                <p:outputLabel 
+		                                	id="labelfilename_#{status.index}"
+		                                	value="" style="
+		                                           text-align: left;
+		                                           display: block;
+		                                           padding-left: 20px;
+		                                           font-size: 90%;
+		                                           font-weight: bold;"
+		                                           class="ui-g-12"
+		                                           />
+		                                <p:commandButton 
+			                                id="buttondelete_#{status.index}"
+			                                style="
+			                                display: none; 
+			                                box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
+			                                float: left;
+			                                margin-left: 18px;
+			                                margin-top: 10px;"
+			                                onclick="deleteFileMultiple(#{status.index});"
+			                                value="Eliminar archivo #{tipoAdjunto.nombreadjunto}"
+			                                title="Eliminar archivo #{tipoAdjunto.nombreadjunto}"/> 
+									</div>
+	                                <div id="divupload_#{status.index}"
+	                                	class="upload new" style="margin-bottom: 15px;">
+	                                	<h:inputHidden id="filenameRequired_#{status.index}" 
+	                                		value="#{tipoAdjunto.obligatorio}" />
+	                                	
+	                                    <p:outputLabel 
+	                                    	id="filenameLabel_#{status.index}"
+	                                        value="#{tipoAdjunto.nombreadjunto}"
+	                                        style="display: none;"/>
+	                                    <p:fileUpload
+	                                        id="inputdelfile_#{status.index}"
+	                                        label="Adjuntar #{tipoAdjunto.nombreadjunto}"
+	                                        value="#{formularPQRD.filePrimeArray[status.index]}"
+	                                        allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|docx|txt|doc|xls|xlsx|zip|rar)$/"
+	                                        fileLimit="1"
+	                                        mode="simple"
+	                                        skinSimple="true"
+	                                        required="#{tipoAdjunto.obligatorio == 1}"
+	                                        class='uploadHandler'
+	                                        />  
+	                                    <br/>
 
-                            </div>
+	                                </div>
+	                            </c:forEach>
+	                            </div>
+	                            <c:if test="#{not empty formularPQRD.tiposAdjuntos}">
+		                            <br/>
+		                            <p:outputLabel value="Formatos admitidos: .txt, .docx, .doc, .xls, .xlsx, .jpeg, .pdf, .gif, .png, .jpg, .zip, .rar" style="font-size: 90%"/>
+                            	</c:if>
+                            </h:panelGroup>
+
                             
                             <label id="limitearhivosize" style="display: none;">#{formularPQRD.limiteBytesArchivo}</label>
                             
@@ -687,9 +787,6 @@ and open the template in the editor.
                             
                             <div id="CheckboxDiv" align="left" class="txtMargin" 
                                  style="text-align: left; font-size: 80%">
-                                <style>
-                                    .moveTop td{vertical-align: top; padding: 0};
-                                </style>
                                 <h:panelGrid columns="2" styleClass="moveTop">
                                     <p:selectBooleanCheckbox 
                                         id="CheckboxNotificaciones"
@@ -796,9 +893,22 @@ and open the template in the editor.
             </p:dialog>
             <!--Diálogo Salida de Pantalla-->
         </h:form>
+        <!--Diálogo cargando...-->
+        <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
+        			id="dialogLoader" modal="true" resizable="false" 
+        			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
+        			width="300px" style="text-align: center;">
 
-        <footer class="footer" title="#{indexPQRD.textoAlternativoPiedepagina}"
-        style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
+		    <h:panelGroup layout="block" style="padding: 20px;">
+		        <div class="simple-spinner"></div>
+		        <br/>
+		        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
+		    </h:panelGroup>
+	
+		</p:dialog>
+        
+
+        <footer class="footer footerTheme" title="#{indexPQRD.textoAlternativoPiedepagina}"></footer>
         
     </h:body>
     

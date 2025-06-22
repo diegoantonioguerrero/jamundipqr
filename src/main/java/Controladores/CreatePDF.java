@@ -248,7 +248,8 @@ public class CreatePDF {
       if (comunicacionPQRD.getFileAdjunto() != null) {
          try {
             InputStream inputStream1 = new FileInputStream(comunicacionPQRD.getFileAdjunto());
-            File file1 = new File(path + comunicacionPQRD.getNombre_archivo_adjunto());
+            String fullName = path + comunicacionPQRD.getNombre_archivo_adjunto();
+            File file1 = new File(fullName);
             FileOutputStream outputStream = new FileOutputStream(file1);
             Throwable var93 = null;
 
@@ -260,6 +261,7 @@ public class CreatePDF {
                }
 
                inputStream1.close();
+               
             } catch (Throwable var85) {
                var93 = var85;
                throw var85;
@@ -277,7 +279,24 @@ public class CreatePDF {
                }
 
             }
+            
+            // descomprimir y borrar zip temporal
+            
+            String[] tokensExtension = fullName.split("\\.(?=[^\\.]+$)");
+            if (tokensExtension.length > 0 && tokensExtension[1].toLowerCase().equals("zip")) {
+            	
+            	if  (file1.exists()) {
+            		File destino = new File(path);
+                    CreateZip.descomprimirZip(file1, destino);
+                    if( !file1.delete()) {
+                 	   throw new Exception("Error deleting temporal file");
+                    }	
+            	}
+         	   	
+            }
+            
          } catch (IOException var87) {
+        	 throw var87;
          }
       }
 

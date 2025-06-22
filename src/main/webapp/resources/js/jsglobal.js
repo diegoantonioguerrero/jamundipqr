@@ -108,8 +108,6 @@ var activities;
 //Import InfoPQRD
 var tipoDependencia = document.getElementById("formPrincipal:dependencia");
 var tipoDependenciaLabel = document.getElementById("formPrincipal:dependencia_label");
-var tipoPQR = document.getElementById("formPrincipal:tipoPQR");
-var tipoPQRLabel = document.getElementById("formPrincipal:tipoPQR_label");
 var tipoRespuesta = document.getElementById("formPrincipal:tipoRespuesta");
 var tipoRespuestaLabel = document.getElementById("formPrincipal:tipoRespuesta_label");
 var tipoClasificacion = document.getElementById("formPrincipal:tipoClasificacion");
@@ -134,53 +132,141 @@ function checkbox() {
 }
 
 function validator() {
-    var infoUser = document.getElementById("formPrincipal:infouser");
-    activities = PF('tipoIdentificacion').getSelectedValue();
-    if (activities === "POR IDENTIFICACION") {
-    	document.getElementsByClassName("camposObligatorios")[0].style.display = 'inline-block';
-        infoUser.style.display = 'block';
-        infoPqrd.style.display = 'block';
-        document.getElementById("tiporespuestadiv").style.display = 'block';
-        document.getElementById("tipoclasificaciondiv").style.display = 'none';
-        document.getElementById("CheckboxDiv").style.display = 'block';
-        NotificacionesAceptadas = false;
-        pantallaBandera = true;
-        infoUserOk = false;
-        tipoClasificacionOk = true;
-    } else if (activities === "ANONIMO") {
-    	document.getElementsByClassName("camposObligatorios")[0].style.display = 'inline-block';
-        NotificacionesAceptadas = true;
-        document.getElementById("CheckboxDiv").style.display = 'none';       
-        infoUser.style.display = 'none';
-        infoPqrd.style.display = 'block';
-        numID.value = "";
-        nombre1.value = "";
-        nombre2.value = "";
-        apellido1.value = "";
-        apellido2.value = "";
-        celular.value = "";
-        email.value = "";
-        confirmEmail.value = "";
-        razonSocial.value = "";
-        direccion.value = "";
-        document.getElementById("formPrincipal:tipoPersona_input").selectedIndex = 0;
-        document.getElementById("formPrincipal:tipoPersona_label").innerHTML = "Seleccione una opción";
-        document.getElementById("formPrincipal:ciudad_input").selectedIndex = 0;
-        document.getElementById("formPrincipal:ciudad_label").innerHTML = "Seleccione una opción";
-        document.getElementById("formPrincipal:tipoDocumento_input").selectedIndex = 0;
-        document.getElementById("formPrincipal:tipoDocumento_label").innerHTML = "Seleccione una opción";
-        document.getElementById("formPrincipal:tipoRespuesta_input").selectedIndex = 0;
-        document.getElementById("formPrincipal:tipoRespuesta_label").innerHTML = "Seleccione una opción";
-        document.getElementById("tiporespuestadiv").style.display = 'none';
-        document.getElementById("tipoclasificaciondiv").style.display = 'none';
-        pantallaBandera = false;
-        infoUserOk = true;
-        confirmEmail = true;
-    } else {
-        infoUser.style.display = 'none';
-        infoPqrd.style.display = 'none';
-        document.getElementsByClassName("camposObligatorios")[0].style.display = 'none';
-        pantallaBandera = false;
+	
+	try{
+		
+		var fnChangeView = function(){
+		
+			try{
+				PF('dialogLoader').cfg.onShow = null;
+			
+			    var infoUser = document.getElementById("formPrincipal:infouser");
+			    activities = PF('tipoIdentificacion').getSelectedValue();
+			    if (activities === "POR IDENTIFICACION") {
+			    	document.getElementsByClassName("camposObligatorios")[0].style.display = 'inline-block';
+			        infoUser.style.display = 'block';
+			        infoPqrd.style.display = 'block';
+			        document.getElementById("tiporespuestadiv").style.display = 'block';
+			        document.getElementById("tipoclasificaciondiv").style.display = 'none';
+			        document.getElementById("CheckboxDiv").style.display = 'block';
+			        NotificacionesAceptadas = false;
+			        pantallaBandera = true;
+			        infoUserOk = false;
+			        tipoClasificacionOk = true;
+			    } else if (activities === "ANONIMO") {
+			    	document.getElementsByClassName("camposObligatorios")[0].style.display = 'inline-block';
+			        NotificacionesAceptadas = true;
+			        document.getElementById("CheckboxDiv").style.display = 'none';       
+			        infoUser.style.display = 'none';
+			        infoPqrd.style.display = 'block';
+			        numID.value = "";
+			        nombre1.value = "";
+			        nombre2.value = "";
+			        apellido1.value = "";
+			        apellido2.value = "";
+			        celular.value = "";
+			        email.value = "";
+			        confirmEmail.value = "";
+			        razonSocial.value = "";
+			        direccion.value = "";
+			        document.getElementById("formPrincipal:tipoPersona_input").selectedIndex = 0;
+			        document.getElementById("formPrincipal:tipoPersona_label").innerHTML = "Seleccione una opción";
+			        document.getElementById("formPrincipal:ciudad_input").selectedIndex = 0;
+			        document.getElementById("formPrincipal:ciudad_label").innerHTML = "Seleccione una opción";
+			        document.getElementById("formPrincipal:tipoDocumento_input").selectedIndex = 0;
+			        document.getElementById("formPrincipal:tipoDocumento_label").innerHTML = "Seleccione una opción";
+			        document.getElementById("formPrincipal:tipoRespuesta_input").selectedIndex = 0;
+			        document.getElementById("formPrincipal:tipoRespuesta_label").innerHTML = "Seleccione una opción";
+			        document.getElementById("tiporespuestadiv").style.display = 'none';
+			        document.getElementById("tipoclasificaciondiv").style.display = 'none';
+			        pantallaBandera = false;
+			        infoUserOk = true;
+			        confirmEmail = true;
+			
+			    } else {
+			        infoUser.style.display = 'none';
+			        infoPqrd.style.display = 'none';
+			        document.getElementsByClassName("camposObligatorios")[0].style.display = 'none';
+			        pantallaBandera = false;
+			    }
+			    
+			    document.getElementById("formPrincipal:tipoPQR_input").selectedIndex = 0;
+			    document.getElementById("formPrincipal:tipoPQR_label").innerHTML = "Seleccione una opción";
+			    PF('tipoSolicitud').selectValue('');
+				// limpia todo el panel de adjuntos
+				document.getElementById("formPrincipal:adjuntos").innerHTML = "";
+			}
+			catch(err){
+				PF('dialogLoader').cfg.onShow = null;
+				hideLoaderDialog();
+				alert(err);
+			}
+		}
+		
+		if (PF('dialogLoader')) {
+			PF('dialogLoader').cfg.onShow = function() {
+	  			fnChangeView();
+			};
+			
+			PF('dialogLoader').show();
+		}
+		else{
+			fnChangeView();
+		}
+	}
+	catch(err){
+		PF('dialogLoader').cfg.onShow = null;
+		hideLoaderDialog();
+		alert(err);
+	}
+
+}
+
+function cargarTiposPQR(tipoIdentificacion) {
+    // Obtener los tipos correspondientes del mapa
+    var tiposDisponibles = tiposMap[tipoIdentificacion];
+    
+    if (tiposDisponibles && tiposDisponibles.length > 0) {
+        
+        // Accede al widget de PrimeFaces
+var selectWidget = PF('tipoSolicitud');
+
+// Limpia el dropdown
+selectWidget.selectItems = [];
+selectWidget.options.length = 0; // limpia la lista de opciones
+
+// Asegúrate de que el menú esté limpio
+selectWidget.input.val('');
+selectWidget.label.text(''); // Limpia la etiqueta mostrada
+
+// Agrega nuevos ítems
+selectWidget.options.push({ label: 'Seleccione una opción', value: '' });
+
+ 
+        
+     
+        
+        
+        
+        // Agregar las nuevas opciones
+        for (var i = 0; i < tiposDisponibles.length; i++) {
+            var tipo = tiposDisponibles[i];
+            /*
+            var option = document.createElement('option');
+            option.value = tipo.id;
+            option.textContent = tipo.nombre;
+            tipoPQRSelect.appendChild(option);
+            */
+            selectWidget.options.push({ label: tipo.nombre, value: tipo.id });
+            
+        }
+        
+        // Refresca el componente visual
+selectWidget.panel.contents().empty(); // borra el contenido renderizado
+// Renderiza de nuevo el panel visualmente
+selectWidget.panel.html(''); // limpia el DOM de opciones
+selectWidget.buildItems(selectWidget.selectItems); // reconstruye el HTML
+
     }
 }
 
@@ -478,16 +564,15 @@ function validatorDependencia() {
 
 function validatorTipoPQR() {
     var tipoPQRValue = PF('tipoSolicitud').getSelectedValue();
-    var labelTipoPQR = document.getElementById("formPrincipal:labeltipopqr");
+    var tipoPQRHolder = document.getElementById("tipoPQRHolder");
     if (tipoPQRValue === "") {
-        tipoPQR.style = 'border: 1px solid #cd0a0a; width: 90%';
-        tipoPQRLabel.style = 'color: #cd0a0a;';
-        labelTipoPQR.style = 'color: #cd0a0a;';
+    	tipoPQRHolder.classList.add('invalid');
     } else {
-        tipoPQR.style = 'border: 1px solid #a8a8a8; width: 90%;';
-        tipoPQRLabel.style = 'color: #313131;';
-        labelTipoPQR.style = 'color: #313131;';
+    	tipoPQRHolder.classList.remove('invalid');
     }
+    
+    recargarAdjuntos();
+    return true;
 }
 
 function validatorRespuesta() {
@@ -541,15 +626,17 @@ function validatorCampos() {
         tipoDependenciaOk = true;
     }
 
+	var tipoPQRHolder = document.getElementById("tipoPQRHolder");
+    
     //Tipo PQR
     if (tipoPQRValue === "") {
-        tipoPQR.style = 'border: 1px solid #cd0a0a; width: 90%;';
-        tipoPQRLabel.style = 'color: #cd0a0a;';
-        labelTipoPQR.style = 'color: #cd0a0a;';
+        tipoPQRHolder.classList.add('invalid');
         var tipoPQROk = false;
     } else {
+    	tipoPQRHolder.classList.remove('invalid');
         tipoPQROk = true;
     }
+    
 
     //Tipo Clasificación
     /*if (tipoClasificacionValue === "" && activities === "ANONIMO") {
@@ -587,7 +674,11 @@ function validatorCampos() {
         detalleOk = true;
     }
 
-
+	var validarTamanioTotalOk = validarTamanioTotal();
+	
+	if (!validarTamanioTotalOk){
+		return; 
+	}
 
     if (tipoClasificacionOk && tipoPQROk && tipoDependenciaOk && asuntoOk && detalleOk && infoUserOk) {
         PF('confirmacionEnvio').show();
@@ -596,7 +687,13 @@ function validatorCampos() {
         if (confirmEmailOk) {
             alert('Favor completar los campos faltantes.');
         } else {
-            alert('El email está mal escrito.');
+        	if (activities === "ANONIMO"){
+        		alert('Favor completar los campos faltantes.');
+        	}
+        	else{
+        		alert('El email está mal escrito.');
+        	}
+            
         }
     }
 }
@@ -610,14 +707,27 @@ if(inputElement){
 }
 function handleFiles() {
     fileList = this.files;
-    nameFile = fileList[0].name;
-    var extension = getFileExtension1(nameFile).toString().toLowerCase();
+    var file = fileList[0];
+    nameFile = file.name;
+    var ext = getFileExtension1(nameFile);
+    
+    if (ext === undefined){
+    	alert("El archivo adjunto debe poseer una extensión con los formatos admitidos.");
+    	return false;
+    }
+    var extension = ext.toString().toLowerCase();
 
     var sizeLimit = document.getElementById("limitearhivosize").textContent;
-    var file = inputElement.files[0];
+    
     var sizeLimitMb = sizeLimit / 1000000;
 
     if (extension === "pdf" || extension === "txt" || extension === "docx" || extension === "jpg" || extension === "png" || extension === "jpeg" || extension === "gif" || extension === "doc" || extension === "xlsx" || extension === "xls" || extension === "csv" || extension === "zip" || extension === "rar") {
+    	
+    	if (file.size == 0){
+	    		alert("El archivo adjunto está vacio, se detectó un tamaño de 0 bytes");
+	    		return false;
+		}
+		
         if (file.size < sizeLimit) {
             document.getElementById("formPrincipal:labelfilename").innerHTML = "El archivo " + nameFile + " fue cargado";
             document.getElementById("divupload").style.display = 'none';
@@ -639,6 +749,144 @@ function deleteFile() {
     fileList = null;
     nameFile = null;
     inputElement.value = null;
+}
+
+
+function reconfigureAdjuntosHandler() {
+
+/*====borrrar cuando sea definitivo==*/
+inputElement = document.getElementById("formPrincipal:inputdelfile_input");
+if(inputElement){
+	inputElement.addEventListener("change", handleFiles, false);
+}
+/*====end borrrar cuando sea definitivo==*/
+
+	var elementos = document.querySelectorAll('.uploadHandler input[type="file"]');
+	
+	elementos.forEach(function(el, index) {
+	    el.addEventListener("change", function(event) {
+	        return handleFileMultiple(this, index);
+	    }, false);
+	});
+
+	hideLoaderDialog();
+}
+
+var extensionesValidas = [
+  "pdf", "txt", "docx", "jpg", "png", "jpeg",
+  "gif", "doc", "xlsx", "xls", "csv", "zip", "rar"
+];
+
+
+function handleFileMultiple(el, index) {
+	try{
+	    fileList = el.files;
+	    var file = fileList[0];
+	    nameFile = file.name;
+	
+		var ext = getFileExtension1(nameFile);
+	    
+	    if (ext === undefined){
+	    	alert("El archivo adjunto debe poseer una extensión con los formatos admitidos " + extensionesValidas.join(", .").replace(/^/, "."));
+	    	return false;
+	    }
+	    
+	    var extension = ext.toString().toLowerCase();
+    
+	    var sizeLimit = document.getElementById("limitearhivosize").textContent;
+	    var sizeLimitMb = sizeLimit / 1000000;
+	
+	    if (extensionesValidas.includes(extension)) {
+	    	if (file.size == 0){
+	    		alert("El archivo adjunto está vacio, se detectó un tamaño de 0 bytes");
+	    		return false;
+	    	}
+	    	
+	        if (file.size < sizeLimit) {
+				var fileNameLabel = document.getElementById("formPrincipal:filenameLabel_" + index).innerHTML;
+	            document.getElementById("formPrincipal:labelfilename_" + index).innerHTML = "El archivo " + fileNameLabel + " fue cargado";
+	            document.getElementById("divupload_" + index).style.display = 'none';
+	            document.getElementById("formPrincipal:buttondelete_" + index).style.display = 'block';
+	            return true;
+	        } else {
+	            deleteFile();
+	            alert("El archivo adjunto no puede exceder el tamaño de " + sizeLimitMb + " MB");
+	            return false;
+	        }
+	    } else {
+	        deleteFileMultiple(index);
+	        alert("El archivo adjunto debe ser de tipo: " + extensionesValidas.join(", .").replace(/^/, "."));
+	        return false;
+	    }
+	}
+	catch(err){
+		alert(err);
+		return false;
+	}	    
+}
+
+function validarTamanioTotal(){
+
+	var elementos = document.querySelectorAll('.uploadHandler input[type="file"]');
+	var sizeLimitTotal = document.getElementById("limitearhivosize").textContent;
+	var sizeLimitMb = sizeLimitTotal / 1000000;
+	var sumaArchivos = 0;
+	var requiredFiles = "";
+	var listaFiles = [];  // lista vacía
+	var nombreRepetido = "";
+
+	elementos.forEach(function(el, index) {
+	    var fileList = el.files;
+	    var required = document.getElementById("formPrincipal:filenameRequired_" + index).value + "";
+    
+	    if (fileList.length > 0){
+		    var file = fileList[0];
+		    
+		    if (listaFiles.includes(file.name.toLowerCase())) {
+	  			nombreRepetido = file.name;
+			}else{
+				listaFiles.push(file.name.toLowerCase());
+			}
+		    
+		    sumaArchivos += file.size;
+	    }
+	    else if (required === "1"){
+	    	var fileName = document.getElementById("formPrincipal:filenameLabel_" + index).innerHTML;
+	    	requiredFiles = "Es obligatorio Adjuntar " + fileName;
+	    }
+	});
+	
+	
+	if (requiredFiles !== "") {
+		alert(requiredFiles);
+		return false;		
+	}
+	
+	if (nombreRepetido !== "") {
+		alert("No se permite adjuntar dos archivos con el mismo nombre: " + nombreRepetido);
+		return false;		
+	}
+		
+	var invalidSize = sumaArchivos > sizeLimit;
+	
+	
+	if (invalidSize) {
+		alert("El/los archivo(s) adjunto(s) no puede(n) exceder el tamaño de " + sizeLimitMb + " MB en total");
+	}
+	
+	
+	return !invalidSize;
+
+}
+
+function deleteFileMultiple(index) {
+    document.getElementById("formPrincipal:buttondelete_" + index).style.display = 'none';
+    document.getElementById("divupload_" + index).style.display = 'block';
+    document.getElementById("formPrincipal:labelfilename_" + index).innerHTML = "";
+    //fileList = null;
+    //nameFile = null;
+    var inputFile = document.getElementById("formPrincipal:inputdelfile_" + index + "_input")
+    inputFile.value = null;
 }
 
 function getFileExtension1(filename) {
@@ -682,4 +930,24 @@ function addPlaceHolderCustom(object){
 	});
 }
 
+function displayError(arguments){
 
+console.error('Error al ejecutar remoteCommand:', arguments);
+hideLoaderDialog(); 
+alert('Ocurrió un error al ejecutar la acción. Intente nuevamente.');
+
+}
+
+
+function showLoaderDialog(){
+	if (PF('dialogLoader')) {
+		PF('dialogLoader').show();
+	}
+}
+
+function hideLoaderDialog(){
+	
+	if (PF('dialogLoader')) {
+		PF('dialogLoader').hide();
+	}
+}

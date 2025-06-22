@@ -6,10 +6,12 @@
 package Objetos;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 
-public class ComunicacionPQRD
+public class ComunicacionPQRD implements Serializable
 {
+    private static final long serialVersionUID = 1L;
 
     public ComunicacionPQRD()
     {
@@ -409,8 +411,8 @@ public class ComunicacionPQRD
     private String asunto;
     private String detalle;
     private String nombre_archivo_viejo;
-    private File fileAdjunto;
-    private File fileZip;
+    private transient File fileAdjunto;
+    private transient File fileZip;
     private String nombre_archivo_adjunto;
     private String nombrearchivoarchivoadjuntorar;
     private int longitudBytesRar;
