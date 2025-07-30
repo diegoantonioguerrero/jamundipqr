@@ -90,7 +90,7 @@ public class ConsultarPQRD {
 	}
 
 	public void posibleRespuesta() throws SQLException {
-		System.err.println("TERCERO");
+		
 		final DataBaseConection dataBaseConection = new DataBaseConection();
 		String queryRespuesta = "SELECT trazabilidad FROM comunicacionprqd as cpqrd INNER JOIN tablapqrestado as estados ON (estados.fldidtablapqrestado = cpqrd.estado) WHERE cpqrd.nroradicacion LIKE '?'";
 		// Se deja en comentarios esta otra condicional para obtener la trazabilidad aun
@@ -98,13 +98,12 @@ public class ConsultarPQRD {
 		// queryRespuesta += " AND cpqrd.numeroverificacion LIKE '?';";
 		queryRespuesta = queryRespuesta.replaceFirst("\\?", this.nroRadicado);
 		// queryRespuesta = queryRespuesta.replaceFirst("\\?", this.nroVerificacion);
-		System.err.println("QUERY " + queryRespuesta);
+		
 		dataBaseConection.consultarDB(queryRespuesta);
 		final ResultSet resultConsultaFecha = dataBaseConection.getResult();
 		List<String> trazabList = new ArrayList<String>();
 		while (resultConsultaFecha.next()) {
 			final String trazText = resultConsultaFecha.getString("trazabilidad");
-			System.err.println(resultConsultaFecha.getString("trazabilidad"));
 			ConsultarPQRD.consultaPQRD.setFechaPosibleRespuesta(resultConsultaFecha.getString("trazabilidad"));
 			final String[] str = trazText.split("\n");
 			trazabList = Arrays.asList(str);
@@ -112,7 +111,6 @@ public class ConsultarPQRD {
 		final List<Trazabilidad> trazList2 = new ArrayList<Trazabilidad>();
 		for (final String s : trazabList) {
 			trazList2.add(new Trazabilidad(s));
-			System.err.println(s);
 		}
 		this.trazList = trazList2;
 		dataBaseConection.logoutDB();
@@ -128,11 +126,12 @@ public class ConsultarPQRD {
 			try {
 				this.nroRadicado = this.nroRadicado.toUpperCase();
 				final DataBaseConection dataBaseConection1 = new DataBaseConection();
-				String query2 = "SELECT nroradicacion, email, numeroverificacion, fechaultimaconsulta, cantidadconsultaserradase FROM comunicacionprqd WHERE nroradicacion LIKE '?';";
+				String query2 = "SELECT nroradicacion, email, numeroverificacion, fechaultimaconsulta, cantidadconsultaserradase FROM comunicacionprqd WHERE tipopantalla='ANONIMO' AND nroradicacion LIKE '?';";
 				query2 = query2.replaceFirst("\\?", this.nroRadicado);
 				dataBaseConection1.consultarDB(query2);
 				final ResultSet resultConsulta1 = dataBaseConection1.getResult();
 				boolean validador = false;
+				boolean numeroVerificacionErrado = false;
 				boolean permitirConsulta = true;
 				boolean numRadicadoExists = false;
 				Date fechaUltCons = null;
@@ -145,7 +144,7 @@ public class ConsultarPQRD {
 					final String numVerifA = resultConsulta1.getString("numeroverificacion");
 					fechaUltCons = resultConsulta1.getDate("fechaultimaconsulta");
 					numConsErr = resultConsulta1.getInt("cantidadconsultaserradase");
-					System.err.println("Value db: " + resultConsulta1.getInt("cantidadconsultaserradase"));
+					
 					if (fechaUltCons == null) {
 						fechaUltCons = new Date(calendar.getTime().getTime());
 					}
@@ -161,22 +160,23 @@ public class ConsultarPQRD {
 							final DateFormat df = new SimpleDateFormat(pattern);
 							final String fechaUlt = df.format(fechaUltCons);
 							final String fechaHo = df.format(fechaHoy);
-							System.err.println("ULT: " + fechaUlt + " HOY: " + fechaHo);
+							
 							if (!fechaUlt.equals(fechaHo)) {
-								System.err.println("fechas dif");
+								
 								fechaUltCons = fechaHoy;
 								numConsErr = 0;
 							}
-							permitirConsulta = (numConsErr < 5);
+							permitirConsulta = (numConsErr < 3);
 							if (permitirConsulta && numVerifA != null && !numVerifA.isEmpty() && numVerifB != null
 									&& !numVerifB.isEmpty()) {
 								if (numVerifA.equals(this.nroVerificacion) || numVerifB.equals(this.nroVerificacion)) {
 									fechaUltCons = fechaHoy;
-									System.err.println("veri igual");
+									
 									numConsErr = 0;
 									validador = true;
 								} else {
 									validador = false;
+									numeroVerificacionErrado = true;
 								}
 							} else {
 								validador = false;
@@ -187,18 +187,18 @@ public class ConsultarPQRD {
 						}
 					}
 				}
-				System.err.println("PRIMERO " + numConsErr);
+				
 				dataBaseConection1.logoutDB();
 				if (permitirConsulta) {
-					System.err.println("PRIMERO1");
+					
 					if (validador) {
-						System.err.println("PRIMERO2");
+						
 						final DataBaseConection dataBaseConection2 = new DataBaseConection();
 						String query4 = "SELECT cpqrd.nroradicadorespuesta, cpqrd.archivorespuesta, cpqrd.nombrearchivoarchivorespuesta, cpqrd.fecharespuesta, cpqrd.fechaprimeraconsultarespu, estados.estado as estado FROM comunicacionprqd as cpqrd INNER JOIN tablapqrestado as estados ON (estados.fldidtablapqrestado = cpqrd.estado) WHERE cpqrd.nroradicacion LIKE '?';";
 						query4 = query4.replaceFirst("\\?", this.nroRadicado);
 						dataBaseConection2.consultarDB(query4);
 						final ResultSet resultConsulta3 = dataBaseConection2.getResult();
-						System.err.println("PRIMERO3");
+						
 						while (resultConsulta3.next()) {
 							(ConsultarPQRD.consultaPQRD = new ConsultaPQRD())
 									.setNro_radicacion_respuesta(resultConsulta3.getString("nroradicadorespuesta"));
@@ -219,7 +219,7 @@ public class ConsultarPQRD {
 									&& !ConsultarPQRD.consultaPQRD.getNro_radicacion_respuesta().isEmpty()) {
 								this.nroRadicadoExist = true;
 							}
-							System.err.println("Estado " + ConsultarPQRD.consultaPQRD.getEstado());
+							
 							final String estado = ConsultarPQRD.consultaPQRD.getEstado();
 							switch (estado) {
 							case "Pendiente":
@@ -253,36 +253,35 @@ public class ConsultarPQRD {
 								break;
 							}
 							}
-							System.err.println("ULTIMO");
+							
 							RequestContext.getCurrentInstance().execute("PF('result').show();");
 						}
-						System.err.println("PRIMERO4");
+
 						dataBaseConection2.logoutDB();
 					} else {
-						RequestContext.getCurrentInstance().execute("mensajeError()");
+						RequestContext.getCurrentInstance().execute("mensajeErrorRadicado('" + this.nroRadicado + "'," + numeroVerificacionErrado + ")");
 						fechaUltCons = fechaHoy;
-						System.err.println("" + numConsErr);
 						++numConsErr;
-						System.err.println("YA SUM" + numConsErr);
+
 					}
 				} else {
 					RequestContext.getCurrentInstance().execute("PF('bloqueoconsulta').show();");
 				}
-				System.err.println("PRIMERO5");
+
 				if (numRadicadoExists) {
-					System.err.println("PRIMERO6");
+
 					final DataBaseConection baseConection = new DataBaseConection();
 					final String pattern2 = "yyyy-MM-dd";
 					final DateFormat df2 = new SimpleDateFormat(pattern2);
 					final String fecha = df2.format(fechaUltCons);
-					System.err.println("PRIMERO7");
+
 					baseConection.actualizarConsultasPQRD("UPDATE comunicacionprqd SET fechaultimaconsulta = '" + fecha
 							+ "', cantidadconsultaserradase = " + numConsErr + " WHERE nroradicacion LIKE '"
 							+ this.nroRadicado + "';");
-					System.err.println("PRIMERO8");
+
 					baseConection.logoutDB();
 				}
-				System.err.println("PRIMERO9");
+				
 			} catch (Exception ex) {
 				Logger.getLogger(ConsultarPQRD.class.getName()).log(Level.SEVERE, null, ex);
 				RequestContext.getCurrentInstance().execute("mensajeError()");

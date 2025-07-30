@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Consultar PQRD email</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content='text/html; charset=UTF-8' http-equiv="content-type"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="lang" content="es"/>
+        <h:outputStylesheet library="css" name="consultarResponsive.css"/>
+        <h:outputScript library="js" name="captcha.js" target="body"/>
+        <h:outputScript library="js" name="consultaemail.js" target="body"/>
+        <h:outputScript library="js" name="jsglobal.js" target="body"/>
+        <h:outputScript library="js" name="browserjs.js" target="body"/>
+        
+        <style>
+            .simple-spinner {
+				  width: 40px;
+				  height: 40px;
+				  border: 4px solid #ccc;
+				  border-top: 4px solid #555;
+				  border-radius: 50%;
+				  animation: spin 1s linear infinite;
+				  margin: 20px auto;
+				}
+				
+				@keyframes spin {
+				  to { transform: rotate(360deg); }
+			}
+            
+            
+            .ui-button{
+                background-color: #{indexPQRD.colorFondoBotones} !important;
+                color: #{indexPQRD.colorLetraBotones} !important;
+				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7) !important;
+            }
+            
+            @font-face {
+                font-family: "fuenteContenido";
+                src: url(../resources/font/#{indexPQRD.fuenteContenido});
+            }
+            
+            @font-face {
+                font-family: "fuenteEtiquetas";
+                src: url(../resources/font/#{indexPQRD.fuenteEtiquetas});
+            }
+            
+            @font-face {
+                font-family: "fuenteTitulos";
+                src: url(../resources/font/#{indexPQRD.fuenteTiulos});
+            }
+            
+            .ui-outputlabel{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            .labelFont{
+                font-family: fuenteEtiquetas !important;
+            }
+            
+            .contentFont{
+                
+                font-family: fuenteContenido !important;
+            }
+            
+            input{
+                font-family: fuenteContenido !important;
+            }
+            
+            .titleFont{
+                font-family: fuenteTitulos !important
+            }
+            
+            .btnAdjust3{
+            	margin-left : 5px;
+            	margin-right : 5px;
+            	padding: 0;
+            }
+            
+            .timeLabel{
+            	display: none;
+            }
+            
+            .ui-button:disabled{
+            	background-color: gray !important;
+            	cursor: default;
+            }
+            
+            .ui-widget-content a.linkAcceso {
+			    font-size: 90% !important;
+			    text-decoration: underline;
+			    font-weight: bold;
+			    color: #036fab;
+			    text-align: center;
+			}
+			
+			.txtMargin{
+		        margin-left: 0;
+		        margin-top: 30px;
+		        margin-bottom: 10px;
+		        text-align: left; 
+		        font-size: 80%
+		    }
+			.moveTop td{vertical-align: top; padding: 0};
+			
+			.fixHeight{
+				 margin-bottom: 10px; margin-top: 10px
+			}
+			@media screen and (max-width: 800px) {
+				.fixHeight{
+					min-height: 820px;
+				}
+			}
+			@media screen and (min-width: 800px) {
+				.fixHeight{
+					min-height: 620px;
+				}
+			}
+			
+			
+
+        </style>
+    </h:head>
+    <h:body class="bground"
+    		onload="deshabilitaRetroceso(); mostrarIngresado();dialogWidth();"
+            onunload="deshabilitaRetroceso()"
+            style="background-image: url(../resources/img/#{consultarPQRD.path_background_image}); margin: 0">
+
+        <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
+                style="background-image: url(../resources/img/#{consultarPQRD.fondoHeader});">
+        </header>
+        <h:form id="formPrincipal" class="fixHeight">
+            <p:growl 
+                id="growl" 
+                showDetail="true" 
+                sticky="false" 
+                life="3000"/>
+            <div align="center">
+            	<p:panel class="panelConfig">
+            		<input type="hidden" id="pasoActual" value="#{opcionesPQRD.pasoActual}"/>
+                    <f:facet name="header">
+                        <p:outputLabel class="titleFont" value="Consultar todas mis PQRDS - Paso #{opcionesPQRD.pasoActual}"/>
+                    </f:facet>
+                    
+                    <h:panelGroup rendered="#{opcionesPQRD.pasoActual eq 1}">
+	    				<div class="ui-g idAdjust" style="size: auto">                        
+	                        <div class="ui-g-12 ui-md-4 labelAdjust" style="padding-left: 0">
+	                            <p:outputLabel
+	                                id="emailConsultaLabel"
+	                                value="Ingrese su email:"/>   
+	                        </div>
+	                        <div class="ui-g-12 ui-md-8 js-radicadoConsulta" style="padding-left: 0">
+	                            <p:inputText 
+	                                id="emailConsulta" 
+	                                class="inputConsultar"
+	                                onkeyup="getEmailConsulta()"
+	                                onpaste="removerEspacios(this)"
+	                                value="#{opcionesPQRD.emailConsulta}">
+	                                <p:keyFilter preventPaste="false" regEx="/[a-z0-9_\-.@]/i" />
+	                            </p:inputText>
+	                        </div>
+	                        
+                            <div id="CheckboxDiv" align="left" class="txtMargin">
+                                <h:panelGrid columns="2" styleClass="moveTop">
+                                    <p:selectBooleanCheckbox 
+                                        id="CheckboxNotificaciones"
+                                        widgetVar="CheckBoxWidget"
+                                        onchange="checkbox();"
+                                        />
+                                    <label id="labelCheckboxNotificaciones" class="labelFont" style="color: #4f4f4f">
+                                    	#{opcionesPQRD.textTermsConditionsMisPQRD}
+                                    </label>
+                                </h:panelGrid>
+                            </div>
+                        
+	                        
+	                        
+	                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
+	                    </div>
+					</h:panelGroup>
+
+					<h:panelGroup rendered="#{opcionesPQRD.pasoActual eq 2}">
+					 	<div class="ui-g idAdjust" style="size: auto">                        
+	                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
+	                            <p:outputLabel
+	                                value="Consultando email"/>   
+	                        </div>
+	                        <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+	                         <p:outputLabel
+	                                id="emailConsultadoLabel"
+	                                value="#{opcionesPQRD.emailConsulta}"/>   
+	                        </div>
+	                    </div>
+	                        
+					    <div class="ui-g idAdjust" style="size: auto">                        
+	                        <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
+	                            <p:outputLabel
+	                                id="numVerificacionLabel"
+	                                value="Ingrese el número de verificación que recibió por email:"/>   
+	                        </div>
+	                        <div class="ui-g-12 ui-md-6" style="padding-left: 0">
+	                        	<h:inputHidden id="emailConsultar" value="#{opcionesPQRD.emailConsulta}" />
+	                            <p:inputText 
+	                                id="numVerificacion" 
+	                                class="inputConsultar"
+	                                onkeyup="getNroVerificacion()"
+	                                onpaste="removerEspacios(this)"
+	                                value="#{opcionesPQRD.nroVerificacion}">
+	                                <p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+	                            </p:inputText>
+	                        </div>
+	                        <div class="ui-g-12 ui-md-1" style="padding: 0"></div>
+	                        <div class="ui-g-12" style="size: auto; padding: 0;" align="center">
+		                        <p:commandLink 
+								    id="linkAcceso"
+								    class="linkAcceso"
+								    ajax="true"
+								    update="@form"
+								    action="#{opcionesPQRD.reenviarNumeroVerificacion}"
+								    onclick="PF('dialogLoader').show();"
+								    oncomplete="hideLoader();"
+								    value="Reenviar número de verificación"
+								/>
+	                        </div>
+	                    </div>
+					    
+					</h:panelGroup>
+
+                   
+                    <div class="ui-g" style="padding: 0">
+                    	<br/>
+    					<div class="ui-g-12" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                            <p:commandButton 
+                                id="EnviarConsulta"
+                                class="btn btnAdjust3 ui-g-8 ui-md-3" 
+                                ajax="true"
+                                update="@form"
+                                action="#{opcionesPQRD.validarEmail}"
+                                onclick="return validateData();"
+                                value="Continuar"
+                                >
+                            </p:commandButton>
+                       
+                            <p:button 
+                            	id="Regresar"
+                                class="btn btnAdjust3 ui-g-8 ui-md-3"
+                                onclick="showLoader();allowAccess();" 
+                                value="Regresar" 
+                                href="/faces/opcionesconsulta.xhtml"/>
+                       
+                            <p:button 
+                            class="btn btnAdjust3 ui-g-8 ui-md-3" 
+                            value="Salir" 
+                            href="#{indexPQRD.urlOrigen}"/>
+                        </div>
+                    </div>
+                    
+                </p:panel>
+            </div>
+            
+                     
+             <!--Diálogo de correspondenciaNoExiste-->
+             <p:dialog header="" visible="false" closable="false" widgetVar="correspondenciaNoExiste" id="correspondenciaNoExiste" modal="true" resizable="false" 
+                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" width="400px" 
+                      style="align-content: center;">
+
+                <div id="captcha" align="center">
+                    <div class="ui-g confirmacion">
+                        <div class="ui-g-12">
+                            <p:outputLabel 
+                                value="CORRESPONDENCIA NO ENCONTRADA"
+                                style="font-weight: bold; color: #D20005; font-size: 110%"
+                                /><br/><br/>
+                            <label 
+                            	id="labelCorrespondencia"
+                                style="font-size: 95%"
+                                >
+                                </label><br/>
+                        </div> 
+                        <div class="ui-g-12">
+                            <p:button 
+                                class="btn"
+                                onclick="PF('correspondenciaNoExiste').hide();return false;"
+                                value="Aceptar" 
+                                style="width: 130px"/>   
+                        </div>
+                    </div>
+                </div>
+            </p:dialog>
+            <!--Diálogo de correspondenciaNoExiste-->
+        </h:form>
+        <!--Diálogo cargando...-->
+        <p:dialog header="" visible="false" closable="false" widgetVar="dialogLoader" 
+        			id="dialogLoader" modal="true" resizable="false" 
+        			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
+        			width="300px" style="text-align: center;">
+
+		    <h:panelGroup layout="block" style="padding: 20px;">
+		        <div class="simple-spinner"></div>
+		        <br/>
+		        <h:outputText value="Cargando..." style="font-size: 1.2em;" />
+		    </h:panelGroup>
+	
+		</p:dialog>
+		<!--Diálogo espere...-->
+        <p:dialog header="" visible="false" closable="false" widgetVar="dialogWait" 
+        			id="dialogWait" modal="true" resizable="false" 
+        			showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" 
+        			width="300px" style="text-align: center;">
+
+		    <h:panelGroup layout="block" style="padding: 20px;">
+		        <div class="simple-spinner"></div>
+		        <br/>
+		        <div class="ui-g-12" style="padding-left: 0">
+	                            <p:outputLabel
+	                                id="timeLabel"
+	                                class="timeLabel"
+	                                value="Por favor espere {}"/>   
+				</div>
+		    </h:panelGroup>
+	
+		</p:dialog>
+		<footer class="footer fixed" title="#{indexPQRD.textoAlternativoPiedepagina}"
+	    	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});">
+		</footer>		
+    </h:body>
+</html>

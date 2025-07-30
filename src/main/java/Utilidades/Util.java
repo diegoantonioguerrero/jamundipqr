@@ -181,8 +181,8 @@ public class Util {
 				+ " hemos recibido de su parte una solicitud tipo " + nombreTipoPQRD.toUpperCase()
 				+ " con destino a la dependencia " + nombreDependencia + " cuyo asunto es: " + asunto
 				+ "<br/><br/>El n&uacute;mero de radicaci&oacute;n asignado a su solicitud es " + nroRadicacion
-				+ " y el n&uacute;mero de verificaci&oacute;n asignado es " + nroVerificacion
-				+ "; Tenga en cuenta estos datos para hacer seguimiento a su tr&aacute;mite.<br/><br/>Este email fue enviado autom&aacute;ticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
+				+ "; Tenga en cuenta esta informaci&oacute;n para hacer seguimiento a su tr&aacute;mite."
+				+ "<br/><br/>Este email fue enviado autom&aacute;ticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
 				+ getProperties("nombreEntidad") + "<br/><br/></p><img src=\"cid:image\">";
 		messageBodyPart.setContent(htmlText, "text/html");
 		multipart.addBodyPart(messageBodyPart);
@@ -352,6 +352,7 @@ public class Util {
 		multipart.addBodyPart(messageBodyPart);
 		message.setContent(multipart);
 		
+		//return true;
 		
 		//Se reintenta enviar el correo 3 veces
 		for(int i=0; i<3; i++) {

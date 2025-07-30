@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -61,16 +61,31 @@
             .contentFont{
                 font-family: fuenteContenido !important;
             }
+            
+            .bodyTheme{
+            	background-image: url(./resources/img/#{indexPQRD.path_background_image});
+            	margin: 0;
+            	display: flex;
+            	flex-direction: column;
+            	height:100vh;
+            }
+            
+            .headerTheme{
+            	background-image: url(./resources/img/#{indexPQRD.fondoHeader});
+            }
+            
+            .footerTheme{
+            	background-image: url(./resources/img/#{indexPQRD.fondoFooter});
+            }
+            
+            
 
         </style>
     </h:head>
-    <h:body class="bground"
-            onload="deshabilitaRetroceso()"
-            style="background-image: url(./resources/img/#{indexPQRD.path_background_image}); margin: 0;
-            display: flex; flex-direction: column; height:100vh;">
+    <h:body class="bground bodyTheme"
+            onload="deshabilitaRetroceso()">
         
-        <header class="headerResponsive" title="#{indexPQRD.textoAlternativoEncabezado}"
-                style="background-image: url(./resources/img/#{indexPQRD.fondoHeader});">
+        <header class="headerResponsive headerTheme" title="#{indexPQRD.textoAlternativoEncabezado}">
         </header>
             <div class="center" align="center">
                 <h:form id="formIndex" style="display: none; align-self: center">
@@ -144,8 +159,7 @@
             <!--FIN CATPCHA-->
             </h:form>
         
-        <footer class="footer" title="#{indexPQRD.textoAlternativoPiedepagina}"
-                style="background-image: url(./resources/img/#{indexPQRD.fondoFooter})">
+        <footer class="footer footerTheme" title="#{indexPQRD.textoAlternativoPiedepagina}">
         </footer>
     
     </h:body>

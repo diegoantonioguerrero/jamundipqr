@@ -24,7 +24,7 @@ and open the template in the editor.
         <style>
             
             .ui-button{
-                background-color: #{indexPQRD.colorFondoBotones} !important;
+                background-color: #{consultarPQRD.colorFondoBotones} !important;
                 color: #{indexPQRD.colorLetraBotones} !important;
 				text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7) !important;
             }
@@ -83,7 +83,7 @@ and open the template in the editor.
                 life="3000"/>
             <div align="center"><p:panel class="panelConfig">    
                     <f:facet name="header">
-                        <p:outputLabel class="titleFont" value="Consulta el estado de tu PQRD"/>
+                        <p:outputLabel class="titleFont" value="Consulte el estado de su PQRD Anónima"/>
                     </f:facet>
                     
                     <div class="ui-g idAdjust" style="size: auto">                        
@@ -110,7 +110,7 @@ and open the template in the editor.
                         <div class="ui-g-12 ui-md-6 labelAdjust" style="padding-left: 0">
                             <p:outputLabel 
                                 id="numVerificacionLabel"
-                                value="Ingrese el número de verificación que usted recibió por email:"/>   
+                                value="Ingrese el número de verificación:"/>   
                         </div>
                         <div class="ui-g-12 ui-md-4" style="padding-left: 0">
                             <p:inputText 
@@ -126,7 +126,7 @@ and open the template in the editor.
                     
                                      
                     <div class="ui-g" style="size: auto; padding: 0">
-                        <div class="ui-g-12 ui-md-6 buttonAdjust1" style="size: auto; padding: 0">
+                        <div class="ui-g-12 ui-md-3 buttonAdjust1" style="size: auto; padding: 0">
                           <p:commandButton 
                             id="consultarPQRD" 
                             class="btn updateAdjust"  
@@ -134,21 +134,20 @@ and open the template in the editor.
                             value="Consultar"/> 
                           <script> /*OJO - UPDATE ESTABA EN @FORM*/ </script>
                         </div>
-                        <div class="ui-g-12 ui-md-6 buttonAdjust2" style="size: auto; padding: 0">
+                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
+                            <p:button 
+                                class="btn updateAdjust"
+                                onclick="allowAccess()" 
+                                value="Regresar" 
+                                href="/faces/opcionesconsulta.xhtml"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-3 buttonAdjust2" style="size: auto; padding: 0">
                             <p:button 
                             class="btn updateAdjust" 
                             value="Salir" 
                             href="#{consultarPQRD.urlOrigen}"/>
                         </div>
-                        <div class="ui-g" style="size: auto; padding: 0;" align="center">
-                        <a>
-                            <p:outputLabel 
-                                style="cursor: pointer;"
-                                onclick="accesoNumVerificacion();"
-                                class ="linkAcceso"
-                                value="Haga click aquí si olvidó el número de verificación"/>
-                        </a>
-                        </div>
+                        
                     </div>
                     
                 </p:panel>
@@ -212,10 +211,7 @@ and open the template in the editor.
                     padding: 0!important; 
                 }
                 
-                .ui-widget-content{
-                    border: none !important;
-                }
-                        
+                       
                 </style>
                         
                 <h:panelGrid columns="2" style=" margin: auto; margin-bottom: 10px" styleClass="moveTop">
@@ -303,7 +299,7 @@ and open the template in the editor.
                                 style="font-weight: bold; color: #D20005; font-size: 110%"
                                 /><br/><br/>
                             <p:outputLabel 
-                                value="Usted fue bloqueado(a) pues realizó cinco o más consultas fallidas."
+                                value="Usted fue bloqueado(a) pues realizó tres o más consultas fallidas."
                                 style="font-size: 95%"
                                 /><br/>
                             <p:outputLabel 
@@ -330,24 +326,23 @@ and open the template in the editor.
     <footer class="footer" title="#{consultarPQRD.textoAlternativoPiedepagina}"
     	style="background-image: url(../resources/img/#{indexPQRD.fondoFooter});"></footer>
 <script type="text/javascript">
-console.info("hi");
-console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));
+//console.info("hi");
+//console.info("el",document.getElementById("formPrincipal:radicadoConsulta"));
 var radicadoConsulta = document.getElementById("formPrincipal:radicadoConsulta");
-if( radicadoConsulta !== undefined){
+if( radicadoConsulta !== undefined &amp;&amp; radicadoConsulta !== null){
 	
+	radicadoConsulta.addEventListener("paste", function(evt){
+		evt.preventDefault();
+		evt.stopPropagation();
 	
-}
-radicadoConsulta.addEventListener("paste", function(evt){
-	evt.preventDefault();
-	evt.stopPropagation();
-
-    var data = evt.clipboardData.getData('text');
-	console.info("dt",data);
-
-	//var data = obj.value;
-	data = data.replace(new RegExp(' ', 'g'), '');
-    radicadoConsulta.value = data;
-
-	});
+	    var data = evt.clipboardData.getData('text');
+		//console.info("dt",data);
+	
+		//var data = obj.value;
+		data = data.replace(new RegExp(' ', 'g'), '');
+	    radicadoConsulta.value = data;
+	
+		});
+}	
 </script>
 </html>

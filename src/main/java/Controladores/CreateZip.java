@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class CreateZip {
@@ -124,5 +125,69 @@ public class CreateZip {
    private String generateZipEntry(String file, String FolderPath) {
 	  File ff = new File(file); 
       return ff.getName();
+   }
+   
+   public static void crearZip(String zipPath, File[] archivos, List<String> alias) throws IOException {
+       try (FileOutputStream fos = new FileOutputStream(zipPath);
+            ZipOutputStream zos = new ZipOutputStream(fos)) {
+    	   int i = 0;
+           for (File archivo : archivos) {
+               if (archivo.exists() && archivo.isFile()) {
+                   try (FileInputStream fis = new FileInputStream(archivo)) {
+                	   String ss = archivo.getName();
+                	   ss = alias.get(i++);
+                       ZipEntry zipEntry = new ZipEntry(ss);
+                       zos.putNextEntry(zipEntry);
+
+                       byte[] buffer = new byte[1024];
+                       int len;
+                       while ((len = fis.read(buffer)) > 0) {
+                           zos.write(buffer, 0, len);
+                       }
+
+                       zos.closeEntry();
+                   }
+               }
+           }
+       }
+   }
+   
+   public static void descomprimirZip(File zipFile, File carpetaDestino) throws IOException {
+       byte[] buffer = new byte[1024];
+
+       if (!carpetaDestino.exists()) {
+           carpetaDestino.mkdirs();
+       }
+
+       ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+       ZipEntry zipEntry;
+
+       while ((zipEntry = zis.getNextEntry()) != null) {
+           File nuevoArchivo = new File(carpetaDestino, zipEntry.getName());
+
+           // Evita la escritura fuera del destino (ataque de zip-slip)
+           String canonicalDestino = carpetaDestino.getCanonicalPath();
+           String canonicalArchivo = nuevoArchivo.getCanonicalPath();
+           if (!canonicalArchivo.startsWith(canonicalDestino + File.separator)) {
+               throw new IOException("Entrada ZIP fuera del destino: " + zipEntry.getName());
+           }
+
+           if (zipEntry.isDirectory()) {
+               nuevoArchivo.mkdirs();
+           } else {
+               // Crear carpetas necesarias
+               new File(nuevoArchivo.getParent()).mkdirs();
+
+               FileOutputStream fos = new FileOutputStream(nuevoArchivo);
+               int len;
+               while ((len = zis.read(buffer)) > 0) {
+                   fos.write(buffer, 0, len);
+               }
+               fos.close();
+           }
+           zis.closeEntry();
+       }
+       zis.close();
+       zis = null;
    }
 }

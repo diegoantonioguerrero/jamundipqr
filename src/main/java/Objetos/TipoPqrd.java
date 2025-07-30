@@ -5,9 +5,11 @@
 
 package Objetos;
 
+import java.io.Serializable;
 
-public class TipoPqrd
+public class TipoPqrd implements Serializable
 {
+    private static final long serialVersionUID = 1L;
 
     public TipoPqrd(int id_tipo_pqrd, String nombre_tipo_pqrd)
     {

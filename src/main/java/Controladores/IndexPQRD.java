@@ -51,6 +51,10 @@ public class IndexPQRD {
 	public String getPath_background_image() {
 		return path_background_image;
 	}
+	
+	public String getPathBackGroundImage() {
+		return path_background_image;
+	}
 
 	public String getFondoHeader() {
 		return fondoHeader;

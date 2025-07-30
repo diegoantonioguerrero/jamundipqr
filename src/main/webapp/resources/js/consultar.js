@@ -1,6 +1,9 @@
 function dialogWidth(){
     var htmlTag = document.getElementById('dialogoEnvio');
-    htmlTag.style.width = Math.floor(window.innerWidth*0.8)+"px";
+    if (htmlTag){
+    	htmlTag.style.width = Math.floor(window.innerWidth*0.8)+"px";
+    }
+    
     var dialogTitle = document.getElementById('formPrincipal:dialogoEnvio_title');
     var centerLong = Math.floor(window.innerWidth*0.8)/2-15;
     var pad = centerLong.toString()
@@ -31,6 +34,7 @@ var numRadicadoOk = false;
 var numVerificacionInput = document.getElementById("formPrincipal:numVerificacion");
 var numVerificacionLabel = document.getElementById("formPrincipal:numVerificacionLabel");
 var numVerificacionOk = false;
+
 
 function getNumRadicado() { //Funciona OnKeyUp
     numRadicadoValue = numRadicadoInput.value;
@@ -77,6 +81,32 @@ function validadorConsulta() {
     }
 }
 
+function validadorEmail() {
+    if (numRadicadoValue === "") {
+        numRadicadoInput.style = 'border: 1px solid #cd0a0a;';
+        numRadicadoLabel.style = 'color: #cd0a0a;';
+        numRadicadoOk = false;
+    } else {
+        numRadicadoOk = true;
+    }
+    
+    if (numVerificacionValue === "") {
+        numVerificacionInput.style = 'border: 1px solid #cd0a0a;';
+        numVerificacionLabel.style = 'color: #cd0a0a;';
+        numVerificacionOk = false;
+    } else {
+        numVerificacionOk = true;
+    }
+    
+    if (numVerificacionOk && numRadicadoOk) {
+        var element = document.getElementById("formPrincipal:EnviarConsulta");
+        element.click();
+        
+    } else {
+        alert('Por favor complete los campos faltantes.');
+    }
+}
+
 function recargarConsultarPqrd(){
     permitir = 1;
     localStorage.setItem("AccesoURL",permitir);
@@ -85,6 +115,16 @@ function recargarConsultarPqrd(){
     localStorage.setItem("nroVerificacionConsultar","");
 }
 
+function mensajeErrorRadicado(numRad, numeroVerificacionErrado) {
+	if (numeroVerificacionErrado){
+		alert("Número de verificación está errado");
+	}
+	else{
+		alert("El número de radicado " + numRad + " no es anónimo; esta pantalla sólo se utiliza para consultar correos anónimos");
+	}
+    
+}
+
 function mensajeError() {
-    alert("Número de radicación o verificación errados");
+    alert("Ha ocurrido un error inesperado");
 }

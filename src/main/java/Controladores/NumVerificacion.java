@@ -2,6 +2,7 @@ package Controladores;
 
 import DataBaseConection.DataBaseConection;
 import Objetos.ComunicacionPQRD;
+import Objetos.Correspondencia;
 import Utilidades.Util;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +47,7 @@ public class NumVerificacion {
 
 	}
 
-	public String validarVerificacion() {
+	public String validarVerificacion(boolean cambiador) throws Exception {
 		try {
 			DataBaseConection baseConection = new DataBaseConection();
 			baseConection.consultarDB(
@@ -72,22 +73,67 @@ public class NumVerificacion {
 					baseConection.actualizarConsultasPQRD("UPDATE comunicacionprqd SET numeroverificacion = '"
 							+ newNumVerificacion + "' WHERE fldidcomunicacionprqd = " + id);
 				} else {
+					if(!cambiador) {
+						throw new Exception("Error al enviar el segundoEmail");
+					}
 					System.err.println("Error al enviar el segundoEmail");
 				}
 			} else {
+				if(!cambiador) {
+					throw new Exception("No se encontro la persona segundoEmail");
+				}
 				System.err.println("No se encontro la persona segundoEmail");
 			}
 
 			baseConection.logoutDB();
-			RequestContext.getCurrentInstance().execute("cambiador()");
+			if (cambiador) {
+				RequestContext.getCurrentInstance().execute("cambiador()");	
+			}
+			
 		} catch (SQLException var6) {
 			Logger.getLogger(NumVerificacion.class.getName()).log(Level.SEVERE, (String) null, var6);
+			if(!cambiador) {
+				throw var6;
+			}
 		} catch (Exception var7) {
 			Logger.getLogger(NumVerificacion.class.getName()).log(Level.SEVERE, (String) null, var7);
+			if(!cambiador) {
+				throw var7;
+			}
 		}
 
 		return "";
 	}
+	
+	public String enviarCorreo(Correspondencia correspondencia) throws Exception {
+		try {
+
+			ComunicacionPQRD comunicacionPQRD = new ComunicacionPQRD();
+
+			comunicacionPQRD.setPrimer_nombre(correspondencia.getNombre());
+			//comunicacionPQRD.setSegundo_nombre(resultConsulta.getString("nombre2"));
+			//comunicacionPQRD.setPrimer_apellido(resultConsulta.getString("apellido1"));
+			//comunicacionPQRD.setSegundo_apellido(resultConsulta.getString("apellido2"));
+			//comunicacionPQRD.setRazon_social(resultConsulta.getString("razonsocial"));
+			comunicacionPQRD.setEmail(correspondencia.getEmail());
+
+			String newNumVerificacion = Integer.toString(correspondencia.getNumVerificacion());
+			comunicacionPQRD.setNumero_verificacion(newNumVerificacion);
+			if (!Util.sendSecondEmail(comunicacionPQRD)) {
+				throw new Exception("Error al enviar el email");
+				/*baseConection.actualizarConsultasPQRD("UPDATE comunicacionprqd SET numeroverificacion = '"
+
+						+ newNumVerificacion + "' WHERE fldidcomunicacionprqd = " + id);*/
+
+			}
+		} catch (Exception var7) {
+			Logger.getLogger(NumVerificacion.class.getName()).log(Level.SEVERE, (String) null, var7);
+			throw var7;
+		}
+
+		return "";
+	}
+
 
 	public String getPath_background_image() {
 		return path_background_image;
