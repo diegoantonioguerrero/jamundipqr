@@ -5,16 +5,12 @@
 
 package DataBaseConection;
 
-import Objetos.ComunicacionPQRD;
-import Objetos.NumeracionPQRD;
-import Utilidades.Util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-//import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -22,16 +18,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-//import java.sql.Types;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Controladores.OpcionesPQRD;
+import Objetos.ComunicacionPQRD;
+import Objetos.NumeracionPQRD;
+import Utilidades.Util;
 
-public class DataBaseConection {
+public class DataBaseConection implements AutoCloseable {
 	public Connection conex;
 	public ResultSet result;
 	private Statement st;
@@ -69,6 +66,11 @@ public class DataBaseConection {
 			Logger.getLogger(DataBaseConection.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return true;
+	}
+	
+	@Override
+	public void close() {
+		logoutDB();
 	}
 
 

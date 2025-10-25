@@ -36,7 +36,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.commons.io.FileUtils;
 import org.primefaces.model.UploadedFile;
 
 @ManagedBean
@@ -49,36 +49,37 @@ public class FormularPQRD implements Serializable {
    private List<Dependencia> dependenciaList;
    private List<Clasificacion> clasificacionList;
    private List<Municipio> municipioList;
-   private String path_background_image;
-   private String fondoHeader;
-   private String fondoFooter;
+   private static String path_background_image;
+   private static String fondoHeader;
+   private static String fondoFooter;
+   private static String urlOrigen;
+   private static String colorFondoBotones;
+   private static String colorLetraBotones;
+   private static String textTermsConditions;
+   private static String fuenteTiulos;
+   private static String fuenteEtiquetas;
+   private static String fuenteContenido;
+   private static String textoAlternativoEncabezado;
+   private static String textoAlternativoPiedepagina;
+   private static String textoCamposObligatorios;
+   
    private String nombre_archivo;
-   private String urlOrigen;
    private String tipoPersona;
    private String tipoIdenficacion;
    private String tipoPqr;
    private String nro_radicado_generado;
-   private String colorFondoBotones;
-   private String colorLetraBotones;
-   private String textTermsConditions;
-   private String fuenteTiulos;
-   private String fuenteEtiquetas;
-   private String fuenteContenido;
    private int anoActual;
    private int proximonroradicacion;
    private int limiteBytesArchivo;
    private ComunicacionPQRD comunicacionPQRD;
    private NumeracionPQRD numeracionPQRD;
-   private static boolean personaNatural = false;
+   private boolean personaNatural = false;
    private static boolean primeraVez = true;
    private transient File file1;
    private transient List<File> filesEmpaquetar;
    private transient List<String> filesAlias;
    private transient File fileTemp;
    private transient UploadedFile filePrime;
-   private String textoAlternativoEncabezado;
-   private String textoAlternativoPiedepagina;
-   private String textoCamposObligatorios;
    private List<TipoPqrd> tiposPorIdentificacion;
    private List<TipoPqrd> tiposAnonimos;
    private List<TipoAdjunto> tiposAdjuntos;
@@ -89,20 +90,20 @@ public class FormularPQRD implements Serializable {
       try {
 		 System.out.println("Save FormularPQRD");
 
-         this.path_background_image = Util.getProperties("imagenFondo");
-         this.fondoHeader = Util.getProperties("imagenFondoHeader");
-         this.fondoFooter = Util.getProperties("imagenFondoFooter");
-         this.colorFondoBotones = Util.getProperties("colorFondoBotones");
-         this.colorLetraBotones = Util.getProperties("colorLetraBotones");
-         this.textTermsConditions = Util.getProperties("textTermsConditions");
-         this.fuenteTiulos = Util.getProperties("fuenteTiulos");
-         this.fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");
-         this.fuenteContenido = Util.getProperties("fuenteContenido");
-         this.urlOrigen = Util.getProperties("linkOrigen");
+         path_background_image = Util.getProperties("imagenFondo");
+         fondoHeader = Util.getProperties("imagenFondoHeader");
+         fondoFooter = Util.getProperties("imagenFondoFooter");
+         colorFondoBotones = Util.getProperties("colorFondoBotones");
+         colorLetraBotones = Util.getProperties("colorLetraBotones");
+         textTermsConditions = Util.getProperties("textTermsConditions");
+         fuenteTiulos = Util.getProperties("fuenteTiulos");
+         fuenteEtiquetas = Util.getProperties("fuenteEtiquetas");
+         fuenteContenido = Util.getProperties("fuenteContenido");
+         urlOrigen = Util.getProperties("linkOrigen");
          this.limiteBytesArchivo = Integer.parseInt(Util.getProperties("limiteBytes"));
-         this.textoAlternativoEncabezado = Util.getProperties("textoAlternativoEncabezado");
-         this.textoAlternativoPiedepagina = Util.getProperties("textoAlternativoPiedepagina");
-         this.textoCamposObligatorios = Util.getProperties("textoCamposObligatorios");
+         textoAlternativoEncabezado = Util.getProperties("textoAlternativoEncabezado");
+         textoAlternativoPiedepagina = Util.getProperties("textoAlternativoPiedepagina");
+         textoCamposObligatorios = Util.getProperties("textoCamposObligatorios");
          this.inicializar();
          DataBaseConection dataBaseConection = new DataBaseConection();
          dataBaseConection.consultarDB("SELECT * FROM tablapqrtipoidentificacio WHERE activaenpqr = 1 ORDER BY tipo ASC;");
@@ -172,7 +173,7 @@ public class FormularPQRD implements Serializable {
       this.tiposAnonimos = new ArrayList();
       this.tiposAdjuntos = new ArrayList();
       this.filePrimeArray = new UploadedFile[10];
-      
+
       if (primeraVez) {
          personaNatural = false;
          primeraVez = false;
@@ -488,7 +489,7 @@ public class FormularPQRD implements Serializable {
 	        		nombre_archivo = this.nro_radicado_generado + ".zip";
 	        	}
 	        			
-	        	dirSalida = dirSalida + "\\" + this.nro_radicado_generado + ".zip";
+	        	dirSalida = dirSalida + File.separator + this.nro_radicado_generado + ".zip";
 	        	ajustarNombresALias();
 	            CreateZip.crearZip(dirSalida , archivosParaZip, this.filesAlias);
 	             
@@ -669,7 +670,7 @@ public List<TipoDocumento> getTipoDocumentoList() {
    }
 
    public void setTipoPersona(String tipoPersona) {
-      personaNatural = !tipoPersona.equals("NATURAL");
+      this.personaNatural = !tipoPersona.equals("NATURAL");
       this.tipoPersona = tipoPersona;
    }
 
@@ -687,6 +688,13 @@ public List<TipoDocumento> getTipoDocumentoList() {
 
    public int getLimiteBytesArchivo() {
       return this.limiteBytesArchivo;
+   }
+
+   public String getLimiteBytesArchivoMb() {
+      if (this.limiteBytesArchivo > 0) {
+         return (this.limiteBytesArchivo / 1000000) + " MB";
+      }
+      return "0 MB";
    }
 
    public UploadedFile getFilePrime() {

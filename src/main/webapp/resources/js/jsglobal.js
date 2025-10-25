@@ -661,6 +661,8 @@ function validatorCampos() {
         asuntoOk = true;
     }
 
+	console.log("validatorCampos 4");
+
     //Detalle
     if (detallePqrdValue === "") {
         detallePqrd.style = 'border: 1px solid #cd0a0a;';
@@ -792,35 +794,36 @@ function handleFileMultiple(el, index) {
 	    }
 	    
 	    var extension = ext.toString().toLowerCase();
-    
 	    var sizeLimit = document.getElementById("limitearhivosize").textContent;
 	    var sizeLimitMb = sizeLimit / 1000000;
 	
-	    if (extensionesValidas.includes(extension)) {
-	    	if (file.size == 0){
-	    		alert("El archivo adjunto está vacio, se detectó un tamaño de 0 bytes");
-	    		return false;
-	    	}
-	    	
-	        if (file.size < sizeLimit) {
-				var fileNameLabel = document.getElementById("formPrincipal:filenameLabel_" + index).innerHTML;
-	            document.getElementById("formPrincipal:labelfilename_" + index).innerHTML = "El archivo " + fileNameLabel + " fue cargado";
-	            document.getElementById("divupload_" + index).style.display = 'none';
-	            document.getElementById("formPrincipal:buttondelete_" + index).style.display = 'block';
-	            return true;
-	        } else {
-	            deleteFile();
-	            alert("El archivo adjunto no puede exceder el tamaño de " + sizeLimitMb + " MB");
-	            return false;
-	        }
-	    } else {
-	        deleteFileMultiple(index);
-	        alert("El archivo adjunto debe ser de tipo: " + extensionesValidas.join(", .").replace(/^/, "."));
-	        return false;
-	    }
+	    if (!extensionesValidas.includes(extension)) {
+			deleteFileMultiple(index);
+			        alert("El archivo adjunto debe ser de tipo: " + extensionesValidas.join(", .").replace(/^/, "."));
+			        return false;
+		}
+		
+    	if (file.size == 0){
+    		alert("El archivo adjunto está vacio, se detectó un tamaño de 0 bytes");
+    		return false;
+    	}
+    	
+        if (file.size < sizeLimit) {
+			var fileNameLabel = document.getElementById("formPrincipal:filenameLabel_" + index).innerHTML;
+            document.getElementById("formPrincipal:labelfilename_" + index).innerHTML = "El archivo " + fileNameLabel + " fue cargado";
+			document.getElementById("divupload_" + index).style.display = 'none';
+            document.getElementById("formPrincipal:buttondelete_" + index).style.display = 'block';
+            return true;
+        } else {
+            deleteFileMultiple(index);
+            alert("El archivo adjunto no puede exceder el tamaño de " + sizeLimitMb + " MB");
+            return false;
+        }
+
 	}
 	catch(err){
-		alert(err);
+		console.error(err);
+		alert("Error al seleccionar archivo: " + err);
 		return false;
 	}	    
 }
@@ -867,14 +870,13 @@ function validarTamanioTotal(){
 		return false;		
 	}
 		
-	var invalidSize = sumaArchivos > sizeLimit;
+	var invalidSize = sumaArchivos > sizeLimitTotal;
 	
 	
 	if (invalidSize) {
 		alert("El/los archivo(s) adjunto(s) no puede(n) exceder el tamaño de " + sizeLimitMb + " MB en total");
 	}
-	
-	
+		
 	return !invalidSize;
 
 }

@@ -34,7 +34,7 @@ import Utilidades.Util;
 
 @ManagedBean(name = "opcionesPQRD")
 @ViewScoped
-public class OpcionesPQRD implements Serializable {
+public class OpcionesPQRDMejorado implements Serializable {
 	/**
 	 * 
 	 */
@@ -76,7 +76,7 @@ public class OpcionesPQRD implements Serializable {
 
 	
 
-	public OpcionesPQRD() {
+	public OpcionesPQRDMejorado() {
 		this.nroRadicadoExist = false;
 		this.mostrarFechaPosibleRespuesta = false;
 		try {
@@ -85,7 +85,7 @@ public class OpcionesPQRD implements Serializable {
 			this.textTermsConditionsMisPQRD = Util.getProperties("textTermsConditionsMisPQRD");
 
 		} catch (Exception ex) {
-			Logger.getLogger(OpcionesPQRD.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(OpcionesPQRDMejorado.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 

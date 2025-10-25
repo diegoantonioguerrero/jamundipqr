@@ -777,6 +777,8 @@ and open the template in the editor.
 	                            <c:if test="#{not empty formularPQRD.tiposAdjuntos}">
 		                            <br/>
 		                            <p:outputLabel value="Formatos admitidos: .txt, .docx, .doc, .xls, .xlsx, .jpeg, .pdf, .gif, .png, .jpg, .zip, .rar" style="font-size: 90%"/>
+		                            <br/>
+		                            <p:outputLabel value="Tamaño total adjuntos permitidos: #{formularPQRD.limiteBytesArchivoMb}" style="font-size: 90%; font-weight: bold;"/>
                             	</c:if>
                             </h:panelGroup>
 

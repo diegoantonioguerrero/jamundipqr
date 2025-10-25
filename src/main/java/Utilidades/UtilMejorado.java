@@ -37,7 +37,7 @@ import javax.mail.internet.MimeMultipart;
 import DataBaseConection.DataBaseConection;
 import Objetos.ComunicacionPQRD;
 
-public class Util {
+public class UtilMejorado {
 	private static final String ORIGINAL = "\301\341\311\351\315\355\323\363\332\372\321\361\334\374";
 	private static final String REPLACEMENT = "AaEeIiOoUuNnUu";
 
@@ -163,7 +163,7 @@ public class Util {
 				+ " con destino a la dependencia " + nombreDependencia + " cuyo asunto es: " + asunto
 				+ "<br/><br/>El n&uacute;mero de radicaci&oacute;n asignado a su solicitud es " + nroRadicacion
 				+ "; Tenga en cuenta esta informaci&oacute;n para hacer seguimiento a su tr&aacute;mite."
-				+ "<br/><br/>Este email fue enviado automáticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
+				+ "<br/><br/>Este email fue enviado autom&aacute;ticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
 				+ getProperties("nombreEntidad") + "<br/><br/></p><img src=\"cid:image\">";
 		messageBodyPart.setContent(htmlText, "text/html");
 		multipart.addBodyPart(messageBodyPart);
@@ -287,7 +287,7 @@ public class Util {
 		BodyPart texto = new MimeBodyPart();
 		texto.setText("Hola\n" + nombrePersona + "\n" + razonSocial + "\n\nSu n&uacute;mero de verificaci&oacute;n es "
 				+ comunicacionPQRD.getNumero_verificacion()
-				+ "\n\nEste email fue enviado automáticamente.\nNo responda a este correo.\n\nCordialmente\n"
+				+ "\n\nEste email fue enviado autom&aacute;ticamente.\nNo responda a este correo.\n\nCordialmente\n"
 				+ getProperties("nombreEntidad"));
 		MimeMultipart multiParte = new MimeMultipart();
 		multiParte.addBodyPart(texto);
@@ -299,7 +299,7 @@ public class Util {
 		BodyPart messageBodyPart = new MimeBodyPart();
 		String htmlText = "<p>Hola<br/>" + nombrePersona + "<br/>" + razonSocial
 				+ "<br/><br/>Su n&uacute;mero de verificaci&oacute;n es " + comunicacionPQRD.getNumero_verificacion()
-				+ "<br/><br/>Este email fue enviado automáticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
+				+ "<br/><br/>Este email fue enviado autom&aacute;ticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
 				+ nombreEntidad + "<br/><br/></p><img src=\"cid:image\">";
 		messageBodyPart.setContent(htmlText, "text/html");
 		multipart.addBodyPart(messageBodyPart);
@@ -403,7 +403,7 @@ public class Util {
 					+ " con destino a la dependencia " + nombreDependencia + " cuyo asunto es: " + asunto
 					+ "<br/><br/>El n&uacute;mero de radicaci&oacute;n asignado a su solicitud es " + nroRadicacion
 					+ " y el n&uacute;mero de verificaci&oacute;n asignado es " + nroVerificacion
-					+ "; Tenga en cuenta estos datos para hacer seguimiento a su tr&aacute;mite.<br/><br/>Este email fue enviado automáticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
+					+ "; Tenga en cuenta estos datos para hacer seguimiento a su tr&aacute;mite.<br/><br/>Este email fue enviado autom&aacute;ticamente.<br/>No responda a este correo.<br/><br/>Cordialmente<br/>"
 					+ getProperties("nombreEntidad") + "<br/><br/></p><img src=\"cid:image\">";
 			messageBodyPart.setContent(htmlText, "text/html");
 			multipart.addBodyPart(messageBodyPart);
