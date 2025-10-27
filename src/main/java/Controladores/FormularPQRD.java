@@ -88,7 +88,6 @@ public class FormularPQRD implements Serializable {
 
    public FormularPQRD() {
       try {
-		 System.out.println("Save FormularPQRD");
 
          path_background_image = Util.getProperties("imagenFondo");
          fondoHeader = Util.getProperties("imagenFondoHeader");

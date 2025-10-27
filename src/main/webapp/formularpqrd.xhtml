@@ -138,6 +138,10 @@ and open the template in the editor.
             	background-color: blue;
             }*/
         
+            .bodyTheme{
+            	background-image: url(./resources/img/#{formularPQRD.path_background_image});
+            	margin: 0;
+            }
             
             .headerTheme{
             	background-image: url(../resources/img/#{indexPQRD.fondoHeader});
@@ -150,10 +154,9 @@ and open the template in the editor.
         </style>
         
     </h:head>
-    <h:body class="bground"
+    <h:body class="bground bodyTheme"
 		onload="deshabilitaRetroceso();mostrarIngresado();"
-        onunload="deshabilitaRetroceso();"
-            style="background-image: url(../resources/img/#{formularPQRD.path_background_image}); margin: 0">  
+        onunload="deshabilitaRetroceso();">  
         
         <header class="headerResponsive headerTheme" title="#{indexPQRD.textoAlternativoEncabezado}">
         </header>
@@ -698,7 +701,7 @@ and open the template in the editor.
                                         onchange="mayusName(this);"
                                         value="#{formularPQRD.comunicacionPQRD.asunto}"
                                         class="inSolicitud verdanaFontSolicitud">
-                                        <p:keyFilter preventPaste="false" regEx="/[áéíóúàèìòùÑña-z0-9!*%#@$/=.,:;¡¿?()_\-\s\&amp;]/i" />
+                                        <p:keyFilter preventPaste="true" regEx="/[áéíóúàèìòùÑña-z0-9!*%#@$/=.,:;¡¿?()_\-\s\&amp;]/i" />
                                     </p:inputText>    
                                 </div>
                                 
@@ -714,10 +717,11 @@ and open the template in the editor.
                                         id="textoPqrd" 
                                         maxlength="15000"
                                         onkeyup="getDetalleInput();"
+                                        onpaste="return false;"
                                         value="#{formularPQRD.comunicacionPQRD.detalle}"
                                         rows="6" 
                                         class="inSolicitud verdanaFontSolicitud">
-                                        <p:keyFilter preventPaste="false" regEx="/[áéíóúàèìòùñ.%+-¿?!¡$@()#=:,*;\w\s\&quot;\&amp;]/i" />
+                                        <p:keyFilter preventPaste="true" regEx="/[áéíóúàèìòùñÑa-zA-Z0-9_.%+-¿?!¡$@()#=:,*;\s\&quot;\&amp;]/i" />
                                     </p:inputTextarea>
                                 </div>
 

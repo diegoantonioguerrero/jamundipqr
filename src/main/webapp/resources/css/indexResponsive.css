@@ -43,9 +43,9 @@
 		padding-right: 17px;
  		padding-left: 17px;
 		margin-top: 70px; /* para dejar espacio para el encabezado */
-		margin-bottom: 65px; /* para dejar espacio para el pie de página */
+		margin-bottom: 65px; /* para dejar espacio para el pie de pï¿½gina */
 		overflow-y: auto; /* agregar barra de desplazamiento si es necesario */
-		max-height: calc(100vh - 120px); /* máximo alto para el div de contenido */
+		max-height: calc(100vh - 120px); /* mï¿½ximo alto para el div de contenido */
     	/*
     	border: 1px solid red;
     	*/
@@ -124,7 +124,7 @@
 		padding-right: 5%;
  		padding-left: 5%;
 		margin-top: 100px; /* para dejar espacio para el encabezado */
-		margin-bottom: 100px; /* para dejar espacio para el pie de página */
+		margin-bottom: 100px; /* para dejar espacio para el pie de pÃ¡gina */
         /*
         border: 1px solid blue;
         */
@@ -185,7 +185,7 @@
  		padding-right: 20%;
  		padding-left: 20%;
  		margin-top: 120px;
-		margin-bottom: 120px; /* para dejar espacio para el pie de página */
+		margin-bottom: 120px; /* para dejar espacio para el pie de pï¿½gina */
 		/*
 		border: 1px solid green;
 		*/
@@ -202,7 +202,7 @@
 
   .headerResponsive{
         
-      height: 190px;
+      height: 120px;
     
   }
   
@@ -214,12 +214,8 @@
     .center {
 		padding-top: 10px;
 		padding-bottom: 10px;
-		margin-top: calc(40% - 190px); /* para dejar espacio para el encabezado */
-		margin-bottom: 190px; /* para dejar espacio para el pie de página */
-		/*
-		border: 1px solid black;
-		*/
-        
+		margin-top: 120px;
+		margin-bottom: 120px;
       }
       
       .footer{
@@ -230,8 +226,13 @@
 }
 
 @media screen and (min-width: 1280px) {
-    .center {
-		margin-top: calc(30% - 190px); /* para dejar espacio para el encabezado */
+      
+      .center {
+		padding-top: 10px;
+		padding-bottom: 10px;
+		margin-top: 120px;
+		margin-bottom: 120px;
+        
       }
 }
 

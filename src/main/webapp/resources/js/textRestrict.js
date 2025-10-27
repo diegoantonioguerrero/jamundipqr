@@ -8,8 +8,22 @@ function removeAccents(str){
 } ;
 
 function mayusName(e) {
+    let start = e.selectionStart;
     e.value = e.value.toUpperCase();
     e.value = removeAccentsName(e.value);
+    setCursorPosition(e, start);
+}
+
+function setCursorPosition(elem, pos) {
+    if (elem.setSelectionRange) {
+        elem.setSelectionRange(pos, pos);
+    } else if (elem.createTextRange) {
+        var range = elem.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', pos);
+        range.moveStart('character', pos);
+        range.select();
+    }
 }
 
 function removeAccentsName(str){
@@ -37,5 +51,3 @@ function removeAccents2 (text) {
 
     return textNoAccents.join('');
 }
-
-

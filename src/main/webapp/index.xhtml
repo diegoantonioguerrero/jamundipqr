@@ -1,25 +1,24 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
-      >
-    <h:head>
-        <title>Index</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta content='text/html; charset=UTF-8' http-equiv="content-type"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="lang" content="es"/>
-        <h:outputStylesheet library="css" name="indexResponsive.css"/>
-        <h:outputStylesheet library="css" name="captcha.css"/>
-        <h:outputScript library="js" name="captcha.js" target="body"/>
-        <h:outputScript library="js" name="noPasteIndex.js"/>
-        <h:outputScript library="js" name="jsglobal.js" target="body"/>
-        <h:outputScript library="js" name="browserjs.js" target="body"/>
-        
-        <style>
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Index</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta content='text/html; charset=UTF-8' http-equiv="content-type" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="lang" content="es" />
+	<h:outputStylesheet library="css" name="indexResponsive.css" />
+	<h:outputStylesheet library="css" name="captcha.css" />
+	<h:outputScript library="js" name="captcha.js" target="body" />
+	<h:outputScript library="js" name="noPasteIndex.js" />
+	<h:outputScript library="js" name="jsglobal.js" target="body" />
+	<h:outputScript library="js" name="browserjs.js" target="body" />
+
+	<style>
             
             .ui-button{
                 background-color: #{indexPQRD.colorFondoBotones} !important;
@@ -64,10 +63,6 @@
             
             .bodyTheme{
             	background-image: url(./resources/img/#{indexPQRD.path_background_image});
-            	margin: 0;
-            	display: flex;
-            	flex-direction: column;
-            	height:100vh;
             }
             
             .headerTheme{
@@ -81,90 +76,87 @@
             
 
         </style>
-    </h:head>
-    <h:body class="bground bodyTheme"
-            onload="deshabilitaRetroceso()">
-        
-        <header class="headerResponsive headerTheme" title="#{indexPQRD.textoAlternativoEncabezado}">
-        </header>
-            <div class="center" align="center">
-                <h:form id="formIndex" style="display: none; align-self: center">
-                    <p:panel class="box" style="background: none">
-                   		<c:if test="${indexPQRD.textEncabezadoEntrada!=''}" >
-	                        <div class="labelStrong">
-	                            <strong><p:outputLabel class="labelFont" styleClass="labelFont" style="font-size: 110%" value="#{indexPQRD.textEncabezadoEntrada}"/></strong>
-	                        </div>
-                        </c:if> 
-                        <div class="labelStrong">
-                            <strong><p:outputLabel class="labelFont" styleClass="labelFont" style="font-size: 110%" value="Haga click en una de estas opciones"/></strong>
-                        </div>
-                        <div>    
-                            <p:commandButton class="btn" value="Nueva PQRD" onclick="pagFormular(); PF('captcha').show()"/>
-                            <p:commandButton class="btn" value="Consultar PQRD" onclick="pagConsultar();PF('captcha').show()"/>
-                            <p:button 
-                                class="btn" 
-                                value="Regresar" 
-                                href="#{indexPQRD.urlOrigen}"/>
-                        </div>                   
-                    </p:panel>
-                </h:form>  
-            </div>          
-            
-        
-        
-        <h:form id="formIE" style="display: none" >
-         <div style="margin-top: 10px" align="center">
-             <p:outputLabel value="Para tramitar o consultar PQRDs, favor usar Google Chrome, Firefox o cualquier otro explorador" 
-                            style="font-size: 110%; font-weight: bold"/>
-        </div>            
-        </h:form>
-        
-         <h:form>
-            <!--CATPCHA-->
-            <p:dialog header="Escriba el número encontrado en pantalla" closable="false" widgetVar="captcha" modal="true" resizable="false" 
-                      showEffect="fade" hideEffect="fade" draggable="false" positionType="absolute" style="align-content: center"
-                      class="dialogResponsive">
+</h:head>
+<h:body class="bground bodyTheme" onload="deshabilitaRetroceso()">
 
-                <div id="captcha" align="center">
-                    <div class="capbox">
-                        <div id="CaptchaDiv"></div>
-                        <div class="capbox-inner">
-                            Ingrese el código de seguridad:<br />
-                            <input type="hidden" id="txtCaptcha" />
-                            <input type="text"
-                                   name="CaptchaInput" 
-                                   id="CaptchaIn"
-                                   size="15" 
-                                   maxlength="5" 
-                                   style="text-align: center;
-                                   font-size: 110%;
-                                   margin-top: 5px"
-                                   />
-                        </div>
-                    </div>
-                    <div class="ui-g" style="margin-top: 5px">
-                        <div class="ui-g-6">
-                            <p:commandButton class="btn" onclick="comprobarCaptcha(CaptchaIn.value)" value="Comprobar" style="width: 130px"/>    
-                        </div>
-                        <div class="ui-g-6">
-                            <p:button 
-                                class="btn" 
-                                value="Salir" 
-                                href="#{consultarPQRD.urlOrigen}" 
-                                style="width: 130px"/>
-                        </div>
-                    </div>
-                </div>
-            </p:dialog>
-            <!--FIN CATPCHA-->
-            </h:form>
-        
-        <footer class="footer footerTheme" title="#{indexPQRD.textoAlternativoPiedepagina}">
-        </footer>
-    
-    </h:body>
-    
-    
-        
+	<header class="headerResponsive headerTheme"
+		title="#{indexPQRD.textoAlternativoEncabezado}"> 
+	</header>
+	<div class="center" align="center">
+		<h:form id="formIndex" style="display: none; align-self: center">
+			<p:panel class="box" style="background: none">
+				<c:if test="${indexPQRD.textEncabezadoEntrada!=''}">
+					<div class="labelStrong">
+						<strong><p:outputLabel class="labelFont"
+								styleClass="labelFont" style="font-size: 110%"
+								value="#{indexPQRD.textEncabezadoEntrada}" /></strong>
+					</div>
+				</c:if>
+				<div class="labelStrong">
+					<strong><p:outputLabel class="labelFont"
+							styleClass="labelFont" style="font-size: 110%"
+							value="Haga click en una de estas opciones" /></strong>
+				</div>
+				<div>
+					<p:commandButton class="btn" value="Nueva PQRD"
+						onclick="pagFormular(); PF('captcha').show()" />
+					<p:commandButton class="btn" value="Consultar PQRD"
+						onclick="pagConsultar();PF('captcha').show()" />
+					<p:button class="btn" value="Regresar"
+						href="#{indexPQRD.urlOrigen}" />
+				</div>
+			</p:panel>
+		</h:form>
+	</div>
+
+	<h:form id="formIE" style="display: none">
+		<div style="margin-top: 10px" align="center">
+			<p:outputLabel
+				value="Para tramitar o consultar PQRDs, favor usar Google Chrome, Firefox o cualquier otro explorador"
+				style="font-size: 110%; font-weight: bold" />
+		</div>
+	</h:form>
+
+	<h:form>
+		<!--CATPCHA-->
+		<p:dialog header="Escriba el número encontrado en pantalla"
+			closable="false" widgetVar="captcha" modal="true" resizable="false"
+			showEffect="fade" hideEffect="fade" draggable="false"
+			positionType="absolute" style="align-content: center"
+			class="dialogResponsive">
+
+			<div id="captcha" align="center">
+				<div class="capbox">
+					<div id="CaptchaDiv"></div>
+					<div class="capbox-inner">
+						Ingrese el código de seguridad:<br /> <input type="hidden"
+							id="txtCaptcha" /> <input type="text" name="CaptchaInput"
+							id="CaptchaIn" size="15" maxlength="5"
+							style="text-align: center; font-size: 110%; margin-top: 5px" />
+					</div>
+				</div>
+				<div class="ui-g" style="margin-top: 5px">
+					<div class="ui-g-6">
+						<p:commandButton class="btn"
+							onclick="comprobarCaptcha(CaptchaIn.value)" value="Comprobar"
+							style="width: 130px" />
+					</div>
+					<div class="ui-g-6">
+						<p:button class="btn" value="Salir"
+							href="#{consultarPQRD.urlOrigen}" style="width: 130px" />
+					</div>
+				</div>
+			</div>
+		</p:dialog>
+		<!--FIN CATPCHA-->
+	</h:form>
+
+	<footer class="footer footerTheme"
+		title="#{indexPQRD.textoAlternativoPiedepagina}"> </footer>
+
+</h:body>
+
+
+
 </html>
 
