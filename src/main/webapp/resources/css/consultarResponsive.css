@@ -98,12 +98,12 @@ dialog{
     
    .footer.fixed{
 		position : fixed;
-		height: 190px;
+		height: 120px;
 	}
 	
 	.footer.fixedMax{
 		position : static;
-		height: 190px;
+		height: 120px;
 	}
 }
 
@@ -114,7 +114,7 @@ dialog{
   }
   
   .headerResponsive{
-        height: 190px; 
+        height: 120px; 
         background-repeat: no-repeat;
         background-size: 100% 100%;
         background-position: 50% 0;
@@ -160,7 +160,7 @@ dialog{
     bottom: 0;    
     width: 100%;
     text-align: center;
-    height: 190px; 
+    height: 120px; 
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-position: 50% 0;

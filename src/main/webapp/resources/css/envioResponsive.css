@@ -40,7 +40,7 @@
   }
   
   .headerResponsive{
-        height: 190px; 
+        height: 120px; 
         background-repeat: no-repeat;
         background-size: 100% 100%;
         background-position: 50% 0;
@@ -51,7 +51,7 @@
     bottom: 0;    
     width: 100%;
     text-align: center;
-    height: 190px; 
+    height: 120px; 
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-position: 50% 0;
